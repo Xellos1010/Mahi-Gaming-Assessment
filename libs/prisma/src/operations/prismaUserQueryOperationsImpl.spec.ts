@@ -1,21 +1,12 @@
 import {
-    getAllBooks,
-    getBook,
-    getAllUsers,
-    getUserById,
-    getUserByEmail,
-    getUserFavoriteBooks,
-  } from './queries';
+    prismaUserQueryOperations
+  } from './prismaUserQueryOperationsImpl';
   import { prisma } from '../client';
   import { vi, Mock } from 'vitest';
   
   // Mocking Prisma client
   vi.mock('../client', () => ({
     prisma: {
-      book: {
-        findMany: vi.fn(),
-        findUnique: vi.fn(),
-      },
       user: {
         findMany: vi.fn(),
         findUnique: vi.fn(),
@@ -23,32 +14,7 @@ import {
     },
   }));
   
-  describe('Prisma Queries', () => {
-    it('should get all books', async () => {
-      const mockBooks = [
-        { id: 1, name: 'Book 1', description: 'Description 1' },
-        { id: 2, name: 'Book 2', description: 'Description 2' },
-      ];
-  
-      // Mocking the implementation for the findMany method
-      (prisma.book.findMany as Mock).mockResolvedValue(mockBooks);
-  
-      const result = await getAllBooks();
-      expect(result).toEqual(mockBooks);
-      expect(prisma.book.findMany).toHaveBeenCalled();
-    });
-  
-    it('should get a specific book by ID', async () => {
-      const mockBook = { id: 1, name: 'Test Book', description: 'Test description' };
-  
-      // Mocking the implementation for the findUnique method
-      (prisma.book.findUnique as Mock).mockResolvedValue(mockBook);
-  
-      const result = await getBook(1);
-      expect(result).toEqual(mockBook);
-      expect(prisma.book.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
-    });
-  
+  describe('Prisma User Queries', () => {
     it('should get all users', async () => {
       const mockUsers = [
         { id: 1, name: 'User 1', email: 'user1@example.com' },
@@ -58,7 +24,7 @@ import {
       // Mocking the implementation for the findMany method
       (prisma.user.findMany as Mock).mockResolvedValue(mockUsers);
   
-      const result = await getAllUsers();
+      const result = await prismaUserQueryOperations.getAllUsers();
       expect(result).toEqual(mockUsers);
       expect(prisma.user.findMany).toHaveBeenCalled();
     });
@@ -69,7 +35,7 @@ import {
       // Mocking the implementation for the findUnique method
       (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
   
-      const result = await getUserById(1);
+      const result = await prismaUserQueryOperations.getUserById(1);
       expect(result).toEqual(mockUser);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
     });
@@ -80,7 +46,7 @@ import {
       // Mocking the implementation for the findUnique method
       (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
   
-      const result = await getUserByEmail('john.doe@example.com');
+      const result = await prismaUserQueryOperations.getUserByEmail('john.doe@example.com');
       expect(result).toEqual(mockUser);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: 'john.doe@example.com' } });
     });
@@ -96,7 +62,7 @@ import {
       // Mocking the implementation for the findUnique method
       (prisma.user.findUnique as Mock).mockResolvedValue(mockFavorites);
   
-      const result = await getUserFavoriteBooks(1);
+      const result = await prismaUserQueryOperations.getUserFavoriteBooks(1);
       expect(result).toEqual(mockFavorites);
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { id: 1 },
