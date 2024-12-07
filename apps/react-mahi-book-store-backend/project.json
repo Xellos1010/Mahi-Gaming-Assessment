@@ -1,0 +1,52 @@
+{
+  "name": "react-mahi-book-store-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/react-mahi-book-store-backend/src",
+  "projectType": "application",
+  "tags": [
+    "api"
+  ],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "webpack-cli build",
+        "args": [
+          "node-env=production"
+        ]
+      },
+      "configurations": {
+        "development": {
+          "args": [
+            "node-env=development"
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": [
+        "build"
+      ],
+      "options": {
+        "buildTarget": "react-mahi-book-store-backend:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "react-mahi-book-store-backend:build:development"
+        },
+        "production": {
+          "buildTarget": "react-mahi-book-store-backend:build:production"
+        }
+      }
+    },
+    "docker-build": {
+      "dependsOn": [
+        "build"
+      ],
+      "command": "docker build -f apps/react-mahi-book-store-backend/Dockerfile . -t react-mahi-book-store-backend"
+    }
+  }
+}

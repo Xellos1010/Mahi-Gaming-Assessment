@@ -11,6 +11,9 @@ services:
       POSTGRES_DB: bookstore
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - bookstore_network
+
   backend:
     build:
       context: ./apps/backend
@@ -18,5 +21,14 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgres://user:password@postgres:5432/bookstore
+    networks:
+      - bookstore_network
+    ports:
+      - "3000:3000"
+
 volumes:
   pgdata:
+
+networks:
+  bookstore_network:
+    driver: bridge
