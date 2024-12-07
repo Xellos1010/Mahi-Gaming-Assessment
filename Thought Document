@@ -129,4 +129,5 @@ Since the Initial NX Setup creates a React Project it would be best to create th
 
 Running through the tutorial we can add a store app and an inventory app then a library that can switch between the 2. This will be great for getting the Books Management online and the storefront online and the responsibilities separated so that the store displays the output of the inventory.
 **Note** this will probably work will for a users pool but we need to build the database to be relational so I need to do more research as to whether Inventory is the correct approach. **Note**
-After doing some research (https://www.reddit.com/r/node/comments/1as8wmk/can_we_use_one_db_in_two_or_more_different/?rdt=44870) I came to the conclusion to create a prisma library that is shared
+After doing some research (https://www.reddit.com/r/node/comments/1as8wmk/can_we_use_one_db_in_two_or_more_different/?rdt=44870) I came to the conclusion that the best approach to have 3 front-ends. 1 for user management, 1 for book management and a book store that users can register and interact but books can only be created in the books inventory frontent. 
+TODO - create a prisma library that is shared between the Books Inventory and User Management Front-end
