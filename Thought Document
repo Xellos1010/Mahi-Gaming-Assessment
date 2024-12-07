@@ -1,0 +1,132 @@
+Initial Assessment Review - 12/06/24 @ 6:00pm
+
+To start this assignment we need to break this down into its components and prioritize its requirements
+
+FrontEnd - This needs to be developed in react and support the following states:
+Base Features
+    browsing books
+    searching for books by title or author
+    viewing book details
+
+Stretch Features:
+    user authentication for login and registration functionalities
+    a "favorites" list where the user can save and manage their favorite books
+    Verify your work with unit tests.
+    Use a monorepo build system to structure your project - NX is utilized at Mahi.
+
+Requirements during Development:
+    Implement data validation and proper error handling
+    Implement Unit tests to validate Development Approach
+
+Database - based on the requirements we need to create a database with the following tables:
+Base Features:
+    Types:
+        type BookDetails
+            description String (optional) maybe a book does not have a description
+
+        type Book
+            id auto incremented
+            name String! (required)
+            bookDetails BookDetails (Optional)- Maybe a book doesn't have details yet but we want to display
+            imageId String (Optional) A book may or may not have a cover
+
+    Operations:
+        Queries:
+            getAllBooks(): [Book]
+            getBook(id: Number): Book
+        Mutations:
+            addBook({name: String!, bookDeatils: BookDetails}): Book
+            removeBook(id: Number): Book
+            updateBook(id: String, name : String (optional), imageID: String optional, bookDetails: BookDetails)
+    
+Stretch Features:
+    To Add:
+    (Feature 1 Adding Authentication and User Signup - SignIn)
+        Types:
+            type User - 
+                id auto incremented
+                name required (PPI(Personally Identifiable Information): (Special Note: needs to be encrypted at rest and salted so that it needs to be decrypted by a server and is protected)) Since is not part of the requirements this will be a end of cycle feature 
+                email required (PPI(Personally Identifiable Information): (Special Note: needs to be encrypted at rest and salted so that it needs to be decrypted by a server and is protected)) Since is not part of the requirements this will be a end of cycle feature 
+                password required (Special Note: needs to be encrypted at rest and salted so that it needs to be decrypted by a server and is protected)
+                lastLoggedIn DateTime
+        Operations:
+            Queries:
+                getAllUsers():[User]
+                getUserById(id: Number): User
+                getUserByEmail(email: String): User
+            Mutations:
+                setUserPassword(email: String, password: String): User
+                setLastLoggedIn(time: String): User
+                addUser(name: String, email: String, password: String): User
+                removeUser(id: Number): User
+
+    (Feature 2 - Adding User Favorites Use Case)
+        Types:
+            type Book
+                usersFavorite [User] 
+            type User
+                favoriteBooks - relational to [Books] where userFavorite contains User
+        Operations:
+            Queries:
+                getUsersFavoriteBooks(user: User)
+            Mutations:
+                addUserFavoriteBook(user: User, book: Book): User
+                removeUserFavoriteBook(user: User, book: Book): User
+BackEnd -
+    I prefer a NodeJS Service that runs an Apollo Server hosting a Prisma Local Database since we are containerizing the application. Then I can connect to the apollo servers GraphQL Interface and test my operations.
+
+Middleware - TBD
+
+Special Requirements - (Containerization)
+All components needs to be encapsulated in a Container as per the requirement Allow for the entire project to be stood up using a single Docker Compose command.
+    1) We need a Docker Componse YAML file
+
+To start lets determine and research the following:
+    
+    1) Design types Query and Mutation Operations for User and Books - Done in this document
+    2) Research NX and understand which part of the development process this is integrated
+    3) Start with the MVP Development:
+        Front-End:
+            a): Box out all components for the MVP, then feature 1, then feature 2
+            b): Create a Static Mock Prototype of the MVP Book Store
+            c): Add the Interactivity for the Static Mock Prototype with filler API data to begin writing tests
+            d) Write Test Cases for front-end components
+        Database:
+            a): Generate my Schema File
+            b): Generate my local database and generate my Resolvers
+            c): Write Test Cases for resolvers
+            d): Spin up the local instance and run an interacive test.
+        Backend:
+            a): Write Typescript NodeJs server to interface with database and front-end
+            b): Write Test Cases for interactions and errors.
+    4) Confirm Working and containerize the environment
+    5) Mock a deployment and commit a version 1.
+        
+Stretch Features:
+    Design the Backend Validation for user with password
+        This will need a JWT (JSON Web Token) for passing authenticated session details.
+        **Extra** Implement ECDH Algorithm for public key exchange and implement Encryptions in Transit and at Rest for sensitive data handling
+    Mock out the Components for the FrontEnd
+        There will be a feature for User Authentication and Users adding and managing Book Favorites.
+    
+Doing the mock and implementation in parts will ensure the primary goal is achieved in a reasonable time and showcase organization of integrating and pushing new features. Different stages of the projects state can then be shown to properly commmunicate time management and priority management capabilities.
+
+Development EcoSystem
+Environment:
+    IDE - Microsoft Visual Studio Code - Great for Safety Nets like Plugins for Linters and Code Formatters
+        Plugins: (as we work through the project requirements this list may grow in size)
+            ES7+ React/Redux/React-Native snippets (Intellisense - Safety Net)
+            Prettier - Code formatter  - (Safety Net)
+            YAML = v1.15.0 - (Intellisense - Safety Net) - Docker Compose 
+    Version Control System - Git - 
+    Nx workspace - to configure, maintain and especially integrate various tools and frameworks
+    Code Formatter: Prettier
+    TypeChecker: Typescript
+    JS Module System Standards: ECMA Script
+
+Initial Setup and Project Path:
+Since the Initial NX Setup creates a React Project it would be best to create the front-end and have placeholders for the data and api calls for now.
+
+Running through the tutorial we can add a store app and an inventory app then a library that can switch between the 2. This will be great for getting the Books Management online and the storefront online and the responsibilities separated so that the store displays the output of the inventory.
+**Note** this will probably work will for a users pool but we need to build the database to be relational so I need to do more research as to whether Inventory is the correct approach. **Note**
+After doing some research (https://www.reddit.com/r/node/comments/1as8wmk/can_we_use_one_db_in_two_or_more_different/?rdt=44870) I came to the conclusion to create a prisma library that is shared
