@@ -10,7 +10,9 @@
     "noPropertyAccessFromIndexSignature": true
   },
   "files": [],
-  "include": [],
+  "include": [
+    "prisma/schema.prisma"
+  ],
   "references": [
     {
       "path": "./tsconfig.lib.json"

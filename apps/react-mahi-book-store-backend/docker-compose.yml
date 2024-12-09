@@ -1,10 +1,10 @@
-version: "3.8"
+version: '3.8'
 services:
   postgres:
     image: postgres:latest
     container_name: bookstore_db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -16,7 +16,8 @@ services:
 
   backend:
     build:
-      context: ./apps/backend
+      context: ../..  # Build context set to the root of the monorepo
+      dockerfile: apps/react-mahi-book-store-backend/Dockerfile  # Path to Dockerfile
     depends_on:
       - postgres
     environment:
@@ -24,8 +25,17 @@ services:
     networks:
       - bookstore_network
     ports:
-      - "3000:3000"
-
+      - '3000:3000'
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '8080:80'
+    networks:
+      - bookstore_network
 volumes:
   pgdata:
 

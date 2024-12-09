@@ -135,3 +135,10 @@ TODO - create a prisma library that is shared between the Books Inventory and Us
 Now that the Prisma library is generated I need to spin up a backend that will connect to my postgres database.
 I am considering utilizing the nestjs framework as it supports typescript out of the box from reviews I have researched which I like the idea of.
 
+12/09/2024 @ 11:30pm
+After researching into NestJS it seems like I need to implement a couple phases.
+The first phase is with a coupled database so that I can integrate and test features quickly.
+The second phase would be to develop middleware funcitons that I can use to pre-process requests and the coressponding response objects when I want to add security
+The final phase if time permits would be to integrate a DatabaseDynamicModule so that I can support multiple databases in the future.
+
+Finalized the deployment configuration for the docker compose and docker file. Included visual admin interface for postgres so that we can add data easily.

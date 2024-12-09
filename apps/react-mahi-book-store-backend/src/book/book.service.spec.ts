@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookService } from './book.service';
-import { prismaOperations } from '@react-monorepo/prisma';
+import { prismaOperations } from '@prismaDist/index';
 
 jest.mock('@react-monorepo/prisma', () => ({
   prismaOperations: {

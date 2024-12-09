@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { prisma } from '@react-monorepo/prisma';
+import { prisma } from '@prismaDist/index';
+
 
 @Module({
   providers: [

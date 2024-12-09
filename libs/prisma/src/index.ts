@@ -1,2 +1,2 @@
-export * from './lib/prisma';
-export {prismaOperations} from './operations/prismaOperationsImpl';
+export { prisma } from './client';
+export { prismaOperations } from './operations/prismaOperationsImpl';

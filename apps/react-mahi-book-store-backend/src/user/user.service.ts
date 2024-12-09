@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { prismaOperations } from '@react-monorepo/prisma';
+import { prismaOperations } from '@prismaDist/index';
 
 @Injectable()
 export class UserService {

@@ -3,32 +3,31 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/react-mahi-book-store-backend/src",
   "projectType": "application",
-  "tags": [
-    "api"
-  ],
+  "tags": ["api"],
   "targets": {
+    "prisma-generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run prisma:generate",
+        "cwd": "libs/prisma"
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": [
-          "node-env=production"
-        ]
+        "args": ["node-env=production"]
       },
       "configurations": {
         "development": {
-          "args": [
-            "node-env=development"
-          ]
+          "args": ["node-env=development"]
         }
       }
     },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
         "buildTarget": "react-mahi-book-store-backend:build",
         "runBuildTargetDependencies": false
@@ -43,10 +42,8 @@
       }
     },
     "docker-build": {
-      "dependsOn": [
-        "build"
-      ],
-      "command": "docker build -f apps/react-mahi-book-store-backend/Dockerfile . -t react-mahi-book-store-backend"
+      "dependsOn": ["build"],
+      "command": "docker-compose -f docker-compose.yml up --build"
     }
   }
 }

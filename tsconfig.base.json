@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@react-monorepo/prisma": ["libs/prisma/src/index.ts"]
+      "@prismaDist/*": ["dist/libs/prisma/src/*"],
+      "@user/*": ["apps/react-mahi-book-store-backend/src/user/*"],
+      "@book/*": ["apps/react-mahi-book-store-backend/src/book/*"],
     }
   },
   "exclude": ["node_modules", "tmp"]
