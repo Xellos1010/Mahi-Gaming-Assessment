@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 
+// all routes are in this script for expediency
+
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

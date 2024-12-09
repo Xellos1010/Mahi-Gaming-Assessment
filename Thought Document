@@ -142,3 +142,21 @@ The second phase would be to develop middleware funcitons that I can use to pre-
 The final phase if time permits would be to integrate a DatabaseDynamicModule so that I can support multiple databases in the future.
 
 Finalized the deployment configuration for the docker compose and docker file. Included visual admin interface for postgres so that we can add data easily.
+
+12/06/24 @ 1:00pm
+I need to deploy a basic front-end with my docker-compose file to test the end to end service.
+I can start with mock data but since I have everything running in a basic sense I can test it for actual data.
+Tasks:
+Components Requires:
+browsing books
+searching for books by title or author
+viewing book details.
+
+Create the components for: 
+Book which will hold and display the information about the book with a show more button
+FilterableBooksDisplay which will hold the Book Components and allow you to filter the booksDisplayed array by the search terms in the SearchFilterableBooks component.
+SearchFilterableBooksInput which will allow you to Input your search query by either Author
+
+12/06/24 @ 5:30pm
+Considering the review I had with Michael I decided to implement UserInterface and BookInterface in prisma. that way I can import these interfaces along with query, mutation and expected returns to standardize the callign process.
+I implemented the interfaces in the mock unit tests and ensured passing before continuing

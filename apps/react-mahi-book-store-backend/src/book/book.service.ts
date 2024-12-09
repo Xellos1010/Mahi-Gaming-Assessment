@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
 
+// all routes are in this script for expediency
+
 @Injectable()
 export class BookService {
   async getAllBooks() {

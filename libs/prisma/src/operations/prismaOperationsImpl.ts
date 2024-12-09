@@ -1,8 +1,8 @@
-import { IPrismaOperations } from "../interfaces/prismaOperations.interface";
-import { prismaBookQueryOperations } from "./prismaBookQueryOperationsImpl";
-import { prismaUserQueryOperations } from "./prismaUserQueryOperationsImpl";
-import { prismaBookMutationOperations } from "./prismaBookMutationOperationsImpl";
-import { prismaUserMutationOperations } from "./prismaUserMutationOperationsImpl";
+import { IPrismaOperations } from "../interfaces/operations.interface";
+import { prismaBookQueryOperations } from "./book/bookQueryOperationsImpl";
+import { prismaUserQueryOperations } from "./user/userQueryOperationsImpl";
+import { prismaBookMutationOperations } from "./book/bookMutationOperationsImpl";
+import { prismaUserMutationOperations } from "./user/userMutationOperationsImpl";
 
 class PrismaOperationsImpl implements IPrismaOperations {
   bookQuery = prismaBookQueryOperations;
