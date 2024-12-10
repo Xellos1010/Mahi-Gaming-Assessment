@@ -1,10 +1,10 @@
-import { IPrismaOperations } from "../interfaces/operations.interface";
+import { IOperations } from "../interfaces/operations.interface";
 import { prismaBookQueryOperations } from "./book/bookQueryOperationsImpl";
 import { prismaUserQueryOperations } from "./user/userQueryOperationsImpl";
 import { prismaBookMutationOperations } from "./book/bookMutationOperationsImpl";
 import { prismaUserMutationOperations } from "./user/userMutationOperationsImpl";
 
-class PrismaOperationsImpl implements IPrismaOperations {
+class PrismaOperationsImpl implements IOperations {
   bookQuery = prismaBookQueryOperations;
   userQuery = prismaUserQueryOperations;
   bookMutation = prismaBookMutationOperations;

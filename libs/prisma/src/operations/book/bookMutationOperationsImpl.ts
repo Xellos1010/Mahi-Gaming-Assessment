@@ -1,11 +1,11 @@
 
 import { prisma } from "../../client";
-import { BookInterface } from "../../interfaces/book/book.interface";
+import type { Book } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
 import { IBookMutationOperations as IBookMutationOperations } from "../../interfaces/book/book.mutation.operations.interface";
-import { PrismaAddBookParams, PrismaRemoveBookByIdParams, PrismaUpdateBookParams, PrismaAddUserToFavoriteBookParams, PrismaRemoveBookFromFavoritesParams } from "../../interfaces/book/book.mutation.parameters.interface";
+import { AddBookParams, RemoveBookByIdParams, UpdateBookParams, AddUserToFavoriteBookParams, RemoveBookFromFavoritesParams } from "../../shared/types/book.types";
 
 class BookMutationOperationsImpl implements IBookMutationOperations {
-  async addBook(params: PrismaAddBookParams): Promise<BookInterface> {
+  async addBook(params: AddBookParams): Promise<Book> {
     return await prisma.book.create({ 
       data : {
         ...params
@@ -13,20 +13,20 @@ class BookMutationOperationsImpl implements IBookMutationOperations {
     });
   }
 
-  async removeBookById({ id: bookId }: PrismaRemoveBookByIdParams): Promise<BookInterface> {
+  async removeBookById({ id: bookId }: RemoveBookByIdParams): Promise<Book> {
     return await prisma.book.delete({ where: { id: bookId } });
   }
 
-  async updateBook({ id: bookId, data }: PrismaUpdateBookParams): Promise<BookInterface> {
-    return await prisma.book.update({ where: { id: bookId }, data });
+  async updateBook({ where, data }: UpdateBookParams): Promise<Book> {
+    return await prisma.book.update({ where, data });
   }
 
-  async addUserToFavoriteBook({ userId, bookId }: PrismaAddUserToFavoriteBookParams): Promise<BookInterface | null> {
+  async addUserToFavoriteBook({ userId, bookId }: AddUserToFavoriteBookParams): Promise<Book | null> {
     await prisma.userFavorites.create({ data: { userId, bookId } });
     return await prisma.book.findUnique({ where: { id: bookId } });
   }
 
-  async removeBookFromFavorites({ userId, bookId }: PrismaRemoveBookFromFavoritesParams): Promise<BookInterface | null> {
+  async removeBookFromFavorites({ userId, bookId }: RemoveBookFromFavoritesParams): Promise<Book | null> {
     await prisma.userFavorites.delete({ where: { userId_bookId: { userId, bookId } } });
     return await prisma.book.findUnique({ where: { id: bookId } });
   }

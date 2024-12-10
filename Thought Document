@@ -216,3 +216,22 @@ export class UserDto implements PrismaDto<Prisma.UserCreateInput> {
 }
 
 There is a utility that automatically generates NestJS DTO Objects: https://www.npmjs.com/package/@vegardit/prisma-generator-nestjs-dto
+
+12/10/2024 @ 5:26pm
+After some more research regarding where the architectural decision on where to house DTO's and any shared types for the sake of convience and ease of developing this application we will implement the PrismaClient directly into the backend for the following reasons:
+no need to shared types or DTOs across multiple applications.
+The backend is the sole consumer of the database layer, and I don't expect other apps to need these types or DTOs.
+
+To ensure everything updates with the PrismaClient I will implement interfaces in the prisma/lib and the backend that implement the Prisma.client types generated
+
+I am also consolidating all types to a main file to be able to more easily traverse the hierarchy
+
+@6:51
+Finalized Prisma lib implementing the types fromt he generated client and finalizing the unit tests. Now I can move onto DTO generation and writing unit tests for the backend nestJS, then I will run a manual test invoking the endpoint with various curl commands for expediency and finally working with the mock static prorotype first, then interaction then real-time data integration.
+First phase will be basic filterable books table with search field and static data.
+Then will be integration of tan-stack query so that I can cache data locally on re-get requests.
+Then it will be version 1 completed and I can move onto user login and registration.
+Once login and registration is all good then I can move onto favorites.
+Once favorites are implemented I can work on implementing encryption and decryption which include JWT tokens.
+Then styling and finishing touches.
+

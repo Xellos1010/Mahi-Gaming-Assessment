@@ -1,10 +1,9 @@
-import { BookInterface } from "../book/book.interface";
-import { UserInterface } from "./user.interface";
-import { PrismaGetUserByIdParams, PrismaGetUserByEmailParams, PrismaGetUserFavoriteBooksParams } from "./user.query.parameters.interface";
+import { GetUserByIdParams, GetUserByEmailParams, GetUserFavoriteBooksParams } from '../../shared/types/user.types';
+import type { Book, User } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
 
-export interface IPrismaUserQueryOperations {
-  getAllUsers(): Promise<UserInterface[]>;
-  getUserById(params: PrismaGetUserByIdParams): Promise<UserInterface | null>;
-  getUserByEmail(params: PrismaGetUserByEmailParams): Promise<UserInterface | null>;
-  getUserFavoriteBooks(params: PrismaGetUserFavoriteBooksParams): Promise<BookInterface[]>;
+export interface IUserQueryOperations {
+  getAllUsers(): Promise<User[]>;
+  getUserById(params: GetUserByIdParams): Promise<User | null>;
+  getUserByEmail(params: GetUserByEmailParams): Promise<User | null>;
+  getUserFavoriteBooks(params: GetUserFavoriteBooksParams): Promise<Book[]>;
 }

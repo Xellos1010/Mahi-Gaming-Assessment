@@ -1,7 +1,7 @@
-import { BookInterface } from "./book.interface";
-import { PrismaGetBookParams } from "./book.query.parameters.interface";
+import { GetBookParams } from "../../shared/types/book.types";
+import type { Book } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
 
-export interface IPrismaBookQueryOperations {
-  getAllBooks(): Promise<BookInterface[]>;
-  getBook(params: PrismaGetBookParams): Promise<BookInterface | null>;
+export interface IBookQueryOperations {
+  getAllBooks(): Promise<Book[]>;
+  getBook(params: GetBookParams): Promise<Book | null>;
 }

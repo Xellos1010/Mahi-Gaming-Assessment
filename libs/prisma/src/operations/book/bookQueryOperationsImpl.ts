@@ -1,14 +1,14 @@
 import { prisma } from "../../client";
-import { BookInterface } from "../../interfaces/book/book.interface";
-import { IPrismaBookQueryOperations } from "../../interfaces/book/book.query.operations.interface";
-import { PrismaGetBookParams } from "../../interfaces/book/book.query.parameters.interface";
+import type { Book } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
+import { IBookQueryOperations } from "../../interfaces/book/book.query.operations.interface";
+import { GetBookParams } from "../../shared/types/book.types";
 
-class PrismaBookQueryOperationsImpl implements IPrismaBookQueryOperations {
-  async getAllBooks(): Promise<BookInterface[]> {
+class PrismaBookQueryOperationsImpl implements IBookQueryOperations {
+  async getAllBooks(): Promise<Book[]> {
     return await prisma.book.findMany();
   }
 
-  async getBook({ id }: PrismaGetBookParams): Promise<BookInterface | null> {
+  async getBook({ id }: GetBookParams): Promise<Book | null> {
     return await prisma.book.findUnique({ where: { id } });
   }
 }

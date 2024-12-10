@@ -1,11 +1,11 @@
-import { IPrismaBookQueryOperations } from './book/book.query.operations.interface';
-import { IPrismaUserQueryOperations } from './user/user.query.operations.interface';
+import { IBookQueryOperations } from './book/book.query.operations.interface';
+import { IUserQueryOperations } from './user/user.query.operations.interface';
 import { IBookMutationOperations } from './book/book.mutation.operations.interface';
-import { IPrismaUserMutationOperations } from './user/user.mutation.operations.interface';
+import { IUserMutationOperations } from './user/user.mutation.operations.interface';
 
-export interface IPrismaOperations {
-  bookQuery: IPrismaBookQueryOperations;
-  userQuery: IPrismaUserQueryOperations;
+export interface IOperations {
+  bookQuery: IBookQueryOperations;
+  userQuery: IUserQueryOperations;
   bookMutation: IBookMutationOperations;
-  userMutation: IPrismaUserMutationOperations;
+  userMutation: IUserMutationOperations;
 }

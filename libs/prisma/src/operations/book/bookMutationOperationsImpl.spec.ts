@@ -3,8 +3,9 @@ import {
   } from './bookMutationOperationsImpl';
   import { prisma } from '../../client';
   import { vi, Mock } from 'vitest';
-  import { PrismaAddBookParams, PrismaRemoveBookByIdParams, PrismaUpdateBookParams} from "../../interfaces/book/book.mutation.parameters.interface";
-import { BookInterface } from '../../interfaces/book/book.interface';
+import type { Book } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
+import { AddBookParams, RemoveBookByIdParams, UpdateBookParams } from '../../shared/types/book.types';
+  
   // Mocking Prisma client
   vi.mock('../../client', () => ({
     prisma: {
@@ -16,17 +17,18 @@ import { BookInterface } from '../../interfaces/book/book.interface';
     },
   }));
 
-  const bookData : BookInterface= {
+  const bookData : Book= {
     id: 0,
-    title: 'New Book', 
-    description: 'A new book', 
+    title: 'New Book',
+    description: 'A new book',
     author: 'author',
+    imageId: null
   };
 
   describe('Prisma Book Mutations', () => {
     it('should add a new book', async () => {
       
-      const params : PrismaAddBookParams = bookData;
+      const params : AddBookParams = bookData;
       // Mocking the implementation for the create method
       (prisma.book.create as Mock).mockResolvedValue(bookData);
   
@@ -39,7 +41,7 @@ import { BookInterface } from '../../interfaces/book/book.interface';
       // Mocking the implementation for the delete method
       (prisma.book.delete as Mock).mockResolvedValue(bookData);
   
-      const params : PrismaRemoveBookByIdParams = bookData as PrismaRemoveBookByIdParams;
+      const params : RemoveBookByIdParams = bookData as RemoveBookByIdParams;
 
       const result = await prismaBookMutationOperations.removeBookById(params);
       expect(result).toEqual(bookData);
@@ -54,8 +56,8 @@ import { BookInterface } from '../../interfaces/book/book.interface';
       (prisma.book.update as Mock).mockResolvedValue(mockResponse);
       
 
-      const params : PrismaUpdateBookParams = {
-        id: bookData.id,
+      const params : UpdateBookParams = {
+        where: { id: bookData.id },
         data: {
           ...updateData
         }

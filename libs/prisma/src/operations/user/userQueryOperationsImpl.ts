@@ -1,23 +1,28 @@
-import { prisma } from "../../client";
-import { BookInterface } from "../../interfaces/book/book.interface";
-import { IPrismaUserQueryOperations } from "../../interfaces/user/user.query.operations.interface";
-import { PrismaGetUserByIdParams, PrismaGetUserByEmailParams, PrismaGetUserFavoriteBooksParams } from "../../interfaces/user/user.query.parameters.interface";
-import { UserInterface } from "../../interfaces/user/user.interface";
 
-class PrismaUserQueryOperationsImpl implements IPrismaUserQueryOperations {
-  async getAllUsers(): Promise<UserInterface[]> {
+import { prisma } from "../../client";
+import type { User, Book } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
+import { IUserQueryOperations } from "../../interfaces/user/user.query.operations.interface";
+import { GetUserByEmailParams, GetUserByIdParams, GetUserFavoriteBooksParams, GetUserParams } from "../../shared/types/user.types";
+
+class PrismaUserQueryOperationsImpl implements IUserQueryOperations {
+  async getAllUsers(): Promise<User[]> {
     return await prisma.user.findMany();
   }
 
-  async getUserById({ id }: PrismaGetUserByIdParams): Promise<UserInterface | null> {
+  async getUser({ where }: GetUserParams): Promise<User | null> {
+    return await prisma.user.findUnique({ where });
+  }
+
+  async getUserById({ id }: GetUserByIdParams): Promise<User | null> {
     return await prisma.user.findUnique({ where: { id } });
   }
 
-  async getUserByEmail({ email }: PrismaGetUserByEmailParams): Promise<UserInterface | null> {
+  // provided as part of future proofing effort.
+  async getUserByEmail({ email }: GetUserByEmailParams): Promise<User | null> {
     return await prisma.user.findUnique({ where: { email } });
   }
 
-  async getUserFavoriteBooks({ id }: PrismaGetUserFavoriteBooksParams): Promise<BookInterface[]> {
+  async getUserFavoriteBooks({ id }: GetUserFavoriteBooksParams): Promise<Book[]> {
     const user = await prisma.user.findUnique({
       where: { id },
       select: { favoriteBooks: true },

@@ -1,10 +1,10 @@
 import { prisma } from "../../client";
-import { UserInterface } from "../../interfaces/user/user.interface";
-import { IPrismaUserMutationOperations } from "../../interfaces/user/user.mutation.operations.interface";
-import { PrismaAddUserParams, PrismaRemoveUserByIdParams, PrismaSetUserPasswordParams, PrismaSetLastLoggedInParams, PrismaUpdateUserParams } from "../../interfaces/user/user.mutation.parameters.interface";
+import type { User } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
+import { IUserMutationOperations } from "../../interfaces/user/user.mutation.operations.interface";
+import { AddUserParams, UpdateUserParams, RemoveUserByIdParams, SetUserPasswordParams, SetLastLoggedInParams } from "../../shared/types/user.types";
 
-class PrismaUserMutationOperationsImpl implements IPrismaUserMutationOperations {
-  async addUser(params: PrismaAddUserParams): Promise<UserInterface> {
+class PrismaUserMutationOperationsImpl implements IUserMutationOperations {
+  async addUser(params: AddUserParams): Promise<User> {
     return await prisma.user.create({
       data : {
         ...params
@@ -12,21 +12,21 @@ class PrismaUserMutationOperationsImpl implements IPrismaUserMutationOperations 
     });
   }
 
-  async updateUser({ id: userId, data }: PrismaUpdateUserParams): Promise<UserInterface> {
-    return await prisma.book.update({ where: { id: userId }, data });
+  async updateUser({where, data}: UpdateUserParams): Promise<User> {
+    return await prisma.user.update({where,data});
   }
 
   //***We are not using the spread operator in the following functions as there are no changes in future functionality of these funcitons requiring additional points of data.*/
-  async removeUserById({ id }: PrismaRemoveUserByIdParams): Promise<UserInterface> {
+  async removeUserById({ id }: RemoveUserByIdParams): Promise<User> {
     return await prisma.user.delete({ where: { id } });
   }
 
-  async setUserPassword({ id, password }: PrismaSetUserPasswordParams): Promise<UserInterface> {
-    return await prisma.user.update({ where: { id }, data: { password } });
+  async setUserPassword({ where, password }: SetUserPasswordParams): Promise<User> {
+    return await prisma.user.update({ where, data: { password } });
   }
 
-  async setLastLoggedIn({ id, lastLoggedIn }: PrismaSetLastLoggedInParams): Promise<UserInterface> {
-    return await prisma.user.update({ where: { id }, data: { lastLoggedIn } });
+  async setLastLoggedIn({ where, lastLoggedIn }: SetLastLoggedInParams): Promise<User> {
+    return await prisma.user.update({ where, data: { lastLoggedIn } });
   }
   //****/
 }

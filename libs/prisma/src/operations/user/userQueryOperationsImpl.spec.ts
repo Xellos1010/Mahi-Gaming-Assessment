@@ -3,8 +3,8 @@ import {
 } from './userQueryOperationsImpl';
 import { prisma } from '../../client';
 import { vi, Mock } from 'vitest';
-import { PrismaGetUserByEmailParams, PrismaGetUserByIdParams, PrismaGetUserFavoriteBooksParams } from '../../interfaces/user/user.query.parameters.interface';
-import { UserInterface } from '../../interfaces/user/user.interface';
+import type { User } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
+import { GetUserByIdParams, GetUserByEmailParams, GetUserFavoriteBooksParams } from '../../shared/types/user.types';
 
 // Mocking Prisma client
 vi.mock('../../client', () => ({
@@ -16,26 +16,29 @@ vi.mock('../../client', () => ({
   },
 }));
 
-const mockUser : UserInterface = {
-  id: 1, 
-  name: 'John Doe', 
+const mockUser: User = {
+  id: 1,
+  name: 'John Doe',
   email: 'john.doe@example.com',
   password: '',
   lastLoggedIn: null,
-  favoriteBooks: [
-    {
-      id: 1, 
-      title: 'Favorite Book 1',
-      author: ''
-    },
-    {
-      id: 2, 
-      title: 'Favorite Book 2',
-      author: ''
-    },
-  ]
 };
-const mockUsers : UserInterface[]= [
+
+//Favorite Bokos will be worked out after the first version of the front-end is implemented
+const favoriteBooks = [
+  {
+    id: 1,
+    title: 'Favorite Book 1',
+    author: ''
+  },
+  {
+    id: 2,
+    title: 'Favorite Book 2',
+    author: ''
+  },
+];
+
+const mockUsers: User[] = [
   {
     ...mockUser
   },
@@ -62,7 +65,7 @@ describe('Prisma User Queries', () => {
     // Mocking the implementation for the findUnique method
     (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
 
-    const getUserFavoriteBooksParams: PrismaGetUserByIdParams = { id }
+    const getUserFavoriteBooksParams: GetUserByIdParams = { id }
     const result = await prismaUserQueryOperations.getUserById(getUserFavoriteBooksParams);
     expect(result).toEqual(mockUser);
     expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id } });
@@ -71,20 +74,23 @@ describe('Prisma User Queries', () => {
   it('should get a user by email', async () => {
     // Mocking the implementation for the findUnique method
     (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
-    const params: PrismaGetUserByEmailParams = { 
+    const params: GetUserByEmailParams = {
       ...mockUser
-     } as PrismaGetUserByEmailParams
+    } as GetUserByEmailParams
     const result = await prismaUserQueryOperations.getUserByEmail(params);
     expect(result).toEqual(mockUser);
-    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email : mockUser.email } });
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { email: mockUser.email } });
   });
 
   it('should get a user\'s favorite books', async () => {
     // Mocking the implementation for the findUnique method
-    (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
-    const getUserFavoriteBooksParams: PrismaGetUserFavoriteBooksParams = mockUser as PrismaGetUserFavoriteBooksParams
+    (prisma.user.findUnique as Mock).mockResolvedValue({
+      mockUser,
+      favoriteBooks: favoriteBooks, // Add favoriteBooks here
+    });
+    const getUserFavoriteBooksParams: GetUserFavoriteBooksParams = mockUser as GetUserFavoriteBooksParams
     const result = await prismaUserQueryOperations.getUserFavoriteBooks(getUserFavoriteBooksParams);
-    expect(result).toEqual(mockUser.favoriteBooks);
+    expect(result).toEqual(favoriteBooks);
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
       where: { id: mockUser.id },
       select: { favoriteBooks: true },

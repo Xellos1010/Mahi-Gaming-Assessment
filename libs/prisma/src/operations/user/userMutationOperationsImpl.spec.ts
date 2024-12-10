@@ -3,8 +3,8 @@ import {
 } from './userMutationOperationsImpl';
 import { prisma } from '../../client';
 import { vi, Mock } from 'vitest';
-import { PrismaAddUserParams, PrismaRemoveUserByIdParams, PrismaSetLastLoggedInParams, PrismaSetUserPasswordParams } from '../../interfaces/user/user.mutation.parameters.interface';
-import { UserInterface } from '../../interfaces/user/user.interface';
+import type { User } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
+import { AddUserParams, RemoveUserByIdParams, SetUserPasswordParams, SetLastLoggedInParams } from '../../shared/types/user.types';
 
 // Mocking Prisma client
 vi.mock('../../client', () => ({
@@ -17,7 +17,7 @@ vi.mock('../../client', () => ({
   },
 }));
 
-const userData: UserInterface = {
+const userData: User = {
   id: 0,
   name: 'John Doe',
   email: 'john.doe@example.com',
@@ -32,9 +32,9 @@ describe('Prisma User Mutations', () => {
     // Mocking the implementation for the create method
     (prisma.user.create as Mock).mockResolvedValue(userData);
 
-    const params: PrismaAddUserParams = {
+    const params: AddUserParams = {
       ...userData
-    } as PrismaAddUserParams;
+    } as AddUserParams;
 
     const result = await prismaUserMutationOperations.addUser(params);
     expect(result).toEqual(userData);
@@ -47,7 +47,7 @@ describe('Prisma User Mutations', () => {
     // Mocking the implementation for the delete method
     (prisma.user.delete as Mock).mockResolvedValue(mockResponse);
 
-    const removeUserByIdParams: PrismaRemoveUserByIdParams = { id }
+    const removeUserByIdParams: RemoveUserByIdParams = { id }
     const result = await prismaUserMutationOperations.removeUserById(removeUserByIdParams);
     expect(result).toEqual(mockResponse);
     expect(prisma.user.delete).toHaveBeenCalledWith({ where: { id } });
@@ -61,9 +61,10 @@ describe('Prisma User Mutations', () => {
     // Mocking the implementation for the update method
     (prisma.user.update as Mock).mockResolvedValue(mockResponse);
 
-    const params: PrismaSetUserPasswordParams = {
-      ...mockResponse
-    } as PrismaSetUserPasswordParams;
+    const params: SetUserPasswordParams = {
+      where: { id },
+      password: newPassword
+    };
 
     const result = await prismaUserMutationOperations.setUserPassword(params);
     expect(result).toEqual(mockResponse);
@@ -78,9 +79,10 @@ describe('Prisma User Mutations', () => {
     // Mocking the implementation for the update method
     (prisma.user.update as Mock).mockResolvedValue(mockResponse);
 
-    const params: PrismaSetLastLoggedInParams = {
-      ...mockResponse
-    } as PrismaSetLastLoggedInParams;
+    const params: SetLastLoggedInParams = {
+      where: { id },
+      lastLoggedIn
+    };
     
     const result = await prismaUserMutationOperations.setLastLoggedIn(params);
     expect(result).toEqual(mockResponse);
