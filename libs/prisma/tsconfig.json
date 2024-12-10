@@ -11,7 +11,8 @@
   },
   "files": [],
   "include": [
-    "prisma/schema.prisma"
+    "prisma/schema.prisma",
+    "src/shared/*"
   ],
   "references": [
     {

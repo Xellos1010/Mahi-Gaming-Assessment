@@ -1,10 +1,5 @@
-import { BookInterface } from "../book/book.interface";
+import { UpdateUserBase, UserBase } from "../../shared/types/user/base.types";
 
-export interface UserInterface {
-    id: number;
-    name: string;
-    email: string;
-    password: string;
-    lastLoggedIn: Date | null;
-    favoriteBooks?: BookInterface[];
-}
+export interface UserInterface extends UserBase {}
+
+export interface UpdateBookInterface extends UpdateUserBase {}

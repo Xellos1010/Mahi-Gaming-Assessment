@@ -1,10 +1,10 @@
 import { BookInterface } from "./book.interface";
-import { AddBookParams, RemoveBookByIdParams, UpdateBookParams, AddUserToFavoriteBookParams, RemoveBookFromFavoritesParams } from "../../interfaces/book/book.mutation.parameters.interface";
+import { PrismaAddBookParams, PrismaRemoveBookByIdParams, PrismaUpdateBookParams, PrismaAddUserToFavoriteBookParams, PrismaRemoveBookFromFavoritesParams } from "../../interfaces/book/book.mutation.parameters.interface";
 
 export interface IBookMutationOperations {
-  addBook(params : AddBookParams): Promise<BookInterface>;
-  removeBookById(params : RemoveBookByIdParams): Promise<BookInterface>;
-  updateBook( params : UpdateBookParams): Promise<BookInterface>;
-  addUserToFavoriteBook(params : AddUserToFavoriteBookParams): Promise<BookInterface | null>;
-  removeBookFromFavorites(params : RemoveBookFromFavoritesParams): Promise<BookInterface | null>;
+  addBook(params : PrismaAddBookParams): Promise<BookInterface>;
+  removeBookById(params : PrismaRemoveBookByIdParams): Promise<BookInterface>;
+  updateBook( params : PrismaUpdateBookParams): Promise<BookInterface>;
+  addUserToFavoriteBook(params : PrismaAddUserToFavoriteBookParams): Promise<BookInterface | null>;
+  removeBookFromFavorites(params : PrismaRemoveBookFromFavoritesParams): Promise<BookInterface | null>;
 }

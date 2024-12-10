@@ -3,7 +3,7 @@ import {
 } from './bookQueryOperationsImpl';
 import { prisma } from '../../client';
 import { vi, Mock } from 'vitest';
-import { GetBookParams } from '../../interfaces/book/book.query.parameters.interface';
+import { PrismaGetBookParams } from '../../interfaces/book/book.query.parameters.interface';
 import { BookInterface } from '../../interfaces/book/book.interface';
 
 // Mocking Prisma client
@@ -47,7 +47,7 @@ describe('Prisma Book Queries', () => {
 
   it('should get a specific book by ID', async () => {
 
-    const params: GetBookParams = mockBook as GetBookParams;
+    const params: PrismaGetBookParams = mockBook as PrismaGetBookParams;
     // Mocking the implementation for the findUnique method
     (prisma.book.findUnique as Mock).mockResolvedValue(mockBook);
 

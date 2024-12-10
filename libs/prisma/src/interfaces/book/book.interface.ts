@@ -1,14 +1,5 @@
-export interface BookInterface {
-    id: number;
-    title: string;
-    author: string;
-    description?: string | null;
-    imageId?: string | null;
-}
+import { BookBase, UpdateBookBase } from "../../shared/types/book/base.types";
 
-export interface UpdateBookInterface {
-    title?: string;
-    author?: string;
-    description?: string | null;
-    imageId?: string | null;
-}
+export interface BookInterface extends BookBase {}
+
+export interface UpdateBookInterface extends UpdateBookBase {}

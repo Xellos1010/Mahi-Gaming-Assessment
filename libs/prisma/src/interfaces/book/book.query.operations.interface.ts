@@ -1,7 +1,7 @@
 import { BookInterface } from "./book.interface";
-import { GetBookParams } from "./book.query.parameters.interface";
+import { PrismaGetBookParams } from "./book.query.parameters.interface";
 
 export interface IPrismaBookQueryOperations {
   getAllBooks(): Promise<BookInterface[]>;
-  getBook(params: GetBookParams): Promise<BookInterface | null>;
+  getBook(params: PrismaGetBookParams): Promise<BookInterface | null>;
 }

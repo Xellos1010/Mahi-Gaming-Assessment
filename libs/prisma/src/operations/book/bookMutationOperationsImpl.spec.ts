@@ -3,7 +3,7 @@ import {
   } from './bookMutationOperationsImpl';
   import { prisma } from '../../client';
   import { vi, Mock } from 'vitest';
-  import { AddBookParams, RemoveBookByIdParams, UpdateBookParams} from "../../interfaces/book/book.mutation.parameters.interface";
+  import { PrismaAddBookParams, PrismaRemoveBookByIdParams, PrismaUpdateBookParams} from "../../interfaces/book/book.mutation.parameters.interface";
 import { BookInterface } from '../../interfaces/book/book.interface';
   // Mocking Prisma client
   vi.mock('../../client', () => ({
@@ -26,7 +26,7 @@ import { BookInterface } from '../../interfaces/book/book.interface';
   describe('Prisma Book Mutations', () => {
     it('should add a new book', async () => {
       
-      const params : AddBookParams = bookData;
+      const params : PrismaAddBookParams = bookData;
       // Mocking the implementation for the create method
       (prisma.book.create as Mock).mockResolvedValue(bookData);
   
@@ -39,7 +39,7 @@ import { BookInterface } from '../../interfaces/book/book.interface';
       // Mocking the implementation for the delete method
       (prisma.book.delete as Mock).mockResolvedValue(bookData);
   
-      const params : RemoveBookByIdParams = bookData as RemoveBookByIdParams;
+      const params : PrismaRemoveBookByIdParams = bookData as PrismaRemoveBookByIdParams;
 
       const result = await prismaBookMutationOperations.removeBookById(params);
       expect(result).toEqual(bookData);
@@ -54,7 +54,7 @@ import { BookInterface } from '../../interfaces/book/book.interface';
       (prisma.book.update as Mock).mockResolvedValue(mockResponse);
       
 
-      const params : UpdateBookParams = {
+      const params : PrismaUpdateBookParams = {
         id: bookData.id,
         data: {
           ...updateData

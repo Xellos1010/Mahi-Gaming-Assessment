@@ -160,3 +160,59 @@ SearchFilterableBooksInput which will allow you to Input your search query by ei
 12/06/24 @ 5:30pm
 Considering the review I had with Michael I decided to implement UserInterface and BookInterface in prisma. that way I can import these interfaces along with query, mutation and expected returns to standardize the callign process.
 I implemented the interfaces in the mock unit tests and ensured passing before continuing
+
+@9:00 pm
+After some research for how to ensure DTO's are compliant with future proofing standards but also separation of concerns I have decided to utilize types that the interfaces and DTO objects will extend separatly. This will ensure that the interface that drives the Prisma Lib and the DTOs that drive NestJS logic are decoupled.
+
+@3:00am
+more research has revealed that when you use prisma generate command it generates internal types such as:
+import { Prisma } from '@prisma/client';
+Prisma.UserCreateInput
+
+which can be utilized to create clear separation of concerns and minimal points of contact for code updates.
+
+// Prisma's generated input type for user creation
+export class CreateUserDto implements Prisma.UserCreateInput {
+  email: string;
+  name?: string | null;
+  password: string;
+}
+
+I can also utilize Pick to select specific fields if I want to create static endpoints:
+// Custom DTO for updating the user's email only
+export class UpdateUserEmailDto implements Pick<Prisma.UserUpdateInput, 'email'> {
+  email: string;
+}
+
+There are advance query extraction features that can be implemented:
+
+async function updateUser(params: Prisma.UserUpdateInput, where: Prisma.UserWhereUniqueInput) {
+  return prisma.user.update({
+    data: params,
+    where,
+  });
+}
+
+There is also a way to create a reusable DTO Utility map DTOs' dyanmically in the following example:
+5. Reusable Mapped Types for Consistency
+To maintain consistency between DTOs and Prisma types, you can map types dynamically.
+
+Example: Reusable DTO Utility
+
+import { Prisma } from '@prisma/client';
+import { Type } from '@nestjs/common';
+
+// Utility to map Prisma types to DTOs
+type PrismaDto<T> = T extends Prisma.UserCreateInput
+  ? Partial<T>
+  : T extends Prisma.UserUpdateInput
+  ? Required<T>
+  : never;
+
+// Example usage in DTOs
+export class UserDto implements PrismaDto<Prisma.UserCreateInput> {
+  email: string;
+  name?: string | null;
+}
+
+There is a utility that automatically generates NestJS DTO Objects: https://www.npmjs.com/package/@vegardit/prisma-generator-nestjs-dto

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
+import { AddUserParams, RemoveUserByIdParams, SetLastLoggedInParams, SetUserPasswordParams } from '@prismaDist/interfaces/user/user.mutation.parameters.interface';
+import { GetUserByIdParams, GetUserFavoriteBooksParams } from '@prismaDist/interfaces/user/user.query.parameters.interface';
 
 @Injectable()
 export class UserService {
@@ -7,27 +9,27 @@ export class UserService {
     return prismaOperations.userQuery.getAllUsers();
   }
 
-  async getUserById(id: number) {
-    return prismaOperations.userQuery.getUserById(id);
+  async getUserById(params: GetUserByIdParams) {
+    return prismaOperations.userQuery.getUserById(params);
   }
 
-  async addUser(data: { name: string; email: string; password: string }) {
-    return prismaOperations.userMutation.addUser(data);
+  async addUser(params: AddUserParams) {
+    return prismaOperations.userMutation.addUser(params);
   }
 
-  async removeUserById(id: number) {
-    return prismaOperations.userMutation.removeUserById(id);
+  async removeUserById(params: RemoveUserByIdParams) {
+    return prismaOperations.userMutation.removeUserById(params);
   }
 
-  async setUserPassword(id: number, password: string) {
-    return prismaOperations.userMutation.setUserPassword(id, password);
+  async setUserPassword(params: SetUserPasswordParams) {
+    return prismaOperations.userMutation.setUserPassword(params);
   }
 
-  async setLastLoggedIn(id: number, date: Date) {
-    return prismaOperations.userMutation.setLastLoggedIn(id, date);
+  async setLastLoggedIn(params: SetLastLoggedInParams) {
+    return prismaOperations.userMutation.setLastLoggedIn(params);
   }
 
-  async getUserFavoriteBooks(id: number) {
-    return prismaOperations.userQuery.getUserFavoriteBooks(id);
+  async getUserFavoriteBooks(params: GetUserFavoriteBooksParams) {
+    return prismaOperations.userQuery.getUserFavoriteBooks(params);
   }
 }

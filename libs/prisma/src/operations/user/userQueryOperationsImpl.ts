@@ -1,7 +1,7 @@
 import { prisma } from "../../client";
 import { BookInterface } from "../../interfaces/book/book.interface";
 import { IPrismaUserQueryOperations } from "../../interfaces/user/user.query.operations.interface";
-import { GetUserByIdParams, GetUserByEmailParams, GetUserFavoriteBooksParams } from "../../interfaces/user/user.query.parameters.interface";
+import { PrismaGetUserByIdParams, PrismaGetUserByEmailParams, PrismaGetUserFavoriteBooksParams } from "../../interfaces/user/user.query.parameters.interface";
 import { UserInterface } from "../../interfaces/user/user.interface";
 
 class PrismaUserQueryOperationsImpl implements IPrismaUserQueryOperations {
@@ -9,15 +9,15 @@ class PrismaUserQueryOperationsImpl implements IPrismaUserQueryOperations {
     return await prisma.user.findMany();
   }
 
-  async getUserById({ id }: GetUserByIdParams): Promise<UserInterface | null> {
+  async getUserById({ id }: PrismaGetUserByIdParams): Promise<UserInterface | null> {
     return await prisma.user.findUnique({ where: { id } });
   }
 
-  async getUserByEmail({ email }: GetUserByEmailParams): Promise<UserInterface | null> {
+  async getUserByEmail({ email }: PrismaGetUserByEmailParams): Promise<UserInterface | null> {
     return await prisma.user.findUnique({ where: { email } });
   }
 
-  async getUserFavoriteBooks({ id }: GetUserFavoriteBooksParams): Promise<BookInterface[]> {
+  async getUserFavoriteBooks({ id }: PrismaGetUserFavoriteBooksParams): Promise<BookInterface[]> {
     const user = await prisma.user.findUnique({
       where: { id },
       select: { favoriteBooks: true },

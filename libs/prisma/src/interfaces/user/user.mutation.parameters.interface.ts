@@ -1,19 +1,7 @@
-export interface AddUserParams {
-    name: string;
-    email: string;
-    password: string;
-}
+import { AddUserParams, RemoveUserByIdParams, SetLastLoggedInParams, SetUserPasswordParams, UpdateUserParams } from "../../shared/types/user/mutation.types";
 
-export interface RemoveUserByIdParams {
-    id: number;
-}
-
-export interface SetUserPasswordParams {
-    id: number;
-    password: string;
-}
-
-export interface SetLastLoggedInParams {
-    id: number;
-    lastLoggedIn: Date;
-}
+export interface PrismaAddUserParams extends AddUserParams {}
+export interface PrismaUpdateUserParams extends UpdateUserParams { }
+export interface PrismaRemoveUserByIdParams extends RemoveUserByIdParams {}
+export interface PrismaSetUserPasswordParams extends SetUserPasswordParams {}
+export interface PrismaSetLastLoggedInParams extends SetLastLoggedInParams {}
