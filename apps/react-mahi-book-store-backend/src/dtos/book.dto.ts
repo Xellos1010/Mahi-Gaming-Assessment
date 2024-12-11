@@ -1,10 +1,8 @@
-
-import { Prisma } from '@prisma/client';
 import { PrismaDto } from './prisma-dto.utility';
+import { Prisma } from '@prisma/client';
 
-export class BookDto implements PrismaDto<Prisma.BookCreateInput> {
-  title: string;
-  author: string;
-  description?: string | null;
-  imageId?: string | null;
-}
+// DTO for Book creation
+export type BookCreateDto = PrismaDto<Prisma.BookCreateInput>;
+
+// DTO for Book update
+export type BookUpdateDto = PrismaDto<Prisma.BookUpdateInput>;

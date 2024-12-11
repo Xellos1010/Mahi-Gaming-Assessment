@@ -1,15 +1,12 @@
-import { Prisma } from "@prisma/client";
-import { PrismaDto } from "./prisma-dto.utility";
+import { PrismaDto, PickFields } from './prisma-dto.utility';
+import { Prisma } from '@prisma/client';
 
-export class UserDto implements PrismaDto<Prisma.UserCreateInput> {
-    name: string;
-    email: string;
-    password: string;
-    lastLoggedIn?: Date | null;
-}
+// DTO for User creation
+export type UserCreateDto = PrismaDto<Prisma.UserCreateInput>;
 
-//This is to be worked on as we need to research and evaluate if UncheckCreateInput will satisfy all use-cases
-export class UserFavoritesDto implements PrismaDto<Prisma.UserFavoritesUncheckedCreateInput> {
-    userId: number;
-    bookId: number;
-}
+// DTO for User update
+export type UserUpdateDto = PrismaDto<Prisma.UserUpdateInput>;
+
+// Specific fields for partial updates
+export type UpdateUserPasswordDto = PickFields<Prisma.UserUpdateInput, 'password'>;
+export type UpdateUserLastLoggedInDto = PickFields<Prisma.UserUpdateInput, 'lastLoggedIn'>;

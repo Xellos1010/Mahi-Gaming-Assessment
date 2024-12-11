@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { UserService } from './user.service';
+import { UserCreateDto, UpdateUserPasswordDto, UpdateUserLastLoggedInDto } from '../dtos/user.dto';
 
 // all routes are in this script for expediency
 
@@ -13,32 +14,32 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: number) {
+  getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserById(id);
   }
 
   @Post()
-  addUser(@Body() data: { name: string; email: string; password: string }) {
+  addUser(@Body() data: UserCreateDto) {
     return this.userService.addUser(data);
   }
 
   @Delete(':id')
-  removeUser(@Param('id') id: number) {
+  removeUserById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.removeUserById(id);
   }
 
   @Patch(':id/password')
-  setUserPassword(@Param('id') id: number, @Body() data: { password: string }) {
-    return this.userService.setUserPassword(id, data.password);
+  setUserPassword(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserPasswordDto) {
+    return this.userService.setUserPassword(id, data);
   }
 
   @Patch(':id/lastLoggedIn')
-  setLastLoggedIn(@Param('id') id: number, @Body() data: { lastLoggedIn: Date }) {
-    return this.userService.setLastLoggedIn(id, data.lastLoggedIn);
+  setLastLoggedIn(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserLastLoggedInDto) {
+    return this.userService.setLastLoggedIn(id, data);
   }
 
   @Get(':id/favorites')
-  getUserFavoriteBooks(@Param('id') id: number) {
+  getUserFavoriteBooks(@Param('id', ParseIntPipe) id: number) {
     return this.userService.getUserFavoriteBooks(id);
   }
 }

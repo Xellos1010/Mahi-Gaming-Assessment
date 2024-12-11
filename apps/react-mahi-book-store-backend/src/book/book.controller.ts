@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { BookService } from './book.service';
-import { AddBookParams, AddUserToFavoriteBookParams, RemoveBookByIdParams, RemoveBookFromFavoritesParams, UpdateBookParams } from '@prismaDist/interfaces/book/book.mutation.parameters.interface';
-import { GetBookParamsDto } from './dtos/query.dtos';
+import { BookCreateDto, BookUpdateDto } from '../dtos/book.dto';
 // We are integrating DTO's for validation of incoming data as per NestJS Best Practices:
 @Controller('books')
 export class BookController {
@@ -13,31 +12,32 @@ export class BookController {
   }
 
   @Get(':id')
-  getBook(@Param() params: GetBookParamsDto) {
-    return this.bookService.getBook(params);
+  getBook(@Param('id', ParseIntPipe) id: number) {
+    return this.bookService.getBook(id);
   }
+
   @Post()
-  addBook(@Body() data: { name: string; description?: string; imageId?: string }) {
+  addBook(@Body() data: BookCreateDto) {
     return this.bookService.addBook(data);
   }
 
   @Patch(':id')
-  updateBook(@Param('id') id: number, @Body() data: { name?: string; description?: string; imageId?: string }) {
+  updateBook(@Param('id', ParseIntPipe) id: number, @Body() data: BookUpdateDto) {
     return this.bookService.updateBook(id, data);
   }
 
   @Delete(':id')
-  removeBook(@Param('id') id: number) {
+  removeBookById(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.removeBookById(id);
   }
 
   @Post(':id/favorites')
-  addUserToFavoriteBook(@Body() data: { userId: number }, @Param('id') bookId: number) {
-    return this.bookService.addUserToFavoriteBook(data.userId, bookId);
+  addUserToFavoriteBook(@Param('id', ParseIntPipe) bookId: number, @Body('userId') userId: number) {
+    return this.bookService.addUserToFavoriteBook(bookId, userId);
   }
 
   @Delete(':id/favorites')
-  removeBookFromFavorites(@Body() data: { userId: number }, @Param('id') bookId: number) {
-    return this.bookService.removeBookFromFavorites(data.userId, bookId);
+  removeBookFromFavorites(@Param('id', ParseIntPipe) bookId: number, @Body('userId') userId: number) {
+    return this.bookService.removeBookFromFavorites(bookId, userId);
   }
 }

@@ -8,14 +8,16 @@ describe('BookController', () => {
     const mockBooks = [
         {
             id: 1,
-            name: 'Book 1',
+            title: 'Book 1',
+            author: 'Author 1',
             description: 'Test description',
             imageId: 'img1'
         },
     ];
     const mockBook = {
         id: 1,
-        name: 'Book 1',
+        title: 'Book 1',
+        author: 'Author 1',
         description: 'Test description',
         imageId: 'img1',
     };
@@ -62,63 +64,56 @@ describe('BookController', () => {
 
             jest.spyOn(service, 'getBook').mockResolvedValue(mockBook);
 
-            expect(await controller.getBook(1)).toEqual(mockBook);
-            expect(service.getBook).toHaveBeenCalledWith(1);
+            expect(await controller.getBook(mockBook.id)).toEqual(mockBook);
+            expect(service.getBook).toHaveBeenCalledWith(mockBook.id);
         });
     });
 
     describe('addBook', () => {
         it('should add a new book', async () => {
-            const bookData = { name: 'New Book', description: 'Description', imageId: 'img1'};
-            const mockBook = { id: 2, ...bookData };
             jest.spyOn(service, 'addBook').mockResolvedValue(mockBook);
-
-            expect(await controller.addBook(bookData)).toEqual(mockBook);
-            expect(service.addBook).toHaveBeenCalledWith(bookData);
+            expect(await controller.addBook(mockBook)).toEqual(mockBook);
+            expect(service.addBook).toHaveBeenCalledWith(mockBook);
         });
     });
 
     describe('updateBook', () => {
         it('should update a book by ID', async () => {
-            const bookData = { name: 'Updated Name' };
-            const mockBook = { id: 1, name: 'Updated Name', description: 'Description', imageId: 'img1' };
+            const mockBookResolve = { ...mockBook, title: 'Updated Name' };
             jest.spyOn(service, 'updateBook').mockResolvedValue(mockBook);
 
-            expect(await controller.updateBook(1, bookData)).toEqual(mockBook);
-            expect(service.updateBook).toHaveBeenCalledWith(1, bookData);
+            expect(await controller.updateBook(mockBook.id, mockBookResolve)).toEqual(mockBook);
+            expect(service.updateBook).toHaveBeenCalledWith(mockBook.id, mockBookResolve);
         });
     });
 
     describe('removeBook', () => {
         it('should delete a book by ID', async () => {
-            jest.spyOn(service, 'removeBookById').mockResolvedValue(undefined);
-
-            expect(await controller.removeBook(1)).toBeUndefined();
-            expect(service.removeBookById).toHaveBeenCalledWith(1);
+            jest.spyOn(service, 'removeBookById').mockResolvedValue(mockBook);
+            expect(await controller.removeBookById(mockBook.id)).toEqual(mockBook);
+            expect(service.removeBookById).toHaveBeenCalledWith(mockBook.id);
         });
     });
 
     describe('addUserToFavoriteBook', () => {
         it('should add a user to the favorites of a book', async () => {
-            const userId = 1;
-            const bookId = 2;
-            const mockResult = { userId, bookId };
-            jest.spyOn(service, 'addUserToFavoriteBook').mockResolvedValue(mockResult);
+            const bookId = 1;
+            const userId = 2;
+            jest.spyOn(service, 'addUserToFavoriteBook').mockResolvedValue(mockBook);
 
-            expect(await controller.addUserToFavoriteBook({ userId }, bookId)).toEqual(mockResult);
-            expect(service.addUserToFavoriteBook).toHaveBeenCalledWith(userId, bookId);
+            expect(await controller.addUserToFavoriteBook(bookId, userId)).toEqual(mockBook);
+            expect(service.addUserToFavoriteBook).toHaveBeenCalledWith(bookId, userId);
         });
     });
 
     describe('removeBookFromFavorites', () => {
         it('should remove a user from the favorites of a book', async () => {
-            const userId = 1;
-            const bookId = 2;
-            const mockResult = { userId, bookId };
-            jest.spyOn(service, 'removeBookFromFavorites').mockResolvedValue(mockResult);
+            const bookId = 1;
+            const userId = 2;
+            jest.spyOn(service, 'removeBookFromFavorites').mockResolvedValue(mockBook);
 
-            expect(await controller.removeBookFromFavorites({ userId }, bookId)).toEqual(mockResult);
-            expect(service.removeBookFromFavorites).toHaveBeenCalledWith(userId, bookId);
+            expect(await controller.removeBookFromFavorites(bookId, userId)).toEqual(mockBook);
+            expect(service.removeBookFromFavorites).toHaveBeenCalledWith(bookId, userId);
         });
     });
 });

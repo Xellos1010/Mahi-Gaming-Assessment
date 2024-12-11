@@ -24,16 +24,15 @@ describe('UserController', () => {
         },
     ];
 
-    const mockUserWithBooks = {
-        favoriteBooks: [
-            {
-                id: 1,
-                name: 'The Great Gatsby',
-                description: 'A classic novel.',
-                imageId: 'image123',
-            },
-        ],
-    };
+    const mockUserWithBooks = [
+        {
+            id: 1,
+            title: 'The Great Gatsby',
+            author: "Author 1",
+            description: 'A classic novel.',
+            imageId: 'image123',
+        },
+    ];
 
 
     beforeEach(async () => {
@@ -78,9 +77,9 @@ describe('UserController', () => {
         it('should call UserService.getUserById with correct id', async () => {
             jest.spyOn(userService, 'getUserById').mockResolvedValue(mockUser);
 
-            const result = await userController.getUserById(1);
+            const result = await userController.getUserById(mockUser.id);
 
-            expect(userService.getUserById).toHaveBeenCalledWith(1);
+            expect(userService.getUserById).toHaveBeenCalledWith(mockUser.id);
             expect(result).toEqual(mockUser);
         });
     });
@@ -102,35 +101,40 @@ describe('UserController', () => {
             const mockResponse = mockUser;
             jest.spyOn(userService, 'removeUserById').mockResolvedValue(mockUser);
 
-            const result = await userController.removeUser(1);
+            const result = await userController.removeUserById(mockUser.id);
 
-            expect(userService.removeUserById).toHaveBeenCalledWith(1);
+            expect(userService.removeUserById).toHaveBeenCalledWith(mockUser.id);
             expect(result).toEqual(mockResponse);
         });
     });
 
     describe('setUserPassword', () => {
         it('should call UserService.setUserPassword with correct id and password', async () => {
-            const passwordData = { password: 'newpassword', ...mockUser };
-            const mockResponse = passwordData;
-            jest.spyOn(userService, 'setUserPassword').mockResolvedValue(mockResponse);
+            const userWithPasswordData = { password: 'newpassword', ...mockUser };
+            jest.spyOn(userService, 'setUserPassword').mockResolvedValue(userWithPasswordData);
 
-            const result = await userController.setUserPassword(1, passwordData);
+            const result = await userController.setUserPassword(mockUser.id, { password: userWithPasswordData.password });
 
-            expect(userService.setUserPassword).toHaveBeenCalledWith(1, passwordData.password);
-            expect(result).toEqual(mockResponse);
+            expect(userService.setUserPassword).toHaveBeenCalledWith(
+                mockUser.id, // This is the 'where' condition
+                { password: userWithPasswordData.password } // This is the password
+            );
+            expect(result).toEqual(userWithPasswordData);
         });
     });
 
     describe('setLastLoggedIn', () => {
         it('should call UserService.setLastLoggedIn with correct id and date', async () => {
-            const dateData = { lastLoggedIn: new Date() }; // Ensure it matches the expected shape
-            const mockResponse = { ...mockUser, lastLoggedIn: dateData.lastLoggedIn }; // Updated mock response
+            const lastLoggedIn: Date = new Date(); // Ensure it matches the expected shape
+            const mockResponse = { ...mockUser, lastLoggedIn }; // Updated mock response
             jest.spyOn(userService, 'setLastLoggedIn').mockResolvedValue(mockResponse);
 
-            const result = await userController.setLastLoggedIn(1, dateData);
+            const result = await userController.setLastLoggedIn(mockUser.id, { lastLoggedIn });
 
-            expect(userService.setLastLoggedIn).toHaveBeenCalledWith(1, dateData.lastLoggedIn);
+            expect(userService.setLastLoggedIn).toHaveBeenCalledWith(
+                mockUser.id, // The 'where' clause for the id
+                { lastLoggedIn: lastLoggedIn } // The actual data being updated
+            );
             expect(result).toEqual(mockResponse);
         });
     });
@@ -141,9 +145,9 @@ describe('UserController', () => {
 
             jest.spyOn(userService, 'getUserFavoriteBooks').mockResolvedValue(mockUserWithBooks);
 
-            const result = await userController.getUserFavoriteBooks(1);
+            const result = await userController.getUserFavoriteBooks(mockUser.id);
 
-            expect(userService.getUserFavoriteBooks).toHaveBeenCalledWith(1);
+            expect(userService.getUserFavoriteBooks).toHaveBeenCalledWith(mockUser.id);
             expect(result).toEqual(mockUserWithBooks);
         });
     });

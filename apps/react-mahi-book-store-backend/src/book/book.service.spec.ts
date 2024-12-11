@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BookService } from './book.service';
 import { prismaOperations } from '@prismaDist/index';
 
-jest.mock('@react-monorepo/prisma', () => ({
+jest.mock('@prismaDist/index', () => ({
   prismaOperations: {
     bookQuery: {
       getAllBooks: jest.fn(),
@@ -19,18 +19,20 @@ jest.mock('@react-monorepo/prisma', () => ({
 }));
 
 const mockBooks = [
-    {
-        id: 1,
-        name: 'Book 1',
-        description: 'Test description',
-        imageId: 'img1'
-    },
+  {
+    id: 1,
+    title: 'Book 1',
+    author: 'Author 1',
+    description: 'Test description',
+    imageId: 'img1'
+  },
 ];
 const mockBook = {
-    id: 1,
-    name: 'Book 1',
-    description: 'Test description',
-    imageId: 'img1',
+  id: 1,
+  title: 'Book 1',
+  author: 'Author 1',
+  description: 'Test description',
+  imageId: 'img1',
 };
 
 describe('BookService', () => {
@@ -61,10 +63,10 @@ describe('BookService', () => {
     it('should call prisma to fetch a book by ID', async () => {
       jest.spyOn(prismaOperations.bookQuery, 'getBook').mockResolvedValue(mockBook);
 
-      expect(await service.getBook(1)).toEqual(mockBook);
-      expect(prismaOperations.bookQuery.getBook).toHaveBeenCalledWith(1);
+      expect(await service.getBook(mockBook.id)).toEqual(mockBook);
+      expect(prismaOperations.bookQuery.getBook).toHaveBeenCalledWith(
+        { id: mockBook.id }
+      );
     });
   });
-
-  // Similar tests can be written for the other service methods
 });
