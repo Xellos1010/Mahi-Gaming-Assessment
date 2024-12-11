@@ -18,6 +18,7 @@
       "@prismaDist/*": ["dist/libs/prisma/src/*"],
       "@user/*": ["apps/react-mahi-book-store-backend/src/user/*"],
       "@book/*": ["apps/react-mahi-book-store-backend/src/book/*"],
+      "@dto/*": ["apps/react-mahi-book-store-backend/src/dtos/*"],
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -12,6 +12,16 @@ WORKDIR /app
 RUN addgroup --system react-mahi-book-store-backend && \
     adduser --system -G react-mahi-book-store-backend react-mahi-book-store-backend
 
+# Install OpenSSL
+# Added this to DockerFile to avoid the warning: 
+# backend-1     | prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+# backend-1     | Please manually install OpenSSL and try installing Prisma again.
+# backend-1     | prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+# backend-1     | Please manually install OpenSSL and try installing Prisma again.
+# backend-1     | Prisma schema loaded from prisma/schema.prisma
+
+RUN apk add --no-cache openssl
+
 # Copy package files and production files
 COPY package.json package-lock.json ./
 COPY libs/prisma/prisma prisma

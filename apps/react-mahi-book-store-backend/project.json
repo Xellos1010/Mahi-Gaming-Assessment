@@ -40,10 +40,6 @@
           "buildTarget": "react-mahi-book-store-backend:build:production"
         }
       }
-    },
-    "docker-build": {
-      "dependsOn": ["build"],
-      "command": "docker-compose -f docker-compose.yml up --build"
     }
   }
 }

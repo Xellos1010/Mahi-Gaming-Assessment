@@ -2,7 +2,9 @@
   "name": "@react-monorepo/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "docker-compose-up:backend": "docker-compose -f docker-compose.yml up --build"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^10.0.2",
@@ -60,6 +62,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-environment-node": "^29.7.0",
     "jsdom": "~22.1.0",
+    "nodemon": "^3.1.7",
     "nx": "20.2.1",
     "prettier": "^2.6.2",
     "sass": "^1.55.0",

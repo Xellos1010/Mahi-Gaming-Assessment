@@ -235,3 +235,9 @@ Once login and registration is all good then I can move onto favorites.
 Once favorites are implemented I can work on implementing encryption and decryption which include JWT tokens.
 Then styling and finishing touches.
 
+@11:55pm Writing e2e tests for nestjs backend with new lib library
+after starting I realized that I need access to the DTO Objects to conform the tests inputs and future-proof modifications. For now i will add the input to the ts.config as an include file to include DTO's for reference
+
+for the ability to hot-reload the backend while workign through e2e tests I've installed npm install --save-dev nodemon
+
+Adding and removing a favorite book failed for books but that is okay for now. we will move on to get the basic front-end in place then return to user e2e tests and including the user favorites once we register and log in.
