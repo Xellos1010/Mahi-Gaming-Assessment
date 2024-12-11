@@ -241,3 +241,18 @@ after starting I realized that I need access to the DTO Objects to conform the t
 for the ability to hot-reload the backend while workign through e2e tests I've installed npm install --save-dev nodemon
 
 Adding and removing a favorite book failed for books but that is okay for now. we will move on to get the basic front-end in place then return to user e2e tests and including the user favorites once we register and log in.
+
+@ 12/11/2024 12:50am
+Finalized book e2e tests for book and moving on to Static Mock Prorotype for Front-end
+I need components for the following:
+FilterableBooksCatalog - This will be the container for the SearchFilterableBooksCatalogInput which will have inputs which when changes to the input end it will raise an event to apply the search to the FilterableBooksDisplay which will display the array of books data.
+The FilterableScrollableBooksDisplay will display Rows of BookRowData which will display the books title and author and when clicked will expand to show BookMoreInfo component which will have either a placeholder image if no image url is present or the image from imageId and the description of the book. If the BookMoreInfo component or the BookRowData are clicked again the BookRowData hides and in the future I want to be able to add a roll-in/roll-out animation to show the more data.
+
+@1:40am 
+Finalized static mock prototype for filtering books.
+Features implemented
+Filters are applied after each keystroke - backspacing produces the expected results as well
+On row click displays more info component.
+static data
+
+All components are in 1 directory right now until we get to the end of the interactivity stage. Then we will re-organize and continue
