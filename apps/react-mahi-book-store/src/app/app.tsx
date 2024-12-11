@@ -1,20 +1,17 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.scss';
-import FilterableBooksCatalog from './FilterableBooksCatalog';
-import useMockBooks from '../hooks/useMockBooks';
+// apps/react-mahi-book-store/src/App.tsx
+import React from "react";
+import { useBooks } from "../context/BooksContext";
+import FilterableBooksCatalog from "./FilterableBooksCatalog";
 
-export function App() {
-  const { books, isLoading } = useMockBooks();
+const App: React.FC = () => {
+  const { books, isLoading } = useBooks();
 
   if (isLoading) return <div>Loading...</div>;
   return (
     <div>
-      {/* <NxWelcome title="react-mahi-book-store" /> */}
-      <FilterableBooksCatalog books={books}/>
+      <FilterableBooksCatalog books={books} />
     </div>
   );
-}
+};
 
 export default App;
-
-

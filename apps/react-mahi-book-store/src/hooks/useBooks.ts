@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import mockBooks from '../data/mockBooks';
 import { Book } from "@prisma/client";
 
-const useMockBooks = () => {
+const useBooks = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,4 +17,4 @@ const useMockBooks = () => {
   return { books, isLoading };
 };
 
-export default useMockBooks;
+export default useBooks;

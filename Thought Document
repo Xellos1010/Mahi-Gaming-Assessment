@@ -256,3 +256,5 @@ On row click displays more info component.
 static data
 
 All components are in 1 directory right now until we get to the end of the interactivity stage. Then we will re-organize and continue
+
+@2:18 - added basic auth wrapper, querying to my database and enabling cors for differentiated environments. temporary until i package and connect to the same docker network.
