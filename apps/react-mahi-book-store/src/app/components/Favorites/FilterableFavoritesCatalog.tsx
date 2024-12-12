@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import styles from './FilterableFavoritesCatalog.module.scss';
 import SearchFilterableBooksCatalogInput from '../Catalog/SearchFilterableBooksCatalogInput';
 import { Filter } from '../Catalog/FiltersInterfaces';
 import { useUser } from '@frontend/context/UserContext';
 import FilterableScrollableBooksDisplay from '../Catalog/FilterableScrollableBooksDisplay';
 
-const FilterableFavoritesCatalog: React.FC = () => {
-  const { favoriteBooks } = useUser();
+interface FilterableFavoritesCatalogProps {
+  isEditing?: boolean;
+}
+
+const FilterableFavoritesCatalog: React.FC<FilterableFavoritesCatalogProps> = ({ isEditing = false }) => {
+  const { favoriteBooks, removeFromFavorites } = useUser();
   const [filter, setFilter] = useState<Filter>({ title: '', author: '' });
 
   const handleFilterChange = (newFilter: Filter) => {
@@ -20,9 +25,15 @@ const FilterableFavoritesCatalog: React.FC = () => {
   });
 
   return (
-    <div>
+    <div className={styles.favoritesContainer}>
       <SearchFilterableBooksCatalogInput onFilterChange={handleFilterChange} />
-      <FilterableScrollableBooksDisplay books={filteredFavoriteBooks} />
+      <div className={styles.booksListContainer}>
+        <FilterableScrollableBooksDisplay 
+          books={filteredFavoriteBooks}
+          isEditing={isEditing}
+          onRemoveFavorite={isEditing ? removeFromFavorites : undefined}
+        />
+      </div>
     </div>
   );
 };

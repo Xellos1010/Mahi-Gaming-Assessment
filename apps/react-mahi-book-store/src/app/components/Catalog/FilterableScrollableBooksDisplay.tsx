@@ -1,16 +1,29 @@
 import React from 'react';
+import styles from './FilterableScrollableBooksDisplay.module.scss';
 import BookRowData from '../Book/BookRowData';
 import { BooksInfoProps } from '../Book/BookInfoInterfaces';
 
-const FilterableScrollableBooksDisplay: React.FC<BooksInfoProps> = ({ books }) => {
+interface FilterableScrollableBooksDisplayProps extends BooksInfoProps {
+    isEditing?: boolean;
+    onRemoveFavorite?: (bookId: number) => void;
+}
+
+const FilterableScrollableBooksDisplay: React.FC<FilterableScrollableBooksDisplayProps> = ({ books, isEditing, onRemoveFavorite }) => {
     return (
-        <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <div className={styles.booksContainer}>
             {books.length > 0 ? (
-                books.map((book) => <BookRowData key={book.id} book={book} />)
+                books.map((book) => (
+                    <div key={book.id} className={styles.bookItem}>
+                        <BookRowData book={book} />
+                        {isEditing && onRemoveFavorite && (
+                            <button className={styles.removeButton} onClick={() => onRemoveFavorite(book.id)}>
+                                Remove
+                            </button>
+                        )}
+                    </div>
+                ))
             ) : (
-                <div style={{ textAlign: 'center', padding: '10px', color: '#888' }}>
-                    No Results Found
-                </div>
+                <div className={styles.noResults}>No Results Found</div>
             )}
         </div>
     );

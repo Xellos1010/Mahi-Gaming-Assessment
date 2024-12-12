@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styles from './TabViewManager.module.scss';
 import CatalogTab from "./CatalogTab";
 import FavoritesTab from "./FavoritesTab";
 import RegisterComponent from "../Auth/RegisterComponent";
@@ -18,54 +19,43 @@ const TabViewManager: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="w-full max-w-md p-8 space-y-4">
-          {activeTab === "login" ? (
+      <div className={`${styles.unauthenticatedContainer}`}>
+        <div className={`${styles.unauthenticatedContent}`}>
+          {activeTab === "login" || activeTab === "catalog" ? (
             <LoginComponent onTabChange={setActiveTab} />
           ) : (
             <RegisterComponent onTabChange={setActiveTab} />
           )}
-          <div className="text-center">
-            <button 
-              onClick={() => setActiveTab(activeTab === "login" ? "register" : "login")}
-              className="text-blue-600 hover:underline"
-            >
-              {activeTab === "login" 
-                ? "Need an account? Register" 
-                : "Already have an account? Login"}
-            </button>
-          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-4">
-          <button 
+    <div className={`${styles.tabContainer} overflow-hidden`}>
+      <div className={styles.tabHeader}>
+        <div className={styles.tabButtons}>
+          <button
             onClick={() => setActiveTab("catalog")}
-            className={`px-4 py-2 ${activeTab === "catalog" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            className={`${styles.tabButton} ${activeTab === "catalog" ? styles.active : styles.inactive}`}
           >
             Catalog
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab("favorites")}
-            className={`px-4 py-2 ${activeTab === "favorites" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            className={`${styles.tabButton} ${activeTab === "favorites" ? styles.active : styles.inactive}`}
           >
             Favorites
           </button>
         </div>
-        <button 
+        <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded"
+          className={styles.logoutButton}
         >
           Logout
         </button>
       </div>
-
-      <div className="flex-grow">
+      <div className={`${styles.tabContent} overflow-hidden`}>
         {activeTab === "catalog" ? <CatalogTab /> : <FavoritesTab />}
       </div>
     </div>

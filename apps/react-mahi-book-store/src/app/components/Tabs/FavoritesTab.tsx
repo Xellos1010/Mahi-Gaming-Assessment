@@ -1,10 +1,11 @@
 import React from "react";
+import styles from './FavoritesTab.module.scss';
 import FilterableFavoritesCatalog from "../Favorites/FilterableFavoritesCatalog";
 
 const FavoritesTab: React.FC = () => {
-
   return (
-    <div>
+    <div className={styles.favoritesContainer}>
+      <h2 className={styles.favoritesHeader}>Your Favorite Books</h2>
       <FilterableFavoritesCatalog />
     </div>
   );

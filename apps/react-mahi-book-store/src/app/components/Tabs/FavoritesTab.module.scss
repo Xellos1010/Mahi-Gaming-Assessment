@@ -1,0 +1,16 @@
+@use '../../../variables.scss' as *;
+
+.favoritesContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.favoritesHeader {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $primary-color;
+  margin-bottom: 1rem;
+  text-align: center;
+}

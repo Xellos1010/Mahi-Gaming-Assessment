@@ -1,0 +1,19 @@
+@use '../../../variables.scss' as *;
+
+.catalogContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.loadingState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: $text-muted;
+  font-size: 1.25rem;
+  background-color: $background-light;
+  border-radius: $border-radius-small;
+}

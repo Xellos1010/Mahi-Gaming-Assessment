@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import styles from './FilterableBooksCatalog.module.scss';
 import { BooksInfoProps } from '../Book/BookInfoInterfaces';
 import FilterableScrollableBooksDisplay from './FilterableScrollableBooksDisplay';
 import { Filter } from './FiltersInterfaces';
 import SearchFilterableBooksCatalogInput from './SearchFilterableBooksCatalogInput';
-
 
 const FilterableBooksCatalog: React.FC<BooksInfoProps> = ({ books }) => {
   const [filter, setFilter] = useState<Filter>({ title: '', author: '' });
@@ -20,7 +20,7 @@ const FilterableBooksCatalog: React.FC<BooksInfoProps> = ({ books }) => {
   });
 
   return (
-    <div>
+    <div className={styles.catalogContainer}>
       <SearchFilterableBooksCatalogInput onFilterChange={handleFilterChange} />
       <FilterableScrollableBooksDisplay books={filteredBooks} />
     </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './SearchFilterableBooksCatalogInput.module.scss';
 import { SearchFilterableBooksCatalogInputProps } from './FiltersInterfaces';
 
 const SearchFilterableBooksCatalogInput: React.FC<SearchFilterableBooksCatalogInputProps> = ({ onFilterChange }) => {
@@ -11,16 +12,18 @@ const SearchFilterableBooksCatalogInput: React.FC<SearchFilterableBooksCatalogIn
   };
 
   return (
-    <div>
+    <div className={styles.searchContainer}>
       <input
         type="text"
         placeholder="Search by title"
+        className={styles.searchInput}
         value={filters.title}
         onChange={(e) => handleInputChange('title', e.target.value)}
       />
       <input
         type="text"
         placeholder="Search by author"
+        className={styles.searchInput}
         value={filters.author}
         onChange={(e) => handleInputChange('author', e.target.value)}
       />

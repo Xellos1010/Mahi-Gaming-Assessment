@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { Book } from "@prisma/client";
+//TODO: implement clearFavorites on backend
+// import { addFavoriteBook, removeFavoriteBook, clearFavorites } from "@frontend/api/user";
 import { addFavoriteBook, removeFavoriteBook } from "@frontend/api/user";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
@@ -8,6 +10,7 @@ interface UserContextValue {
   favoriteBooks: Book[];
   addToFavorites: (bookId: number) => Promise<void>;
   removeFromFavorites: (bookId: number) => Promise<void>;
+  clearFavorites: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined);
@@ -26,6 +29,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setFavoriteBooks(updatedFavorites);
   };
 
+  const clearFavorites = async () => {
+    // TODO: Create backend function to clear all favorites
+    setFavoriteBooks([]);
+    return;
+  };
+
   const removeFromFavorites = async (bookId: number) => {
     const { user } = useAuth();
     if (!user) {
@@ -37,7 +46,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <UserContext.Provider value={{ favoriteBooks, addToFavorites, removeFromFavorites }}>
+    <UserContext.Provider value={{ favoriteBooks, addToFavorites, removeFromFavorites, clearFavorites }}>
       {children}
     </UserContext.Provider>
   );

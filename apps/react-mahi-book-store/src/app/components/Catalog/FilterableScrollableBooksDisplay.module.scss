@@ -1,0 +1,16 @@
+@use '../../../variables.scss' as *;
+
+.booksContainer {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-small;
+}
+
+.noResults {
+  text-align: center;
+  padding: 1rem;
+  color: $text-muted;
+  font-style: italic;
+  background-color: $background-light;
+}
