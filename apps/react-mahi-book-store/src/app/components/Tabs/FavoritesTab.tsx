@@ -1,6 +1,6 @@
 import React from "react";
 import styles from './FavoritesTab.module.scss';
-import FilterableFavoritesCatalog from "../Favorites/FilterableFavoritesCatalog";
+import FilterableFavoritesCatalog from "../Catalog/FilterableFavoritesCatalog";
 
 const FavoritesTab: React.FC = () => {
   return (

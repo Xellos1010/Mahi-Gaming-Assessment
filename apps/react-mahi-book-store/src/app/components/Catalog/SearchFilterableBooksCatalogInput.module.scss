@@ -1,28 +1,14 @@
 @use '../../../variables.scss' as *;
+// apps/react-mahi-book-store/src/app/components/Catalog/SearchFilterableBooksCatalogInput.module.scss
+@use '../../../variables.scss' as *;
+@use './catalog-common-styles.scss' as common;
 
 .searchContainer {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  
-  @include responsive-mobile {
-    flex-direction: column;
-  }
+  @extend common !optional;
+  @extend .searchContainer;
 }
 
 .searchInput {
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-small;
-  transition: border-color 0.3s ease;
-
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-  }
-
-  @include responsive-mobile {
-    width: 100%;
-  }
+  @extend common !optional;
+  @extend .searchInput;
 }

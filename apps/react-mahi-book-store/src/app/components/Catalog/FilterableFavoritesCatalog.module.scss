@@ -1,0 +1,15 @@
+// apps/react-mahi-book-store/src/app/components/Favorites-Catalog-View/FilterableFavoritesCatalog.module.scss
+@use '../../../variables.scss' as *;
+@use './catalog-common-styles.scss' as common;
+
+.favoritesContainer {
+  @extend common !optional;
+  @extend .catalogContainer;
+  background-color: $background-light;
+}
+
+.emptyFavoritesMessage {
+  @extend common !optional;
+  @extend .noResultsMessage;
+  background-color: $white;
+}

@@ -1,0 +1,55 @@
+// apps/react-mahi-book-store/src/app/components/ToastContainer/toast-common-styles.scss
+@use '../../../variables.scss' as *;
+
+$toast-primary-color: darken($primary-color, 15%);
+
+.toastContainer {
+  position: fixed;
+  top: 4rem;
+  right: 1rem;
+  z-index: 30;
+  width: 300px;
+}
+
+.toast {
+  @include card-shadow;
+  padding: 1rem;
+  border-radius: $border-radius-large;
+  margin-bottom: 1rem;
+  color: $white;
+
+  &.success {
+    background-color: $secondary-color;
+  }
+
+  &.error {
+    background-color: $error-color;
+  }
+
+  &.warning {
+    background-color: darken($primary-color, 10%);
+  }
+
+  &.info {
+    background-color: $toast-primary-color;
+  }
+
+  .toast-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  button {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: $white;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}

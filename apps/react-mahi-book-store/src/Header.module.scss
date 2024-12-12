@@ -1,19 +1,29 @@
 @use './variables.scss' as *;
 
-.header {
-    background-color: $primary-color;
-    color: $white;
-    padding: 1rem;
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 20;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.header { 
+  flex-shrink: 0; 
+  background-color: $primary-color; 
+  color: $white; 
+  padding: 1rem; 
+  text-align: center; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  z-index: 20; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: $header-height;
+
+  @include mobile {
+    padding: 0.5rem;
   }
-  
-  .headerTitle {
-    font-size: 1.5rem;
-    font-weight: 700;
+}
+
+.headerTitle { 
+  font-size: 1.5rem; 
+  font-weight: 700; 
+
+  @include mobile {
+    font-size: 1.25rem;
   }
+}

@@ -1,16 +1,13 @@
 @use '../../../variables.scss' as *;
+@use './common-tab-styles.module.scss' as common;
 
 .catalogContainer {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  gap: 1rem;
+  @extend common !optional;
+  @extend .sharedTabContainer;
 }
 
 .loadingState {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include flex-center;
   height: 200px;
   color: $text-muted;
   font-size: 1.25rem;

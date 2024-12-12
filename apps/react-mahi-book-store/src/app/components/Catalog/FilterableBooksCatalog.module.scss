@@ -1,19 +1,13 @@
+// apps/react-mahi-book-store/src/app/components/Catalog/FilterableBooksCatalog.module.scss
 @use '../../../variables.scss' as *;
+@use './catalog-common-styles.scss' as common;
 
 .catalogContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: $white;
-  border-radius: $border-radius-small;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  @extend common !optional;
+  @extend .catalogContainer;
 }
 
 .catalogTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: $primary-color;
-  margin-bottom: 0.5rem;
-  text-align: center;
+  @extend common !optional;
+  @extend .catalogTitle;
 }

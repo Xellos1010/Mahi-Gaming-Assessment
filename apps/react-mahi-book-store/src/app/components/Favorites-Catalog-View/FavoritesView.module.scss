@@ -1,0 +1,44 @@
+// apps/react-mahi-book-store/src/app/components/Favorites-Catalog-View/FavoritesView.module.scss
+@use '../../../variables.scss' as *;
+@use './favorites-common-styles.scss' as common;
+
+.favoritesViewContainer {
+  @extend common !optional;
+  @extend .favoritesViewContainer;
+}
+
+.favoritesHeader {
+  @extend common !optional;
+  @extend .favoritesHeader;
+}
+
+.pageTitle {
+  @extend common !optional;
+  @extend .pageTitle;
+}
+
+.emptyFavoritesMessage {
+  @extend common !optional;
+  @extend .noResultsMessage;
+  font-size: 1rem;
+}
+
+.actionButtons {
+  @extend common !optional;
+  @extend .actionButtons;
+}
+
+.actionButton {
+  @extend common !optional;
+  @extend .actionButton;
+
+  &.editButton {
+    @extend common !optional;
+    @extend .actionButton.editButton;
+  }
+
+  &.clearButton {
+    @extend common !optional;
+    @extend .actionButton.clearButton;
+  }
+}

@@ -1,3 +1,4 @@
+// apps/react-mahi-book-store/src/app/components/Favorites-Catalog-View/favorites-common-styles.scss
 @use '../../../variables.scss' as *;
 
 .favoritesViewContainer {
@@ -20,13 +21,13 @@
   color: $primary-color;
 }
 
-.emptyFavoritesMessage {
+.noResultsMessage {
   text-align: center;
   color: $text-muted;
-  padding: 2rem;
+  padding: 1rem;
   background-color: $background-light;
   border-radius: $border-radius-small;
-  font-size: 1rem;
+  font-style: italic;
 }
 
 .actionButtons {

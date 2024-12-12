@@ -1,16 +1,15 @@
 @use '../../../variables.scss' as *;
 
+// apps/react-mahi-book-store/src/app/components/Catalog/FilterableScrollableBooksDisplay.module.scss
+@use '../../../variables.scss' as *;
+@use './catalog-common-styles.scss' as common;
+
 .booksContainer {
-  max-height: 400px;
-  overflow-y: auto;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-small;
+  @extend common !optional;
+  @extend .scrollableContainer;
 }
 
 .noResults {
-  text-align: center;
-  padding: 1rem;
-  color: $text-muted;
-  font-style: italic;
-  background-color: $background-light;
+  @extend common !optional;
+  @extend .noResultsMessage;
 }

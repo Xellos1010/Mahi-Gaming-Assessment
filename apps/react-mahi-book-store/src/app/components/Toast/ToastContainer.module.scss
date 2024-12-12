@@ -1,0 +1,51 @@
+// apps/react-mahi-book-store/src/app/components/ToastContainer.module.scss
+@use '../../../variables.scss' as *;
+@use './toast-common-styles.scss' as common;
+
+.toastContainer {
+  @extend common !optional;
+  @extend .toastContainer;
+}
+
+.toast {
+  @extend common !optional;
+  @extend .toast;
+
+  &.success {
+    @extend common !optional;
+    @extend .toast, .success;
+  }
+
+  &.error {
+    @extend common !optional;
+    @extend .toast, .error;
+  }
+
+  &.warning {
+    @extend common !optional;
+    @extend .toast, .warning;
+  }
+
+  &.info {
+    @extend common !optional;
+    @extend .toast, .info;
+  }
+
+  .toast-content {
+    @extend common !optional;
+    @extend .toast, .toast-content;
+  }
+
+  button {
+    @extend .button !optional;
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: $white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.75;
+    }
+}
+}
