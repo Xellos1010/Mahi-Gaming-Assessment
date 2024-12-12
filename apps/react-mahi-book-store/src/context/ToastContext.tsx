@@ -17,7 +17,7 @@ interface ToastContextType {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [toasts, setToasts] = useState<Toast[]>([{ id: 1, message: "Test toast", type: "info" }]);
 
   const addToast = useCallback((message: string, type: ToastType = 'info') => {
     const id = Date.now();

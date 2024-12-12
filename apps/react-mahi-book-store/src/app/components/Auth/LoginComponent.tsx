@@ -16,7 +16,7 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ onTabChange }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting } // Add isSubmitting here
+    formState: { errors, isSubmitting }
   } = useForm<{ email: string; password: string }>({
     resolver: zodResolver(loginSchema)
   });
@@ -26,7 +26,8 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ onTabChange }) => {
       await login(data.email, data.password);
       addToast("Successfully logged in", "success");
     } catch (error) {
-      addToast("Login failed. Please check your credentials.", "error");
+      console.log("Adding toast:", String(error));
+      addToast(String(error), "error");
     }
   };
 

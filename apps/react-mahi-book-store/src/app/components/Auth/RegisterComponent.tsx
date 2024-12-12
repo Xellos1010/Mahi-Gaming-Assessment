@@ -21,6 +21,7 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
         watch,
         formState: { errors, isSubmitting }
     } = useForm<{
+        name: string
         email: string;
         password: string;
         confirmPassword: string
@@ -30,11 +31,12 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         try {
-            const { email, password } = data;
-            await registerUser(email, password);
+            const { name, email, password } = data;
+            console.log('Name:', name); // Log the name to check its value
+            await registerUser(name, email, password);
             addToast("Registration successful!", "success");
         } catch (error) {
-            addToast("Registration failed. Please try again.", "error");
+            addToast(error as string, "error");
         }
     };
 
@@ -52,6 +54,22 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
             >
                 <h2 className={styles.formTitle}>Create Your Account</h2>
 
+                <div className={styles.formGroup}>
+                    <label htmlFor="name" className={styles.label}>
+                        Name
+                    </label>
+                    <input
+                        id="name"
+                        {...register("name")}
+                        placeholder="Enter your name"
+                        className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
+                    />
+                    {errors.name && (
+                        <p className={styles.errorMessage}>
+                            {errors.name.message?.toString()}
+                        </p>
+                    )}
+                </div>
                 <div className={styles.formGroup}>
                     <label htmlFor="email" className={styles.label}>
                         Email Address

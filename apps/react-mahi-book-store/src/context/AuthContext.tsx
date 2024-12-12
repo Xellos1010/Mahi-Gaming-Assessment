@@ -6,7 +6,7 @@ interface AuthContextValue {
   user: User | null; // User type from Prisma
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -20,8 +20,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(loggedInUser);
   };
 
-  const register = async (email: string, password: string) => {
-    const registeredUser = await registerUser(email, password);
+  const register = async (name: string, email: string, password: string) => {
+    const registeredUser = await registerUser(name, email, password);
     setUser(registeredUser);
   };
 

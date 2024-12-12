@@ -1,0 +1,57 @@
+@use '../../variables.scss' as *;
+
+$toast-primary-color: darken(
+  $primary-color,
+  15%
+); // Adjusted from the original primary color
+.toastContainer {
+  position: fixed; // Fixed position to the viewport
+  top: 4rem; // Position below the header
+  right: 1rem; // Position it inside the viewport
+  z-index: 30; // Ensure it is above other elements
+  width: 300px; // Width of the toast container
+//   background-color: $toast-primary-color; // Set a background color different from the main background - used to test positioning and scaling - uncommend as needed}
+}
+.toast {
+  @include card-shadow; // Apply card shadow mixin
+  padding: 1rem; // Padding for individual toasts
+  border-radius: $border-radius-large; // Rounded corners
+  margin-bottom: 1rem; // Space between toasts
+  color: $white; // Text color
+  //   background-color: $toast-primary-color ;
+
+  &.success {
+    background-color: $secondary-color; // Secondary color for success
+  }
+
+  &.error {
+    background-color: $error-color; // Error color for error
+  }
+
+  &.warning {
+    background-color: darken($primary-color, 10%); // Darker shade for warnings
+  }
+
+  &.info {
+    background-color: $toast-primary-color; // Primary color for info
+  }
+
+  // Align button to the right
+  .toast-content {
+    display: flex;
+    justify-content: space-between; // Space between message and button
+    align-items: center; // Center items vertically
+    width: 100%; // Full width to allow spacing
+  }
+
+  button {
+    margin-left: auto; // Push the button to the right
+    background: none; // Remove default button background
+    border: none; // Remove border
+    color: $white; // Ensure the button text color is white
+    cursor: pointer; // Change cursor to pointer on hover
+    &:hover {
+      opacity: 0.75; // Reduce opacity on hover
+    }
+  }
+}

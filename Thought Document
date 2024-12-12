@@ -275,3 +275,6 @@ Creating unit tests for mock tests and integration tests with e2e before switchi
 @10:12
 Went down the rabbit hole and figured out how to incorporate scss style sheets.
 I still need to setup e2e but now I have a great looking appication!
+
+@2:17am
+Styles are implemented, toast is implemented, sticky header and footer implemented and user registration and logging in works!
