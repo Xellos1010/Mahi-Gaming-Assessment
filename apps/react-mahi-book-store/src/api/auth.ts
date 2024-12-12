@@ -2,17 +2,17 @@
 import axios from "axios";
 import { User } from "@prisma/client";
 
-const API_BASE_URL = "http://localhost:3000/auth";  // Base URL for authentication endpoints 
+const API_BASE_URL = "http://localhost:3000/api/auth";  // Base URL for authentication endpoints 
 
 // User login function 
 export const loginUser = async (email: string, password: string): Promise<User> => {
-    const response = await axios.post<User>(` ${API_BASE_URL} /login`, { email, password });
+    const response = await axios.post<User>(`${API_BASE_URL}/login`, { email, password });
     return response.data;
 };
 
 // User registration function 
 export const registerUser = async (email: string, password: string): Promise<User> => {
-    const response = await axios.post<User>(` ${API_BASE_URL} /register`, { email, password });
+    const response = await axios.post<User>(`${API_BASE_URL}/register`, { email, password });
     return response.data;
 };
 

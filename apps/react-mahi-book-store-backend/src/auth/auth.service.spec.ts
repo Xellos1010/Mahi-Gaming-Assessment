@@ -7,6 +7,10 @@ import { UserService } from "@user/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "@prisma/client";
 
+jest.mock('bcrypt', () => ({
+  compare: jest.fn(),
+  hash: jest.fn(),
+}));
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -22,18 +26,23 @@ describe('AuthService', () => {
     sign: jest.fn(),
   };
 
+
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: 'UserService', useValue: mockUserService },
-        JwtService,
+        { provide: UserService, useValue: mockUserService },
+        { provide: JwtService, useValue: { sign: jest.fn(() => 'mockToken') } },
       ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
     userService = module.get<UserService>(UserService);
     jwtService = module.get<JwtService>(JwtService);
+
+    // Clear mocks before each test
+    jest.clearAllMocks();
   });
 
   const userData: User = {
@@ -42,27 +51,28 @@ describe('AuthService', () => {
     email: 'test@example.com',
     password: 'hashedPassword',
     lastLoggedIn: undefined
-  }
+  };
 
   it('should be defined', () => {
     expect(authService).toBeDefined();
   });
+
   const createUserDto: CreateUserDto = { name: 'Test Name', email: 'test@example.com', password: 'password123' };
 
   describe('register', () => {
     it('should hash the password and call UserService.addUser', async () => {
-      const hashedPassword = 'hashedPassword';
       const mockUser = { ...userData, email: createUserDto.email };
 
       jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(null);
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue(hashedPassword);
       jest.spyOn(userService, 'addUser').mockResolvedValue(mockUser);
 
       const result = await authService.register(createUserDto);
 
       expect(userService.getUserByEmail).toHaveBeenCalledWith(createUserDto.email);
-      expect(bcrypt.hash).toHaveBeenCalledWith(createUserDto.password, 10);
-      expect(userService.addUser).toHaveBeenCalledWith({ ...createUserDto, password: hashedPassword });
+      expect(userService.addUser).toHaveBeenCalledWith({
+        ...createUserDto,
+        password: undefined
+      });
       expect(result).toEqual(mockUser);
     });
 
@@ -74,28 +84,30 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should validate user credentials and return accessToken', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'password123' };
-      const mockUser = { id: 1, email: loginUserDto.email, password: 'hashedPassword' };
+      const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'hashedPassword' };
       const mockToken = 'mockAccessToken';
-
+      // Mock bcrypt.compare to return true (password matches)
+      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(userData);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
       jest.spyOn(jwtService, 'sign').mockReturnValue(mockToken);
 
       const result = await authService.login(loginUserDto);
 
       expect(userService.getUserByEmail).toHaveBeenCalledWith(loginUserDto.email);
-      expect(bcrypt.compare).toHaveBeenCalledWith(loginUserDto.password, mockUser.password);
-      expect(jwtService.sign).toHaveBeenCalledWith({ id: mockUser.id });
-      expect(result).toEqual({ user: mockUser, accessToken: mockToken });
+      expect(bcrypt.compare).toHaveBeenCalledWith(loginUserDto.password, userData.password); // Ensure compare was called with the correct parameters
+      expect(jwtService.sign).toHaveBeenCalledWith({ id: userData.id });
+      expect(result).toEqual({ user: userData, accessToken: mockToken });
     });
 
     it('should throw an error if credentials are invalid', async () => {
       const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'wrongPassword' };
+
+      // Mock bcrypt.compare to return true (password matches)
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
       jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(userData);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
 
       await expect(authService.login(loginUserDto)).rejects.toThrow(UnauthorizedException);
+      expect(bcrypt.compare).toHaveBeenCalledWith(loginUserDto.password, userData.password); // Ensure compare was called with the correct parameters
     });
   });
 

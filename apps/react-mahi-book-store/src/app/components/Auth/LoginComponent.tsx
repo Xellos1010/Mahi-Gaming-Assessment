@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validation/authSchemas";
 import { useAuth } from "@frontend/context/AuthContext";
 import { useToast } from "@frontend/context/ToastContext";
-import "./LoginComponent.module.scss";
+import styles from "./LoginComponent.module.scss";
 
 interface LoginComponentProps {
   onTabChange?: (tab: SetStateAction<"login" | "register" | "catalog" | "favorites">) => void;
@@ -31,35 +31,35 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ onTabChange }) => {
   };
 
   return (
-    <div className="loginContainer">
+    <div className={styles.loginContainer}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="loginForm"
+        className={styles.loginForm}
       >
-        <h2 className="formTitle">Login</h2>
-        <div className="formGroup">
-          <label className="label">Email</label>
+        <h2 className={styles.formTitle}>Login</h2>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Email</label>
           <input
             {...register("email")}
             placeholder="Email"
-            className={`$input ${errors.email ? "inputError" : ''}`}
+            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
           />
           {errors.email && (
-            <p className="errorMessage">
+            <p className={styles.errorMessage}>
               {errors.email.message?.toString()}
             </p>
           )}
         </div>
-        <div className="formGroup">
-          <label className="label">Password</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Password</label>
           <input
             {...register("password")}
             type="password"
             placeholder="Password"
-            className={`$"input" ${errors.password ? "inputError" : ''}`}
+            className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
           />
           {errors.password && (
-            <p className="errorMessage">
+            <p className={styles.errorMessage}>
               {errors.password.message?.toString()}
             </p>
           )}
@@ -67,19 +67,22 @@ const LoginComponent: React.FC<LoginComponentProps> = ({ onTabChange }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`$"submitButton" ${isSubmitting ? "submitting" : ''}`}
+          className={`${styles.submitButton} ${isSubmitting ? styles.submitting : ''}`}
         >
           {isSubmitting ? 'Signing In...' : 'Sign In'}
         </button>
         {onTabChange && (
-          <div className="switchAuthMode">
-            <button
-              type="button"
-              onClick={() => onTabChange('register')}
-              className="switchButton"
-            >
-              Register
-            </button>
+          <div className={styles.switchAuthMode}>
+            <p>
+              Already have an account? {" "}
+              <button
+                type="button"
+                onClick={() => onTabChange('register')}
+                className={styles.switchButton}
+              >
+                Register
+              </button>
+            </p>
           </div>
         )}
       </form>

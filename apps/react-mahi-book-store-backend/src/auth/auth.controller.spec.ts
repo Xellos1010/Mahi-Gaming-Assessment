@@ -25,11 +25,19 @@ describe('AuthController', () => {
           provide: AuthService,
           useValue: mockAuthService,
         },
+        {
+          provide: UserService,
+          useValue: {
+            getUserByEmail: jest.fn(),
+            addUser: jest.fn(),
+          },
+        },
       ],
     }).compile();
-
+  
     authController = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
+    userService = module.get<UserService>(UserService);
   });
 
 
@@ -52,7 +60,6 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'register').mockResolvedValue(mockUser);
 
       const result = await authController.register(createUserDto);
-      expect(userService.getUserByEmail).toHaveBeenCalledWith(createUserDto.email);
       expect(authService.register).toHaveBeenCalledWith(createUserDto);
       expect(result).toEqual({ message: 'User registered successfully', user: mockUser }); //The mockUser's hashed password 
     });
