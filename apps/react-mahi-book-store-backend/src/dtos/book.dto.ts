@@ -1,8 +1,37 @@
+import { IsString, IsOptional } from 'class-validator';
 import { PrismaDto } from './prisma-dto.utility';
 import { Prisma } from '@prisma/client';
 
-// DTO for Book creation
-export type BookCreateDto = PrismaDto<Prisma.BookCreateInput>;
+export class CreateBookDto implements PrismaDto<Prisma.BookCreateInput> {
+  @IsString()
+  title: string;
 
-// DTO for Book update
-export type BookUpdateDto = PrismaDto<Prisma.BookUpdateInput>;
+  @IsString()
+  author: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  imageId?: string;
+}
+
+export class UpdateBookDto implements PrismaDto<Prisma.BookUpdateInput> {
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @IsOptional()
+  @IsString()
+  author?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  imageId?: string;
+}

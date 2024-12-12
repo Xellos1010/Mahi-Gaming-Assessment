@@ -1,6 +1,6 @@
+import { CreateBookDto, UpdateBookDto } from '@dto/book.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
-import { BookCreateDto, BookUpdateDto } from '../dtos/book.dto';
 
 // all routes are in this script for expediency
 
@@ -18,11 +18,11 @@ export class BookService {
     return book;
   }
 
-  async addBook(data: BookCreateDto) {
+  async addBook(data: CreateBookDto) {
     return prismaOperations.bookMutation.addBook(data);
   }
 
-  async updateBook(bookId: number, data: BookUpdateDto) {
+  async updateBook(bookId: number, data: UpdateBookDto) {
     return prismaOperations.bookMutation.updateBook({ where: { id: bookId }, data: data });
   }
 

@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import AppWrapper from './AppWrapper';
+import AppLayout from './AppLayout';
 import CustomQueryClientProvider from './providers/CustomQueryClientProvider';
 
 const root = ReactDOM.createRoot(
@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <CustomQueryClientProvider>
-      <AppWrapper />
+      <AppLayout />
     </CustomQueryClientProvider>
   </StrictMode>
 );

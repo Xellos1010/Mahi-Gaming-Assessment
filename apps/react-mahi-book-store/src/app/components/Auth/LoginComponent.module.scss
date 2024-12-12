@@ -1,0 +1,90 @@
+@use '../../../variables.scss' as *;
+
+.loginContainer {
+  @include flex-center;
+  min-height: 100vh;
+  background-color: $background-light;
+  padding: 2rem;
+}
+
+.loginForm {
+  @include card-shadow;
+  background-color: $white;
+  border-radius: $border-radius-large;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+
+  @include responsive-mobile {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+.formTitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: $primary-color;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: $text-dark;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-small;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+.inputError {
+  border-color: $error-color;
+}
+
+.errorMessage {
+  color: $error-color;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.submitButton {
+  @include primary-button;
+  width: 100%;
+  margin-top: 1rem;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.switchAuthMode {
+  text-align: center;
+  margin-top: 1rem;
+  color: $text-muted;
+
+  .switchButton {
+    color: $primary-color;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

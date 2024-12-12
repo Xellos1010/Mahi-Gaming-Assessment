@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
-import { UpdateUserLastLoggedInDto, UpdateUserPasswordDto, UserCreateDto } from '../dtos/user.dto';
+import { UpdateUserLastLoggedInDto, UpdateUserPasswordDto,  } from '../dtos/user.dto';
+import { CreateUserDto } from '@dto/auth.dto';
 
 @Injectable()
 export class UserService {
@@ -8,11 +9,15 @@ export class UserService {
     return prismaOperations.userQuery.getAllUsers();
   }
 
-  async getUserById(userId: number) {
-    return prismaOperations.userQuery.getUserById({ id: userId });
+  async getUserById(id: number) {
+    return prismaOperations.userQuery.getUserById({ id });
   }
 
-  async addUser(data: UserCreateDto) {
+  async getUserByEmail(email: string) {
+    return prismaOperations.userQuery.getUserByEmail({ email });
+  }
+
+  async addUser(data: CreateUserDto) {
     return prismaOperations.userMutation.addUser(data);
   }
 
@@ -21,7 +26,7 @@ export class UserService {
   }
 
   async setUserPassword(id: number, data: UpdateUserPasswordDto) {
-    return prismaOperations.userMutation.setUserPassword({ where: { id }, password: data as string}); //I want to follow the same implementation pattern as other DTO's so since the picked field as a string and in the future I don't expect password to change from a string then I will cast the data as a string
+    return prismaOperations.userMutation.setUserPassword({ where: { id }, password: data.password });
   }
 
   async setLastLoggedIn(id: number, data: UpdateUserLastLoggedInDto) {

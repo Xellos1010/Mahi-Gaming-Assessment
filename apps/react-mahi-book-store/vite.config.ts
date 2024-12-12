@@ -16,9 +16,18 @@ export default defineConfig({
     host: 'localhost',
   },
   plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @use "apps/react-mahi-book-store/src/variables.scss" as vars;
+        `,
+      },
+    },
+  },
   // Uncomment this if you are using workers.
   // worker: {
-  //  plugins: [ nxViteTsPaths() ],
+  //  plugins: [nxViteTsPaths()],
   // },
   build: {
     outDir: '../../dist/apps/react-mahi-book-store',

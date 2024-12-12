@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import SearchFilterableBooksCatalogInput from './SearchFilterableBooksCatalogInput';
+import { BooksInfoProps } from '../Book/BookInfoInterfaces';
 import FilterableScrollableBooksDisplay from './FilterableScrollableBooksDisplay';
-import { BooksInfoProps } from './BookInfoInterfaces';
 import { Filter } from './FiltersInterfaces';
+import SearchFilterableBooksCatalogInput from './SearchFilterableBooksCatalogInput';
+
 
 const FilterableBooksCatalog: React.FC<BooksInfoProps> = ({ books }) => {
   const [filter, setFilter] = useState<Filter>({ title: '', author: '' });

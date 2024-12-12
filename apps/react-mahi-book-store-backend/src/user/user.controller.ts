@@ -1,45 +1,80 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, ParseIntPipe, BadRequestException, NotFoundException } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserCreateDto, UpdateUserPasswordDto, UpdateUserLastLoggedInDto } from '../dtos/user.dto';
+import { UpdateUserPasswordDto, UpdateUserLastLoggedInDto } from '../dtos/user.dto';
+import { CreateUserDto } from '@dto/auth.dto';
 
 // all routes are in this script for expediency
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get()
-  getAllUsers() {
-    return this.userService.getAllUsers();
+  async getAllUsers() {
+    try {
+      return await this.userService.getAllUsers();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get(':id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.getUserById(id);
+  async getUserById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.userService.getUserById(id);
+    } catch (error) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
   }
 
   @Post()
-  addUser(@Body() data: UserCreateDto) {
-    return this.userService.addUser(data);
-  }
-
-  @Delete(':id')
-  removeUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.removeUserById(id);
+  async addUser(@Body() data: CreateUserDto) {
+    try {
+      return await this.userService.addUser(data);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Patch(':id/password')
-  setUserPassword(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserPasswordDto) {
-    return this.userService.setUserPassword(id, data);
+  async setUserPassword(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateUserPasswordDto,
+  ) {
+    try {
+      return await this.userService.setUserPassword(id, data);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Patch(':id/lastLoggedIn')
-  setLastLoggedIn(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserLastLoggedInDto) {
-    return this.userService.setLastLoggedIn(id, data);
+  async setLastLoggedIn(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateUserLastLoggedInDto,
+  ) {
+    try {
+      return await this.userService.setLastLoggedIn(id, data);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get(':id/favorites')
   getUserFavoriteBooks(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.getUserFavoriteBooks(id);
+    try {
+      return this.userService.getUserFavoriteBooks(id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete(':id')
+  async removeUserById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.userService.removeUserById(id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

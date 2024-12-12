@@ -257,4 +257,21 @@ static data
 
 All components are in 1 directory right now until we get to the end of the interactivity stage. Then we will re-organize and continue
 
-@2:18 - added basic auth wrapper, querying to my database and enabling cors for differentiated environments. temporary until i package and connect to the same docker network.
+@2:18am - added basic auth wrapper, querying to my database and enabling cors for differentiated environments. temporary until i package and connect to the same docker network.
+
+@12:53pm
+Since I have the basic components finished and tested:
+"The application should allow users to browse books, search for books by title or author, and view book details."
+
+I am going to start working on the next part integrating the Zod Form Validation for sign-up and login.
+Afterwards I will put in a tab manager that will allow a user to toggle between searching and favorites management
+
+I will need a LoginComponent, a RegisterComponent, Utilize zod for form validation, add UserContext wrapper to manage user favorites. Add a TabViewManager Component that allows us to toggle between the Catalog View and Favorites view. The FavoritesViewComponent should have a FilterableCatalog as wel that has the same features as the regular view but with the addition of Removing Favorite Book button on the right side of the RowData. The  BookDataRow component should display an Add To Favorites Button on the right side when not in Catalog View
+
+@7:30pm
+Since developing the Auth components and view components I switched back to the backend so that I can create an auth controller and add error handling to my backend.
+Creating unit tests for mock tests and integration tests with e2e before switching back to the frontend
+
+@10:12
+Went down the rabbit hole and figured out how to incorporate scss style sheets.
+I still need to setup e2e but now I have a great looking appication!

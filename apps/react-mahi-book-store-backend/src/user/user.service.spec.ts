@@ -126,7 +126,7 @@ describe('UserService', () => {
 
             expect(prismaOperations.userMutation.setUserPassword).toHaveBeenCalledWith({
                 where: {id: mockUser.id}, 
-                password: { password: 'newpassword' }
+                password:  'newpassword'
             });
             expect(result).toEqual(mockResponse);
         });

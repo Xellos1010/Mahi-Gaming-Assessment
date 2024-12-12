@@ -1,6 +1,6 @@
 import React from 'react';
-import BookRowData from './BookRowData';
-import { BooksInfoProps } from './BookInfoInterfaces';
+import BookRowData from '../Book/BookRowData';
+import { BooksInfoProps } from '../Book/BookInfoInterfaces';
 
 const FilterableScrollableBooksDisplay: React.FC<BooksInfoProps> = ({ books }) => {
     return (

@@ -19,6 +19,16 @@
       "@user/*": ["apps/react-mahi-book-store-backend/src/user/*"],
       "@book/*": ["apps/react-mahi-book-store-backend/src/book/*"],
       "@dto/*": ["apps/react-mahi-book-store-backend/src/dtos/*"],
+      "@frontend/*": ["apps/react-mahi-book-store/src/*"],
+      "@frontend/styles/Login.module.scss": [
+        "apps/react-mahi-book-store/src/app/styles/Login.module.scss"
+      ],
+      "@frontend/styles/Register.module.scss": [
+        "apps/react-mahi-book-store/src/app/styles/Register.module.scss"
+      ],
+      "@frontend/styles/BookRowData.module.scss": [
+        "apps/react-mahi-book-store/src/app/styles/BookRowData.module.scss"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

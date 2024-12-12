@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { BadRequestException, NotFoundException } from '@nestjs/common/exceptions';
 
 describe('UserController', () => {
     let userController: UserController;
@@ -71,6 +72,10 @@ describe('UserController', () => {
             expect(userService.getAllUsers).toHaveBeenCalled();
             expect(result).toEqual(mockUsers);
         });
+        it('should throw an error if UserService.getAllUsers fails', async () => {
+            jest.spyOn(userService, 'getAllUsers').mockRejectedValue(new BadRequestException('Get all users failed'));
+            await expect(userController.getAllUsers()).rejects.toThrow(BadRequestException);
+        });
     });
 
     describe('getUserById', () => {
@@ -81,6 +86,11 @@ describe('UserController', () => {
 
             expect(userService.getUserById).toHaveBeenCalledWith(mockUser.id);
             expect(result).toEqual(mockUser);
+        });
+        it('should throw an error if UserService.getUserById fails', async () => {
+            const mockId = 1;
+            jest.spyOn(userService, 'getUserById').mockRejectedValue(new NotFoundException(`User with ID ${mockId} not found`));
+            await expect(userController.getUserById(mockId)).rejects.toThrow(NotFoundException);
         });
     });
 
@@ -94,6 +104,10 @@ describe('UserController', () => {
             expect(userService.addUser).toHaveBeenCalledWith(mockUser);
             expect(result).toEqual(mockResponse);
         });
+        it('should throw an error if UserService.addUser fails', async () => {
+            jest.spyOn(userService, 'addUser').mockRejectedValue(new BadRequestException('Invalid user data'));
+            await expect(userController.addUser(mockUser)).rejects.toThrow(BadRequestException);
+        });
     });
 
     describe('removeUser', () => {
@@ -105,6 +119,11 @@ describe('UserController', () => {
 
             expect(userService.removeUserById).toHaveBeenCalledWith(mockUser.id);
             expect(result).toEqual(mockResponse);
+        });
+        it('should throw an error if UserService.removeUserById fails', async () => {
+            const mockId = 1;
+            jest.spyOn(userService, 'removeUserById').mockRejectedValue(new Error('Remove user failed'));
+            await expect(userController.removeUserById(mockId)).rejects.toThrow(Error);
         });
     });
 
@@ -120,6 +139,11 @@ describe('UserController', () => {
                 { password: userWithPasswordData.password } // This is the password
             );
             expect(result).toEqual(userWithPasswordData);
+        });
+        it('should throw an error if UserService.setUserPassword fails', async () => {
+            const mockId = 1;
+            jest.spyOn(userService, 'setUserPassword').mockRejectedValue(new BadRequestException('Password set failed'));
+            await expect(userController.setUserPassword(mockId, { password: 'newpassword' })).rejects.toThrow(BadRequestException);
         });
     });
 
@@ -137,6 +161,11 @@ describe('UserController', () => {
             );
             expect(result).toEqual(mockResponse);
         });
+        it('should throw an error if UserService.setLastLoggedIn fails', async () => {
+            const mockId = 1;
+            jest.spyOn(userService, 'setLastLoggedIn').mockRejectedValue(new Error('Set last logged in failed'));
+            await expect(userController.setLastLoggedIn(mockId, { lastLoggedIn: new Date() })).rejects.toThrow(Error);
+        });
     });
 
 
@@ -149,6 +178,11 @@ describe('UserController', () => {
 
             expect(userService.getUserFavoriteBooks).toHaveBeenCalledWith(mockUser.id);
             expect(result).toEqual(mockUserWithBooks);
+        });
+        it('should throw an error if UserService.getUserFavoriteBooks fails', async () => {
+            const mockId = 1;
+            jest.spyOn(userService, 'getUserFavoriteBooks').mockRejectedValue(new Error('Get favorite books failed'));
+            await expect(userController.getUserFavoriteBooks(mockId)).rejects.toThrow(Error);
         });
     });
 });

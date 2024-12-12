@@ -1,44 +1,85 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { BookService } from './book.service';
-import { BookCreateDto, BookUpdateDto } from '../dtos/book.dto';
+import { CreateBookDto, UpdateBookDto } from '../dtos/book.dto';
 
-// We are integrating DTO's for validation of incoming data as per NestJS Best Practices:
 @Controller('books')
 export class BookController {
-  constructor(private readonly bookService: BookService) {}
+  constructor(private readonly bookService: BookService) { }
 
   @Get()
-  getAllBooks() {
-    return this.bookService.getAllBooks();
+  async getAllBooks() {
+    try {
+      return await this.bookService.getAllBooks();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get(':id')
-  getBook(@Param('id', ParseIntPipe) id: number) {
-    return this.bookService.getBook(id);
+  async getBook(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.bookService.getBook(id);
+    } catch (error) {
+      throw new NotFoundException(`Book with ID ${id} not found`);
+    }
   }
 
   @Post()
-  addBook(@Body() data: BookCreateDto) {
-    return this.bookService.addBook(data);
+  async addBook(@Body() data: CreateBookDto) {
+    try {
+      return await this.bookService.addBook(data);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Patch(':id')
-  updateBook(@Param('id', ParseIntPipe) id: number, @Body() data: BookUpdateDto) {
-    return this.bookService.updateBook(id, data);
-  }
-
-  @Delete(':id')
-  removeBookById(@Param('id', ParseIntPipe) id: number) {
-    return this.bookService.removeBookById(id);
+  async updateBook(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: UpdateBookDto,
+  ) {
+    try {
+      return await this.bookService.updateBook(id, data);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Post(':id/favorites')
   addUserToFavoriteBook(@Param('id', ParseIntPipe) bookId: number, @Body('userId') userId: number) {
-    return this.bookService.addUserToFavoriteBook(bookId, userId);
+    try {
+      return this.bookService.addUserToFavoriteBook(bookId, userId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Delete(':id/favorites')
   removeBookFromFavorites(@Param('id', ParseIntPipe) bookId: number, @Body('userId') userId: number) {
-    return this.bookService.removeBookFromFavorites(bookId, userId);
+    try {
+      return this.bookService.removeBookFromFavorites(bookId, userId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete(':id')
+  async removeBookById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.bookService.removeBookById(id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

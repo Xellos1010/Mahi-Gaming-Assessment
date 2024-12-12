@@ -11,7 +11,7 @@ const ProtectedApp: React.FC = () => {
     return (
       <div>
         <h2>Please Login to Continue</h2>
-        <button onClick={login}>Login</button>
+        {/* <button onClick={login}>Login</button> */}
       </div>
     );
   }
