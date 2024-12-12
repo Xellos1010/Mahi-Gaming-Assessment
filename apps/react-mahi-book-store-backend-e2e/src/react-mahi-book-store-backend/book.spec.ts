@@ -1,13 +1,15 @@
 import axios from 'axios';
-import { BookCreateDto } from '@dto/index';
+import { CreateBookDto } from '@dto/book.dto';
 const BASE_URL = 'http://localhost:3000/api/books';
 
 describe('BookController E2E Tests', () => {
     let bookId: number; // To keep track of the created book for later tests
     let bookId2: number;
+    let userId: number = 1; // Assuming user with ID 1 exists, you can mock this if needed
+
     // Create a book before running the tests
     beforeAll(async () => {
-        const newBook: BookCreateDto = {
+        const newBook: CreateBookDto = {
             title: 'Test Book',
             author: 'Author Name',
             description: 'Test Description',
@@ -43,7 +45,7 @@ describe('BookController E2E Tests', () => {
     });
 
     it('should create a new book', async () => {
-        const newBook: BookCreateDto = {
+        const newBook: CreateBookDto = {
             title: 'New Test Book',
             author: 'New Author',
             description: 'New Description',
@@ -79,18 +81,33 @@ describe('BookController E2E Tests', () => {
         expect(getResponse.status).toBe(404);
     });
 
-    // These 2 fail for now but we will work on this later to prioritize getting a front-end in place
+    // Add user to favorite book
+    it('should add a user to favorite books', async () => {
+        const res = await axios.post(`${BASE_URL}/${bookId}/favorites`, { userId });
+        expect(res.status).toBe(201);
+        expect(res.data).toHaveProperty('id', bookId);
+    });
 
-    //   it('should add a user to favorite books', async () => {
-    //     const userId = 1; // Assuming a user with ID 1 exists
-    //     const res = await axios.post(`${BASE_URL}/${bookId}/favorites`, { userId });
-    //     expect(res.status).toBe(200);
-    //     expect(res.data).toHaveProperty('id', bookId);
-    //   });
+    // Remove user from favorite book
+    it('should remove a user from favorite books', async () => {
+        const res = await axios.delete(`${BASE_URL}/${bookId}/favorites`, { data: { userId } });
+        expect(res.status).toBe(200); // No content
+    });
 
-    //   it('should remove a user from favorite books', async () => {
-    //     const userId = 1; // Assuming a user with ID 1 exists
-    //     const res = await axios.delete(`${BASE_URL}/${bookId}/favorites`, { data: { userId } });
-    //     expect(res.status).toBe(200); // No content
-    //   });
+    // Error handling tests
+
+    it('should return 500 when trying to add a user to non-existent book favorites', async () => {
+        const res = await axios.post(`${BASE_URL}/99999/favorites`, { userId }).catch(err => err.response);
+        expect(res.status).toBe(500);
+    });
+
+    it('should return 500 when missing userId in request to add to favorites', async () => {
+        const res = await axios.post(`${BASE_URL}/${bookId}/favorites`, {}).catch(err => err.response);
+        expect(res.status).toBe(500);
+    });
+
+    it('should return 500 when trying to remove a user from non-existent book favorites', async () => {
+        const res = await axios.delete(`${BASE_URL}/99999/favorites`, { data: { userId } }).catch(err => err.response);
+        expect(res.status).toBe(500);
+    });
 });
