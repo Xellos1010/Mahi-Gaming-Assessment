@@ -35,3 +35,13 @@ export class UpdateBookDto implements PrismaDto<Prisma.BookUpdateInput> {
   @IsString()
   imageId?: string;
 }
+
+import { Book } from "@prisma/client";
+
+
+// API Response Types
+export interface BookApiResponse extends Book {}
+
+export interface FavoritesApiResponse {
+  books: Book[];
+}

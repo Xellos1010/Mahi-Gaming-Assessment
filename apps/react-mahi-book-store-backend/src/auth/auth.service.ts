@@ -1,3 +1,4 @@
+// apps/react-mahi-book-store-backend/src/auth/auth.service.ts
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { CreateUserDto, LoginUserDto } from '../dtos/auth.dto';
@@ -12,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<User> {
+  async register(createUserDto: CreateUserDto): Promise<{ user: User; accessToken: string }> {
     const existingUser = await this.userService.getUserByEmail(createUserDto.email);
     if (existingUser) {
       throw new BadRequestException('Email is already in use');
@@ -23,7 +24,8 @@ export class AuthService {
       ...createUserDto,
       password: hashedPassword,
     });
-    return user;
+    const accessToken = this.jwtService.sign({ id: user.id });
+    return {user, accessToken};
   }
 
   async login(loginUserDto: LoginUserDto): Promise<{ user: User; accessToken: string }> {

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Book, User } from "@prisma/client";
 import { handleError } from "./handleError";
-
-const API_BASE_URL = "http://localhost:3000/users";  
+export { addFavoriteBook, removeFavoriteBook } from './book' //These endpoints live in the Book Controller, I may migrate them to the user controller since favorites management is handled by the UserContext - for now this works in an effort to save time before submission @ 12/12/11:32 pm
+const API_BASE_URL = "http://localhost:3000/api/users";  
 
 export const fetchUserFavorites = async (userId: number): Promise<Book[]> => {
     try {
@@ -11,24 +11,6 @@ export const fetchUserFavorites = async (userId: number): Promise<Book[]> => {
     } catch (error) {
         throw handleError(error);
     } 
-};
-
-export const addFavoriteBook = async (userId: number, bookId: number): Promise<Book[]> => {
-    try {
-        const response = await axios.post<Book[]>(`${API_BASE_URL}/${bookId}/favorites`, { userId });
-        return response.data;
-    } catch (error) {
-        throw handleError(error);
-    }
-};
-
-export const removeFavoriteBook = async (userId: number, bookId: number): Promise<Book[]> => {
-    try {
-        const response = await axios.delete<Book[]>(`${API_BASE_URL}/${bookId}/favorites`, { data: { userId } });
-        return response.data;
-    } catch (error) {
-        throw handleError(error);
-    }
 };
 
 export const fetchAllUsers = async (): Promise<User[]> => {

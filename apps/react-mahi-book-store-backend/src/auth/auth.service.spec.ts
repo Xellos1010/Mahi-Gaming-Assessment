@@ -62,9 +62,10 @@ describe('AuthService', () => {
   describe('register', () => {
     it('should hash the password and call UserService.addUser', async () => {
       const mockUser = { ...userData, email: createUserDto.email };
-
+      const mockToken = 'mockAccessToken';
       jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(null);
       jest.spyOn(userService, 'addUser').mockResolvedValue(mockUser);
+      jest.spyOn(jwtService, 'sign').mockReturnValue(mockToken);
 
       const result = await authService.register(createUserDto);
 
@@ -73,7 +74,7 @@ describe('AuthService', () => {
         ...createUserDto,
         password: undefined
       });
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual({ user: userData, accessToken: mockToken });
     });
 
     it('should throw an error if email is already in use', async () => {

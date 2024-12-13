@@ -22,7 +22,7 @@ const TabViewManager: React.FC = () => {
       <div className={`${styles.unauthenticatedContainer}`}>
         <div className={`${styles.unauthenticatedContent}`}>
           {/* Right now we are hardcoding that the flow from login automatically opens favorites in favor of time checking. If I have enough time I will create a Tab Context object...I also wanted to make a ThemeContext but that may be a while.*/}
-          {activeTab === "login" || activeTab === "catalog" ? (
+          {activeTab === "login" || (activeTab === "catalog" || activeTab === "favorites") ? (
             <LoginComponent onTabChange={setActiveTab} />
           ) : (
             <RegisterComponent onTabChange={setActiveTab} />
@@ -58,7 +58,7 @@ const TabViewManager: React.FC = () => {
       </div>
       <div className={`${styles.tabContent} overflow-hidden`}>
         {/* Right now we are hardcoding that the flow from login automatically opens favorites in favor of time checking. If I have enough time I will create a Tab Context object...I also wanted to make a ThemeContext but that may be a while.*/}
-        {activeTab === "catalog" || activeTab === "login" ?
+        {activeTab !== "favorites" ?
           <CatalogTab /> :
           <FavoritesTab />
         }

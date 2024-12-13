@@ -45,8 +45,8 @@ describe('AuthController E2E Tests', () => {
     const res = await axios.post(`${BASE_URL}/register`, newUser);
     expect(res.status).toBe(201);
     expect(res.data.message).toBe('User registered successfully');
-    expect(res.data.user).toHaveProperty('id');
-    expect(res.data.user).toHaveProperty('email', newUser.email);
+    expect(res.data.user).toHaveProperty('user');
+    expect(res.data.user).toHaveProperty('accessToken');
   });
 
   it('should login with valid credentials', async () => {

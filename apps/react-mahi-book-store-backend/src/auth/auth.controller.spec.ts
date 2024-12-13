@@ -41,7 +41,7 @@ describe('AuthController', () => {
   });
 
 
-  const mockUser: User = {
+  const userData: User = {
     id: 1,
     name: 'Test user',
     email: 'test@example.com',
@@ -56,12 +56,12 @@ describe('AuthController', () => {
 
   describe('register', () => {
     it('should call AuthService.register and return a success message', async () => {
-
-      jest.spyOn(authService, 'register').mockResolvedValue(mockUser);
+      const mockToken = 'mockAccessToken';
+      jest.spyOn(authService, 'register').mockResolvedValue({ user: userData, accessToken: mockToken });
 
       const result = await authController.register(createUserDto);
       expect(authService.register).toHaveBeenCalledWith(createUserDto);
-      expect(result).toEqual({ message: 'User registered successfully', user: mockUser }); //The mockUser's hashed password 
+      expect(result).toEqual({ message: 'User registered successfully', user: userData, accessToken: mockToken}); //The mockUser's hashed password 
     });
 
     it('should throw an error if AuthService.register fails', async () => {
@@ -75,7 +75,7 @@ describe('AuthController', () => {
     it('should call AuthService.login and return a success message with user and accessToken', async () => {
       const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'password123' };
       const mockResponse = {
-        user: mockUser,
+        user: userData,
         accessToken: expect.any(String)
       };
 

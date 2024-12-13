@@ -1,11 +1,16 @@
+// apps/react-mahi-book-store/src/context/UserContext.tsx
 import React, { createContext, useContext, useState } from "react";
 import { Book } from "@prisma/client";
-//TODO: implement clearFavorites on backend
-// import { addFavoriteBook, removeFavoriteBook, clearFavorites } from "@frontend/api/user";
 import { addFavoriteBook, removeFavoriteBook } from "@frontend/api/user";
-import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
 
+// Define the shape of dependencies
+interface UserContextDependencies {
+  getCurrentUserId: () => number | null;
+  onUnauthorized?: () => void;
+}
+
+// Context value interface
 interface UserContextValue {
   favoriteBooks: Book[];
   addToFavorites: (bookId: number) => Promise<void>;
@@ -13,47 +18,99 @@ interface UserContextValue {
   clearFavorites: () => Promise<void>;
 }
 
+// Create the context
 const UserContext = createContext<UserContextValue | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// Provider component with dependency injection
+interface UserProviderProps {
+  children: React.ReactNode;
+  dependencies: UserContextDependencies;
+}
+
+export const UserProvider: React.FC<UserProviderProps> = ({ 
+  children, 
+  dependencies: { 
+    getCurrentUserId, 
+    onUnauthorized 
+  } 
+}) => {
   const [favoriteBooks, setFavoriteBooks] = useState<Book[]>([]);
   const { addToast } = useToast();
 
   const addToFavorites = async (bookId: number) => {
-    const { user } = useAuth();
-    if (!user) {
+    const userId = getCurrentUserId();
+    
+    if (!userId) {
+      // Call optional onUnauthorized callback
+      onUnauthorized?.();
+      
       addToast("Must be logged in to add favorites", "error");
       return;
     }
-    const updatedFavorites = await addFavoriteBook(user.id, bookId);
-    setFavoriteBooks(updatedFavorites);
-  };
 
-  const clearFavorites = async () => {
-    // TODO: Create backend function to clear all favorites
-    setFavoriteBooks([]);
-    return;
+    try {
+      const updatedFavorites = await addFavoriteBook(userId, bookId);
+      setFavoriteBooks(updatedFavorites);
+    } catch (error) {
+      addToast("Failed to add book to favorites", "error");
+      console.error(error);
+    }
   };
 
   const removeFromFavorites = async (bookId: number) => {
-    const { user } = useAuth();
-    if (!user) {
+    const userId = getCurrentUserId();
+    
+    if (!userId) {
+      // Call optional onUnauthorized callback
+      onUnauthorized?.();
+      
       addToast("Must be logged in to remove favorites", "error");
       return;
     }
-    const updatedFavorites = await removeFavoriteBook(user.id, bookId);
-    setFavoriteBooks(updatedFavorites);
+
+    try {
+      const updatedFavorites = await removeFavoriteBook(userId, bookId);
+      setFavoriteBooks(updatedFavorites);
+    } catch (error) {
+      addToast("Failed to remove book from favorites", "error");
+      console.error(error);
+    }
+  };
+
+  const clearFavorites = async () => {
+    const userId = getCurrentUserId();
+    
+    if (!userId) {
+      // Call optional onUnauthorized callback
+      onUnauthorized?.();
+      
+      addToast("Must be logged in to clear favorites", "error");
+      return;
+    }
+
+    // TODO: Implement backend clearFavorites function
+    setFavoriteBooks([]);
   };
 
   return (
-    <UserContext.Provider value={{ favoriteBooks, addToFavorites, removeFromFavorites, clearFavorites }}>
+    <UserContext.Provider 
+      value={{ 
+        favoriteBooks, 
+        addToFavorites, 
+        removeFromFavorites, 
+        clearFavorites 
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
+// Custom hook to use the UserContext
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
   return context;
 };

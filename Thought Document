@@ -278,3 +278,13 @@ I still need to setup e2e but now I have a great looking appication!
 
 @2:17am
 Styles are implemented, toast is implemented, sticky header and footer implemented and user registration and logging in works!
+
+12/13/24 @12:01am
+
+The basic style is there for the application, a responsive website which has common styles shared between components.
+I have one more feature and the docker compose file to put together. 
+User Favorites Management
+I need to sync up the AddFavorites which returns the book and update the User's Context's favoriteBooks array with new favorite book.
+Once that is done then I need to be able to remove the favorite book and when browsing in catalog mode toggle between the favorite and non-favorite books.
+
+Once in the Favorites Tab then i need a way to clear all favorite books of the user and update the server.

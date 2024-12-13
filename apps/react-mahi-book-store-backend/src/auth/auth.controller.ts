@@ -1,3 +1,4 @@
+// apps/react-mahi-book-store-backend/src/auth/auth.controller.ts
 import { Controller, Post, Body, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from '../dtos/auth.dto';
@@ -11,8 +12,8 @@ export class AuthController {
   @HttpCode(201)
   async register(@Body() createUserDto: CreateUserDto) {
     try {
-      const user = await this.authService.register(createUserDto);
-      return { message: 'User registered successfully', user };
+      const { user, accessToken } = await this.authService.register(createUserDto);
+      return { message: 'User registered successfully', user, accessToken};
     } catch (error) {
       throw error; // NestJS will handle the exception and return a proper HTTP response
     }

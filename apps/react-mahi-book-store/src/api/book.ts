@@ -2,7 +2,7 @@ import axios from "axios";
 import { Book } from "@prisma/client";
 import { handleError } from "./handleError";
 
-const API_BASE_URL = "http://localhost:3000/books";
+const API_BASE_URL = "http://localhost:3000/api/books";
 
 export const fetchBooks = async (): Promise<Book[]> => {
     try {
@@ -43,6 +43,26 @@ export const updateBook = async (bookId: number, bookData: Partial<Book>): Promi
 export const removeBookById = async (bookId: number): Promise<void> => {
     try {
         await axios.delete(`${API_BASE_URL}/${bookId}`);
+    } catch (error) {
+        throw handleError(error);
+    }
+};
+
+export const addFavoriteBook = async (userId: number, bookId: number): Promise<Book[]> => {
+    try {
+        // Log the parameters
+        console.log(`Adding favorite book: userId = ${userId}, bookId = ${bookId}`);
+        const response = await axios.post<Book[]>(`${API_BASE_URL}/${bookId}/favorites`, { userId });
+        return response.data;
+    } catch (error) {
+        throw handleError(error);
+    }
+};
+
+export const removeFavoriteBook = async (userId: number, bookId: number): Promise<Book[]> => {
+    try {
+        const response = await axios.delete<Book[]>(`${API_BASE_URL}/${bookId}/favorites`, { data: { userId } });
+        return response.data;
     } catch (error) {
         throw handleError(error);
     }
