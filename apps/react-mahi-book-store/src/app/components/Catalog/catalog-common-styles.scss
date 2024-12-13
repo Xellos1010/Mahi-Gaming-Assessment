@@ -4,6 +4,8 @@
 .catalogContainer {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
   gap: 1rem;
   padding: 1rem;
   background-color: $white;
@@ -20,7 +22,7 @@
 }
 
 .scrollableContainer {
-  max-height: 400px;
+  max-height: 60vh;
   overflow-y: auto;
   border: 1px solid $border-color;
   border-radius: $border-radius-small;

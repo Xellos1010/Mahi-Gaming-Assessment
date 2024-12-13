@@ -35,8 +35,8 @@ const FavoritesView: React.FC = () => {
             </button>
           )}
         </div>
+      
       </div>
-
       {favoriteBooks.length === 0 ? (
         <div className={styles.emptyFavoritesMessage}>
           You haven't added any books to your favorites yet.

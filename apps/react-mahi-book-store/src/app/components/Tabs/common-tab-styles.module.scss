@@ -16,9 +16,10 @@
 
 // Shared Content Container
 .contentContainer {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding-right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; // This allows the container to expand and fill available vertical space
+  height: 100%; // Ensure full height
 
   // Hide scrollbar for webkit browsers
   &::-webkit-scrollbar {
