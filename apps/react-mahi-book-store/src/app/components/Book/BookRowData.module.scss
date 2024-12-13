@@ -4,26 +4,21 @@
 @use './book-common-styles.scss' as common;
 
 .bookRowContainer {
-  @extend common !optional;
-  @extend .bookRowContainer;
+  @extend common, .bookRowContainer !optional;
 }
 
 .bookDetails {
-  @extend common !optional;
-  @extend .bookDetails;
+  @extend common, .bookDetails !optional;
 
   .bookTitle {
-    @extend common !optional;
-    @extend .bookDetails, .bookTitle;
+    @extend common, .bookDetails, .bookTitle !optional;
   }
 
   .bookAuthor {
-    @extend common !optional;
-    @extend .bookDetails, .bookAuthor;
+    @extend common,.bookDetails, .bookAuthor !optional;
   }
 }
 
 .favoriteButton {
-  @extend common !optional;
-  @extend .favoriteButton;
+  @extend common, .favoriteButton !optional;
 }

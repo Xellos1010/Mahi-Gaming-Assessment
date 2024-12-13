@@ -5,11 +5,9 @@
 @use './catalog-common-styles.scss' as common;
 
 .booksContainer {
-  @extend common !optional;
-  @extend .scrollableContainer;
+  @extend common, .scrollableContainer !optional;
 }
 
 .noResults {
-  @extend common !optional;
-  @extend .noResultsMessage;
+  @extend common, .noResultsMessage !optional;
 }

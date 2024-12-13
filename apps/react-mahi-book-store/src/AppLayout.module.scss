@@ -1,20 +1,15 @@
 @use './variables.scss' as *;
 
-.appContainer { 
-  display: flex; 
-  flex-direction: column; 
-  min-height: 100vh; 
-  width: 100%; 
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
 }
 
-.mainContent { 
-  flex: 1 0 auto;
-  margin-top: calc(#{$header-height} + #{$header-footer-padding});
-  margin-bottom: calc(#{$footer-height} + #{$header-footer-padding});
+.mainContent {
+  flex: 1 1 auto;
   overflow: hidden;
-
-  @include mobile {
-    margin-top: calc(#{$header-height} + #{$header-footer-padding} * 0.5);
-    margin-bottom: calc(#{$footer-height} + #{$header-footer-padding} * 0.5);
-  }
+  display: flex;
+  flex-direction: column;
 }

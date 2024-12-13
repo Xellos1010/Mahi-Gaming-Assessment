@@ -1,16 +1,9 @@
-@use './variables.scss' as *;
-
+@use '../../../variables.scss' as *;
+@use './common-styles.module.scss' as common;
 .footer { 
-  flex-shrink: 0; 
+  @extend common, .commonStyles !optional;
   background-color: $background-light; 
-  color: $text-muted; 
-  padding: 1rem; 
-  text-align: center; 
-  position: fixed; 
-  bottom: 0; 
-  left: 0; 
-  right: 0; 
-  z-index: 20; 
+  color: $text-muted;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
   height: $footer-height;
 

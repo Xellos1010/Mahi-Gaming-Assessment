@@ -4,11 +4,9 @@
 @use './catalog-common-styles.scss' as common;
 
 .searchContainer {
-  @extend common !optional;
-  @extend .searchContainer;
+  @extend common, .searchContainer !optional;
 }
 
 .searchInput {
-  @extend common !optional;
-  @extend .searchInput;
+  @extend common, .searchInput !optional;
 }

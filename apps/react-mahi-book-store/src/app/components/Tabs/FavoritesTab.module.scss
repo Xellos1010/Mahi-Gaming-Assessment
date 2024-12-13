@@ -2,8 +2,7 @@
 @use './common-tab-styles.module.scss' as common;
 
 .favoritesContainer {
-  @extend common !optional;
-  @extend .sharedTabContainer;
+  @extend common, .sharedTabContainer !optional;
 }
 
 .favoritesHeader {

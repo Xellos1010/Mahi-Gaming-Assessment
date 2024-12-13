@@ -3,21 +3,17 @@
 @use './book-common-styles.scss' as common;
 
 .bookMoreInfoContainer {
-  @extend common !optional;
-  @extend .bookMoreInfoContainer;
+  @extend common, .bookMoreInfoContainer !optional;
 }
 
 .bookCoverImage {
-  @extend common !optional;
-  @extend .bookCoverImage;
+  @extend common, .bookCoverImage !optional;
 }
 
 .placeholderImage {
-  @extend common !optional;
-  @extend .placeholderImage;
+  @extend common, .placeholderImage !optional;
 }
 
 .bookDescription {
-  @extend common !optional;
-  @extend .bookDescription;
+  @extend common, .bookDescription !optional;
 }

@@ -1,33 +1,41 @@
 // apps/react-mahi-book-store/src/app/components/ToastContainer/toast-common-styles.scss
-@use '../../../variables.scss' as *;
+@use '../../../variables.scss' as variables;
 
-$toast-primary-color: darken($primary-color, 15%);
+$toast-primary-color: darken(variables.$primary-color, 15%);
 
 .toastContainer {
-  position: fixed;
-  top: 4rem;
-  right: 1rem;
+  @include variables.flex-center;
+  position: relative;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 30;
-  width: 300px;
+  width: 90%; // Adjust width to be responsive
+  max-width: 400px; // Limit width on larger screens
+  flex-direction: column; /* Stack notifications vertically */
 }
 
 .toast {
-  @include card-shadow;
-  padding: 1rem;
-  border-radius: $border-radius-large;
+  @include variables.card-shadow;
+  padding: 1.5rem; // Increased padding for tap-friendly design
+  border-radius: variables.$border-radius-large;
   margin-bottom: 1rem;
-  color: $white;
+  text-align: center; // Align content centrally
+  font-size: 1.15rem; // Ensure readability on mobile devices
+  // Position toast lower on the screen
+  position: fixed;
+  top: 0; //Used to place the toaster top on the header and stick to it. Developed with being in the Header Component in mind.
 
   &.success {
-    background-color: $secondary-color;
+    background-color: variables.$secondary-color;
   }
 
   &.error {
-    background-color: $error-color;
+    background-color: variables.$error-color;
   }
 
   &.warning {
-    background-color: darken($primary-color, 10%);
+    background-color: darken(variables.$primary-color, 10%);
   }
 
   &.info {
@@ -35,21 +43,36 @@ $toast-primary-color: darken($primary-color, 15%);
   }
 
   .toast-content {
+    flex-direction: column; // Stack content for better mobile UX
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+    justify-content: space-between; /* Space out content */
+    align-items: center; /* Align items vertically */
+    width: 100%; /* Ensure content fills the width */
   }
 
   button {
-    margin-left: auto;
     background: none;
     border: none;
-    color: $white;
+    color: variables.$white;
+    font-size: 1.15rem; // Ensure readability on mobile devices
     cursor: pointer;
 
     &:hover {
       opacity: 0.75;
     }
   }
+}
+.noNotifications {
+  position: absolute;
+  // top: 100%; /* Position below the header */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+  z-index: 20;
+  text-align: center;
+  color: variables.$text-dark;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: variables.$white;
+  border: 1px solid variables.$border-color;
+  border-radius: 4px;
 }

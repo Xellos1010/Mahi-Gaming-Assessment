@@ -1,0 +1,22 @@
+@use '../../../variables.scss' as variables;
+@use './common-styles.module.scss' as common;
+.header { 
+  @extend common, .commonStyles !optional;
+  background-color: variables.$primary-color; 
+  color: variables.$white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: variables.$header-height;
+
+  @include variables.mobile {
+    padding: 0.5rem;
+  }
+}
+
+.headerTitle { 
+  font-size: 1.5rem; 
+  font-weight: 700; 
+
+  @include variables.mobile {
+    font-size: 1.25rem;
+  }
+}

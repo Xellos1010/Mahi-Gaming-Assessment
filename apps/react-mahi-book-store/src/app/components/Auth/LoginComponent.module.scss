@@ -2,56 +2,45 @@
 @use './common-auth-styles.module.scss' as common;
 
 .loginContainer {
-  @extend common !optional;
-  @extend .authContainer;
+  @extend common, .authContainer !optional;
 }
 
 .loginForm {
-  @extend common !optional;
-  @extend .authForm;
+  @extend common, .authForm !optional;
 }
 
 .formTitle {
-  @extend common !optional;
-  @extend .formTitle;
+  @extend common, .formTitle !optional;
 }
 
 .formGroup {
-  @extend common !optional;
-  @extend .formGroup;
+  @extend common, .formGroup !optional;
 }
 
 .label {
-  @extend common !optional;
-  @extend .label;
+  @extend common, .label !optional;
 }
 
 .input {
-  @extend common !optional;
-  @extend .input;
+  @extend common, .input !optional;
 }
 
 .inputError {
-  @extend common !optional;
-  @extend .inputError;
+  @extend common, .inputError !optional;
 }
 
 .errorMessage {
-  @extend common !optional;
-  @extend .errorMessage;
+  @extend common, .errorMessage !optional;
 }
 
 .submitButton {
-  @extend common !optional;
-  @extend .submitButton;
+  @extend common, .submitButton !optional;
 }
 
 .switchAuthMode {
-  @extend common !optional;
-  @extend .switchAuthMode;
+  @extend common, .switchAuthMode !optional;
 
   .switchButton {
-    @extend common !optional;
-    @extend .switchButton;
+    @extend common, .switchButton !optional;
   }
 }

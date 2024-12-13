@@ -3,13 +3,11 @@
 @use './catalog-common-styles.scss' as common;
 
 .favoritesContainer {
-  @extend common !optional;
-  @extend .catalogContainer;
+  @extend common, .catalogContainer !optional;
   background-color: $background-light;
 }
 
 .emptyFavoritesMessage {
-  @extend common !optional;
-  @extend .noResultsMessage;
+  @extend common, .noResultsMessage !optional;
   background-color: $white;
 }

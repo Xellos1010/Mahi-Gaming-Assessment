@@ -2,11 +2,8 @@
 @use './common-tab-styles.module.scss' as common;
 
 .unauthenticatedContainer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%; 
   @include flex-center;
   background-color: $background-light;
   overflow: hidden;
@@ -31,24 +28,15 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100vh - #{$header-height + $footer-height + $header-footer-padding * 2});
-  max-height: 100vh;
+  height: 100%;
   overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  @include mobile {
-    height: calc(100vh - #{$header-height + $footer-height + $header-footer-padding});
-  }
 }
 
 .tabContent {
   flex-grow: 1;
   overflow: hidden;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .tabHeader {

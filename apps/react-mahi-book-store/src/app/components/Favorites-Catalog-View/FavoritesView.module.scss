@@ -3,42 +3,34 @@
 @use './favorites-common-styles.scss' as common;
 
 .favoritesViewContainer {
-  @extend common !optional;
-  @extend .favoritesViewContainer;
+  @extend common, .favoritesViewContainer !optional;
 }
 
 .favoritesHeader {
-  @extend common !optional;
-  @extend .favoritesHeader;
+  @extend common, .favoritesHeader !optional;
 }
 
 .pageTitle {
-  @extend common !optional;
-  @extend .pageTitle;
+  @extend common, .pageTitle !optional;
 }
 
 .emptyFavoritesMessage {
-  @extend common !optional;
-  @extend .noResultsMessage;
+  @extend common, .noResultsMessage !optional;
   font-size: 1rem;
 }
 
 .actionButtons {
-  @extend common !optional;
-  @extend .actionButtons;
+  @extend common, .actionButtons !optional;
 }
 
 .actionButton {
-  @extend common !optional;
-  @extend .actionButton;
+  @extend common, .actionButton !optional;
 
   &.editButton {
-    @extend common !optional;
-    @extend .actionButton.editButton;
+    @extend common, .actionButton, .editButton !optional;
   }
 
   &.clearButton {
-    @extend common !optional;
-    @extend .actionButton.clearButton;
+    @extend common, .actionButton, .clearButton !optional;
   }
 }
