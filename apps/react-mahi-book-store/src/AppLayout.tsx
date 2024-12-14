@@ -38,6 +38,11 @@ const AppLayout: React.FC = () => {
                   return user?.id ?? null;
                 },
 
+                getCurrentUserFavoriteBooks: () => {
+                  console.log(user);
+                  return 
+                }
+
                 // Optional: Add custom unauthorized handling
                 onUnauthorized: () => {
                   // Example: Redirect to login page

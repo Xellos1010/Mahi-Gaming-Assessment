@@ -22,8 +22,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       //errors throw in loginUser
       const loggedInUser = await loginUser(email, password);
       console.log(loggedInUser.message);
-      setUser(loggedInUser.user);
+      setUser(loggedInUser.user); //TODO: include the favorite books in the user object
       setAccessToken(loggedInUser.accessToken);
+      // 
       return loggedInUser;
     } catch (error) {
       // Optional: add error handling logic

@@ -288,3 +288,6 @@ I need to sync up the AddFavorites which returns the book and update the User's 
 Once that is done then I need to be able to remove the favorite book and when browsing in catalog mode toggle between the favorite and non-favorite books.
 
 Once in the Favorites Tab then i need a way to clear all favorite books of the user and update the server.
+I also need my login script to return a users object with the favoritebooks already so that I can populate that data.
+
+Interfaces for implementing database operations are coupled right now to Prisma for time constraints. If we finalize the user favorite features and achieve persistent login session then we will work with create a shared schema interface which can be shares and used to generate a prisma.schema file

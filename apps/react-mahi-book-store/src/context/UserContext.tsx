@@ -7,6 +7,7 @@ import { useToast } from "./ToastContext";
 // Define the shape of dependencies
 interface UserContextDependencies {
   getCurrentUserId: () => number | null;
+  getCurrentUserFavoriteBooks: () => Book[] | [];
   onUnauthorized?: () => void;
 }
 
