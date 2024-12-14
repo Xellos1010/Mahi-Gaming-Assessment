@@ -13,5 +13,5 @@ export interface PrismaGetAllBooksResponse {
 }
 
 export interface PrismaGetBookByIdResponse{
-  book: Book | null;
+  book: Book;
 }

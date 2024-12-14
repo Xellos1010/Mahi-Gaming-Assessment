@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from '../dtos/auth.dto';
+import { CreateUserRequestDto, LoginUserRequestDto } from '../dtos/auth.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import type { User } from '@prisma/client';
 import { UserService } from '@user/user.service';
+import { PrismaUserResponseWithFavoriteBooks } from '@prismaDist/interfaces/user/user.types';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -46,9 +47,23 @@ describe('AuthController', () => {
     name: 'Test user',
     email: 'test@example.com',
     password: 'hashedPassword',
-    lastLoggedIn: undefined
+    lastLoggedIn: undefined,
+    createdAt: undefined,
+    updatedAt: undefined
   }
-  const createUserDto: CreateUserDto = { name: 'Test user', email: 'test@example.com', password: 'password123' };
+
+  const userDataWithFavorites: PrismaUserResponseWithFavoriteBooks = {
+    id: 1,
+    name: 'Test user',
+    email: 'test@example.com',
+    password: 'hashedPassword',
+    lastLoggedIn: undefined,
+    createdAt: undefined,
+    updatedAt: undefined,
+    favoriteBooks: []
+  }
+
+  const createUserDto: CreateUserRequestDto = { name: 'Test user', email: 'test@example.com', password: 'password123' };
 
   it('should be defined', () => {
     expect(authController).toBeDefined();
@@ -73,9 +88,9 @@ describe('AuthController', () => {
 
   describe('login', () => {
     it('should call AuthService.login and return a success message with user and accessToken', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'password123' };
+      const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'password123' };
       const mockResponse = {
-        user: userData,
+        user: userDataWithFavorites,
         accessToken: expect.any(String)
       };
 
@@ -88,7 +103,7 @@ describe('AuthController', () => {
     });
 
     it('should throw an error if AuthService.login fails', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'wrongpassword' };
+      const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'wrongpassword' };
 
       jest.spyOn(authService, 'login').mockRejectedValue(new UnauthorizedException('Invalid email or password'));
 

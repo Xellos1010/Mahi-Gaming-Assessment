@@ -1,44 +1,43 @@
-// apps/react-mahi-book-store-backend/src/auth/auth.controller.ts
 import { Controller, Post, Body, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from '../dtos/auth.dto';
+import {
+  BaseCreateUserDatabaseResponseDto,
+  CreateUserRequestDto,
+  LoginUserDatabaseResponseDto,
+  LoginUserRequestDto
+} from '../dtos/auth.dto';
+import { HandleControllerError } from "../decorators/errorHandling/controller.error.handler";
+import { WrapApiResponse } from '../decorators/controller.api-response.';
+
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(201)
-  async register(@Body() createUserDto: CreateUserDto) {
-    try {
-      const { user, accessToken } = await this.authService.register(createUserDto);
-      return { message: 'User registered successfully', user, accessToken};
-    } catch (error) {
-      throw error; // NestJS will handle the exception and return a proper HTTP response
-    }
+  @HandleControllerError('Registering a new user')
+  @WrapApiResponse()
+  async register(@Body() createUserDto: CreateUserRequestDto): Promise<BaseCreateUserDatabaseResponseDto> {
+    return await this.authService.register(createUserDto) as BaseCreateUserDatabaseResponseDto;
   }
 
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(200)
-  async login(@Body() loginUserDto: LoginUserDto) {
-    try {
-      const { user, accessToken } = await this.authService.login(loginUserDto);
-      return { message: 'Login successful', user, accessToken };
-    } catch (error) {
-      throw error; // Proper HTTP error response will be sent
-    }
+  @HandleControllerError('Logging in a user')
+  @WrapApiResponse()
+  async login(@Body() loginUserDto: LoginUserRequestDto): Promise<LoginUserDatabaseResponseDto> {
+    return await this.authService.login(loginUserDto) as LoginUserDatabaseResponseDto;
   }
 
   @Post('logout')
   @HttpCode(200)
+  @HandleControllerError('Logging out a user')
+  @WrapApiResponse()
   async logout() {
-    try {
-      await this.authService.logout();
-      return { message: 'Logout successful' };
-    } catch (error) {
-      throw error; // Proper error handling
-    }
+    // Typically handle client-side token clearing or server-side token invalidation. 
+    return { message: 'Logout successful' };  // This will be wrapped by WrapApiResponse 
   }
 }

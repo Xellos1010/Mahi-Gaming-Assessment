@@ -1,40 +1,61 @@
-import { CreateBookDto, UpdateBookDto } from '@dto/book.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BaseBookDatabaseResponseDto,
+  BaseBooksDatabaseResponseDto,
+  BaseGetBookByIdRequestDto,
+  BaseUserFavoriteBookDto,
+  CreateBookDto,
+  UpdateBookApiRequestDto
+} from '@dto/book.dto';
+import { Injectable } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
-
-// all routes are in this script for expediency
+import { IBookServiceInterface } from '../interfaces/databaseService/book.service.interface';
+import {
+  PrismaAddBookParams,
+  PrismaAddUserToFavoriteBookParams,
+  PrismaGetBookByIdParams,
+  PrismaRemoveBookByIdParams,
+  PrismaRemoveBookFromFavoritesParams,
+  PrismaUpdateBookParams
+} from '@prismaDist/shared/types/book.types';
+import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
 
 @Injectable()
-export class BookService {
-  async getAllBooks() {
-    return prismaOperations.bookQuery.getAllBooks();
+export class BookService implements IBookServiceInterface {
+  @HandleServiceError('Fetching all books')
+  async getAllBooks(): Promise<BaseBooksDatabaseResponseDto> {
+    return await prismaOperations.bookQuery.getAllBooks() as BaseBooksDatabaseResponseDto;
   }
 
-  async getBook(id: number) {
-    const book = await prismaOperations.bookQuery.getBook({ id });
-    if (!book) {
-      throw new NotFoundException(`Book with ID ${id} not found`);
-    }
-    return book;
+  @HandleServiceError('Fetching book by ID')
+  async getBook({ id }: BaseGetBookByIdRequestDto): Promise<BaseBookDatabaseResponseDto> {
+    return await prismaOperations.bookQuery.getBookById({ id } as PrismaGetBookByIdParams) as BaseBookDatabaseResponseDto;
   }
 
-  async addBook(data: CreateBookDto) {
-    return prismaOperations.bookMutation.addBook(data);
+  @HandleServiceError('Adding a new book')
+  async addBook(data: CreateBookDto): Promise<BaseBookDatabaseResponseDto> {
+    return await prismaOperations.bookMutation.addBook(data as PrismaAddBookParams) as BaseBookDatabaseResponseDto;
   }
 
-  async updateBook(bookId: number, data: UpdateBookDto) {
-    return prismaOperations.bookMutation.updateBook({ where: { id: bookId }, data: data });
+  @HandleServiceError('Updating book')
+  async updateBook({ id, data }: UpdateBookApiRequestDto): Promise<BaseBookDatabaseResponseDto> {
+    return await prismaOperations.bookMutation.updateBook({
+      where: { id },
+      data,
+    } as PrismaUpdateBookParams) as BaseBookDatabaseResponseDto;
   }
 
-  async removeBookById(bookId: number) {
-    return prismaOperations.bookMutation.removeBookById({ id: bookId });
+  @HandleServiceError('Removing book by ID')
+  async removeBookById({ id }: BaseGetBookByIdRequestDto): Promise<BaseBookDatabaseResponseDto> {
+    return await prismaOperations.bookMutation.removeBookById({ id } as PrismaRemoveBookByIdParams) as BaseBookDatabaseResponseDto;
   }
 
-  async addUserToFavoriteBook(bookId: number, userId: number) {
-    return prismaOperations.bookMutation.addUserToFavoriteBook({ bookId, userId });
+  @HandleServiceError('Adding user to favorite book')
+  async addUserToFavoriteBook({ bookId, userId }: BaseUserFavoriteBookDto): Promise<BaseBookDatabaseResponseDto> {
+    return await prismaOperations.bookMutation.addUserToFavoriteBook({ bookId, userId } as PrismaAddUserToFavoriteBookParams) as BaseBookDatabaseResponseDto;
   }
 
-  async removeBookFromFavorites(bookId: number, userId: number) {
-    return prismaOperations.bookMutation.removeBookFromFavorites({ bookId, userId });
+  @HandleServiceError('Removing book from favorites')
+  async removeBookFromFavorites({ bookId, userId }: BaseUserFavoriteBookDto): Promise<BaseBookDatabaseResponseDto> {
+    return await prismaOperations.bookMutation.removeBookFromFavorites({ bookId, userId } as PrismaRemoveBookFromFavoritesParams) as BaseBookDatabaseResponseDto;
   }
 }

@@ -1,39 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
-import { UpdateUserLastLoggedInDto, UpdateUserPasswordDto,  } from '../dtos/user.dto';
-import { CreateUserDto } from '@dto/auth.dto';
+import {
+  AddUserRequestDto,
+  BaseUserDatabaseResponseDto,
+  BaseUsersApiResponseDto,
+  BaseGetUserByIdRequestDto,
+  BaseGetUserByEmailRequestDto,
+  UserWithFavoritesDatabaseResponseDto,
+  SetUserPasswordRequestDto,
+  BaseUserByIdRequestDto
+} from '@dto/user.dto';
+import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
+import {
+  PrismaAddUserParams,
+  PrismaGetUserByEmailParams
+} from '@prismaDist/shared/types/user.types';
+import { BaseBooksDatabaseResponseDto } from '@dto/book.dto';
+import { IUserServiceInterface } from '../interfaces/databaseService/user.service.interface';
 
 @Injectable()
-export class UserService {
-  async getAllUsers() {
-    return prismaOperations.userQuery.getAllUsers();
+export class UserService implements IUserServiceInterface {
+  @HandleServiceError('Fetching all users')
+  async getAllUsers(): Promise<BaseUsersApiResponseDto> {
+    return await prismaOperations.userQuery.getAllUsers() as BaseUsersApiResponseDto;
   }
 
-  async getUserById(id: number) {
-    return prismaOperations.userQuery.getUserById({ id });
+  @HandleServiceError('Fetching user by ID')
+  async getUserById({ id }: BaseGetUserByIdRequestDto): Promise<BaseUserDatabaseResponseDto> {
+    const user = await prismaOperations.userQuery.getUserById({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID  ${id}  not found`);
+    }
+    return user as BaseUserDatabaseResponseDto;
   }
 
-  async getUserByEmail(email: string) {
-    return prismaOperations.userQuery.getUserByEmail({ email });
+  @HandleServiceError('Fetching user by email with favorite books')
+  async getUserByEmailIncludeFavoriteBooks({ email }: BaseGetUserByEmailRequestDto): Promise<UserWithFavoritesDatabaseResponseDto> {
+    const user = await prismaOperations.userQuery.getUserByEmailIncludeFavoriteBooks({ email } as PrismaGetUserByEmailParams);
+    if (!user) {
+      throw new NotFoundException(`User with email  ${email}  not found`);
+    }
+    return user as UserWithFavoritesDatabaseResponseDto;
   }
 
-  async addUser(data: CreateUserDto) {
-    return prismaOperations.userMutation.addUser(data);
+  @HandleServiceError('Adding a new user')
+  async addUser(data: AddUserRequestDto): Promise<BaseUserDatabaseResponseDto> {
+    return await prismaOperations.userMutation.addUser(data as PrismaAddUserParams) as BaseUserDatabaseResponseDto;
   }
 
-  async removeUserById(userId: number) {
-    return prismaOperations.userMutation.removeUserById({ id: userId });
+  @HandleServiceError('Removing user by ID')
+  async removeUserById({ id }: BaseGetUserByIdRequestDto): Promise<BaseUserDatabaseResponseDto> {
+    const user = await prismaOperations.userMutation.removeUserById({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID  ${id}  not found`);
+    }
+    return user as BaseUserDatabaseResponseDto;
   }
 
-  async setUserPassword(id: number, data: UpdateUserPasswordDto) {
-    return prismaOperations.userMutation.setUserPassword({ where: { id }, password: data.password });
+  @HandleServiceError('Setting user password')
+  async setUserPassword({ id, password }: SetUserPasswordRequestDto): Promise<BaseUserDatabaseResponseDto> {
+    return await prismaOperations.userMutation.setUserPassword({ where: { id }, password }) as BaseUserDatabaseResponseDto;
   }
 
-  async setLastLoggedIn(id: number, data: UpdateUserLastLoggedInDto) {
-    return prismaOperations.userMutation.setLastLoggedIn({ where: {id}, lastLoggedIn: data as Date }); //Here there is a specific requirement whereby we need to ensure the Date is formatted a specific way which we will determine the requiements for validation at a later date @ 12/10/2024 8:00pm
+  @HandleServiceError('Setting last logged-in time for user')
+  async setLastLoggedInNow({ id }: BaseUserByIdRequestDto): Promise<BaseUserDatabaseResponseDto> {
+    return await prismaOperations.userMutation.setLastLoggedInNow({ where: { id } }) as BaseUserDatabaseResponseDto;
   }
 
-  async getUserFavoriteBooks(userId: number) {
-    return prismaOperations.userQuery.getUserFavoriteBooks({ id: userId });
+  @HandleServiceError('Fetching user favorite books')
+  async getUserFavoriteBooks({ id }: BaseGetUserByIdRequestDto): Promise<BaseBooksDatabaseResponseDto> {
+    const books = await prismaOperations.userQuery.getUserFavoriteBooks({ id });
+    if (!books) {
+      throw new NotFoundException(`No favorite books found for user with ID  ${id} `);
+    }
+    return books as BaseBooksDatabaseResponseDto;
   }
 }

@@ -1,4 +1,4 @@
-import { CreateUserDto, LoginUserDto } from "@dto/auth.dto";
+import { CreateUserRequestDto, LoginUserRequestDto } from "@dto/auth.dto";
 import { BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { TestingModule, Test } from "@nestjs/testing";
 import { AuthService } from "./auth.service";
@@ -57,19 +57,19 @@ describe('AuthService', () => {
     expect(authService).toBeDefined();
   });
 
-  const createUserDto: CreateUserDto = { name: 'Test Name', email: 'test@example.com', password: 'password123' };
+  const createUserDto: CreateUserRequestDto = { name: 'Test Name', email: 'test@example.com', password: 'password123' };
 
   describe('register', () => {
     it('should hash the password and call UserService.addUser', async () => {
       const mockUser = { ...userData, email: createUserDto.email };
       const mockToken = 'mockAccessToken';
-      jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(null);
+      jest.spyOn(userService, 'getUserByEmailIncludeFavoriteBooks').mockResolvedValue(null);
       jest.spyOn(userService, 'addUser').mockResolvedValue(mockUser);
       jest.spyOn(jwtService, 'sign').mockReturnValue(mockToken);
 
       const result = await authService.register(createUserDto);
 
-      expect(userService.getUserByEmail).toHaveBeenCalledWith(createUserDto.email);
+      expect(userService.getUserByEmailIncludeFavoriteBooks).toHaveBeenCalledWith(createUserDto.email);
       expect(userService.addUser).toHaveBeenCalledWith({
         ...createUserDto,
         password: undefined
@@ -85,7 +85,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should validate user credentials and return accessToken', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'hashedPassword' };
+      const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'hashedPassword' };
       const mockToken = 'mockAccessToken';
       // Mock bcrypt.compare to return true (password matches)
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
@@ -94,14 +94,14 @@ describe('AuthService', () => {
 
       const result = await authService.login(loginUserDto);
 
-      expect(userService.getUserByEmail).toHaveBeenCalledWith(loginUserDto.email);
+      expect(userService.getUserByEmailIncludeFavoriteBooks).toHaveBeenCalledWith(loginUserDto.email);
       expect(bcrypt.compare).toHaveBeenCalledWith(loginUserDto.password, userData.password); // Ensure compare was called with the correct parameters
       expect(jwtService.sign).toHaveBeenCalledWith({ id: userData.id });
       expect(result).toEqual({ user: userData, accessToken: mockToken });
     });
 
     it('should throw an error if credentials are invalid', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@example.com', password: 'wrongPassword' };
+      const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'wrongPassword' };
 
       // Mock bcrypt.compare to return true (password matches)
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);

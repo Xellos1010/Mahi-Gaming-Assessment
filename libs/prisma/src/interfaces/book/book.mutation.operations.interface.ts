@@ -15,7 +15,7 @@ export interface PrismaAddBookResponse {
 }
 
 export interface PrismaRemoveBookByIdResponse {
-  book?: Book | null;
+  book: Book;
 }
 
 export interface PrismaUpdateBookResponse {
@@ -23,9 +23,9 @@ export interface PrismaUpdateBookResponse {
 }
 
 export interface PrismaAddUserToFavoriteBookResponse {
-  book?: Book | null;
+  book: Book;
 }
 
 export interface PrismaRemoveBookFromFavoritesResponse {
-  book?: Book | null;
+  book: Book;
 }

@@ -8,11 +8,11 @@ export interface PrismaGetAllUsersResponse {
 }
 
 export interface PrismaGetUserByIdResponse {
-  user: User | null;
+  user: User;
 }
 
 export interface PrismaGetUserByEmailResponse {
-  user: User | null;
+  user: User;
 }
 
 export interface PrismaGetUserFavoriteBooksResponse {
@@ -20,7 +20,7 @@ export interface PrismaGetUserFavoriteBooksResponse {
 }
 
 export interface PrismaGetUserByEmailIncludeFavoriteBooksResponse {
-  user: PrismaUserResponseWithFavoriteBooks | null;
+  user: PrismaUserResponseWithFavoriteBooks;
 }
 
 // Extending IUserQueryOperations to use the defined response types 
