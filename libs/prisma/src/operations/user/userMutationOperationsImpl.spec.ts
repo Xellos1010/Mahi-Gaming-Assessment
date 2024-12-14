@@ -4,7 +4,7 @@ import {
 import { prisma } from '../../client';
 import { vi, Mock } from 'vitest';
 import { Prisma, type User } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
-import { PrismaAddUserParams, PrismaRemoveUserByIdParams, PrismaSetLastLoggedInParams, PrismaSetUserPasswordParams } from '../../shared/types/user.types';
+import { PrismaAddUserParams, PrismaRemoveUserByIdParams, PrismaSetLastLoggedInNowParams, PrismaSetLastLoggedInParams, PrismaSetUserPasswordParams } from '../../shared/types/user.types';
 import { PrismaOperationError, UserNotFoundError } from '../../errors/prisma-errors';
 import { PrismaAddUserResponse, PrismaRemoveUserByIdResponse, PrismaUpdateUserResponse } from '../../interfaces/user/user.mutation.operations.interface';
 
@@ -88,6 +88,23 @@ describe('Prisma User Mutations', () => {
     };
 
     const result = await prismaUserMutationOperations.setLastLoggedIn(params);
+    expect(result).toEqual(mockResponse);
+    expect(prisma.user.update).toHaveBeenCalledWith({ where: { id }, data: { lastLoggedIn } });
+  });
+
+  it('should set the last logged-in date for a user to Now', async () => {
+    const { id } = userData;
+    const lastLoggedIn = new Date('2024-12-07T12:00:00Z');
+    const mockResponse = { user: { ...userData, lastLoggedIn } };
+
+    // Mocking the implementation for the update method
+    (prisma.user.update as Mock).mockResolvedValue(mockResponse.user);
+
+    const params: PrismaSetLastLoggedInNowParams = {
+      where: { id }
+    };
+
+    const result = await prismaUserMutationOperations.setLastLoggedInNow(params);
     expect(result).toEqual(mockResponse);
     expect(prisma.user.update).toHaveBeenCalledWith({ where: { id }, data: { lastLoggedIn } });
   });

@@ -21,6 +21,9 @@ export type PrismaSetLastLoggedInParams = {
   where: Prisma.UserWhereUniqueInput;
   lastLoggedIn: Date;
 };
+export type PrismaSetLastLoggedInNowParams = {
+  where: Prisma.UserWhereUniqueInput;
+};
 export type PrismaGetUserParams = {
     where: Prisma.UserWhereUniqueInput
 };

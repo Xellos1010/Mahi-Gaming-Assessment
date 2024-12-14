@@ -5,6 +5,7 @@ import {
   IUserMutationOperations, 
   PrismaAddUserResponse, 
   PrismaRemoveUserByIdResponse, 
+  PrismaSetLastLoggedInResponse, 
   PrismaUpdateUserResponse 
 } from "../../interfaces/user/user.mutation.operations.interface";
 import { 
@@ -12,7 +13,8 @@ import {
   PrismaUpdateUserParams, 
   PrismaRemoveUserByIdParams, 
   PrismaSetUserPasswordParams, 
-  PrismaSetLastLoggedInParams 
+  PrismaSetLastLoggedInParams, 
+  PrismaSetLastLoggedInNowParams
 } from "../../shared/types/user.types";
 import { 
   PrismaOperationError, 
@@ -169,6 +171,15 @@ class PrismaUserMutationOperationsImpl implements IUserMutationOperations {
       );
       logPrismaError(operationError);
       throw operationError;
+    }
+  }
+  
+  async setLastLoggedInNow({ where }: PrismaSetLastLoggedInNowParams): Promise<PrismaUpdateUserResponse> {
+    try {
+      const setLastLoggedInParams: PrismaSetLastLoggedInParams = {where, lastLoggedIn: new Date()};
+      return this.setLastLoggedIn(setLastLoggedInParams);
+    } catch (error) {
+      throw error; //Rethrow the already processed error
     }
   }
 }

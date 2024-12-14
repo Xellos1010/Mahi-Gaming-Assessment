@@ -1,4 +1,4 @@
-import { PrismaAddUserParams, PrismaRemoveUserByIdParams, PrismaUpdateUserParams, PrismaSetUserPasswordParams, PrismaSetLastLoggedInParams } from "../../shared/types/user.types";
+import { PrismaAddUserParams, PrismaRemoveUserByIdParams, PrismaUpdateUserParams, PrismaSetUserPasswordParams, PrismaSetLastLoggedInParams, PrismaSetLastLoggedInNowParams } from "../../shared/types/user.types";
 import type { User } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
 
 export interface IUserMutationOperations {
@@ -7,6 +7,7 @@ export interface IUserMutationOperations {
   updateUser(params: PrismaUpdateUserParams): Promise<PrismaUpdateUserResponse>;
   setUserPassword(params: PrismaSetUserPasswordParams): Promise<PrismaSetUserPasswordResponse>;
   setLastLoggedIn(params: PrismaSetLastLoggedInParams): Promise<PrismaSetLastLoggedInResponse>;
+  setLastLoggedInNow(params: PrismaSetLastLoggedInNowParams): Promise<PrismaSetLastLoggedInResponse>;
 }
 
 // Exportable response interfaces for each method
