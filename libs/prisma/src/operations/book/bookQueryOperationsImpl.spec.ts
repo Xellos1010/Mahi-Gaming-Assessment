@@ -1,12 +1,15 @@
+// libs/prisma/src/operations/book/bookQueryOperationsImpl.spec.ts 
 import {
   prismaBookQueryOperations
 } from './bookQueryOperationsImpl';
 import { prisma } from '../../client';
-import { vi, Mock } from 'vitest';
-import type { Book } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
-import { GetBookParams } from '../../shared/types/book.types';
+import { vi, Mock, describe, it, expect } from 'vitest';
+import {
+  PrismaOperationError
+} from '../../errors/prisma-errors';
+import { Prisma } from '@prisma/client';
+import type { Book } from '@prisma/client';
 
-// Mocking Prisma client
 vi.mock('../../client', () => ({
   prisma: {
     book: {
@@ -16,45 +19,68 @@ vi.mock('../../client', () => ({
   },
 }));
 
-const mockBook: Book = {
+const bookData: Book = {
   id: 1,
   title: 'Test Book',
-  description: 'Test description',
-  author: '',
-  imageId: null
+  author: 'Test Author',
+  description: 'Test Description',
+  imageId: null,
+  createdAt: new Date(),
+  updatedAt: null
 };
 
-const mockBooks: Book[] = [
-  {
-    ...mockBook
-  },
-  {
-    id: 2,
-    title: 'Book 2',
-    description: 'Description 2',
-    author: '',
-    imageId: null
-  },
-];
 describe('Prisma Book Queries', () => {
-  it('should get all books', async () => {
+  describe('Successful Operations', () => {
+    it('should get all books', async () => {
+      (prisma.book.findMany as Mock).mockResolvedValue([bookData]);
 
-    // Mocking the implementation for the findMany method
-    (prisma.book.findMany as Mock).mockResolvedValue(mockBooks);
+      const result = await prismaBookQueryOperations.getAllBooks();
 
-    const result = await prismaBookQueryOperations.getAllBooks();
-    expect(result).toEqual(mockBooks);
-    expect(prisma.book.findMany).toHaveBeenCalled();
+      expect(result).toEqual({ books: [bookData] });
+      expect(prisma.book.findMany).toHaveBeenCalled();
+    });
+
+    it('should get a book by ID', async () => {
+      (prisma.book.findUnique as Mock).mockResolvedValue(bookData);
+
+      const params = { id: bookData.id };
+      const result = await prismaBookQueryOperations.getBookById(params);
+
+      expect(result).toEqual({ book: bookData });
+      expect(prisma.book.findUnique).toHaveBeenCalledWith({ where: { id: bookData.id } });
+    });
   });
 
-  it('should get a specific book by ID', async () => {
+  describe('Error Handling', () => {
+    it('should throw PrismaOperationError when failing to retrieve all books', async () => {
+      const unexpectedError = new Error('Unexpected error');
 
-    const params: GetBookParams = mockBook as GetBookParams;
-    // Mocking the implementation for the findUnique method
-    (prisma.book.findUnique as Mock).mockResolvedValue(mockBook);
+      (prisma.book.findMany as Mock).mockRejectedValue(unexpectedError);
 
-    const result = await prismaBookQueryOperations.getBook(params);
-    expect(result).toEqual(mockBook);
-    expect(prisma.book.findUnique).toHaveBeenCalledWith({ where: { id: mockBook.id } });
+      await expect(prismaBookQueryOperations.getAllBooks())
+        .rejects
+        .toThrow(PrismaOperationError);
+    });
+
+    it('should throw PrismaOperationError when retrieving a book by a non-existent ID', async () => {
+      (prisma.book.findUnique as Mock).mockResolvedValue(null);
+
+      const params = { id: 999 };
+      await expect(prismaBookQueryOperations.getBookById(params))
+        .rejects
+        .toThrow(PrismaOperationError);
+    });
+
+    it('should throw PrismaOperationError for unexpected database errors when getting a book by ID', async () => {
+      const unexpectedError = new Error('Database error');
+
+      (prisma.book.findUnique as Mock).mockRejectedValue(unexpectedError);
+
+      const params = { id: bookData.id };
+
+      await expect(prismaBookQueryOperations.getBookById(params))
+        .rejects
+        .toThrow(PrismaOperationError);
+    });
   });
 });

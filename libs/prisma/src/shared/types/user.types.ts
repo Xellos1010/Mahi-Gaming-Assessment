@@ -1,23 +1,29 @@
 // libs/prisma/src/shared/types/user.types.ts
 import { Prisma } from '@prisma/client';
 
-export type AddUserParams = Prisma.UserCreateInput;
-export type UpdateUserParams = {
+export type PrismaAddUserParams = Prisma.UserCreateInput;
+export type PrismaUpdateUserParams = {
   where: Prisma.UserWhereUniqueInput;
   data: Prisma.UserUpdateInput;
 };
-export type RemoveUserByIdParams = Prisma.UserWhereUniqueInput;
-export type SetUserPasswordParams = {
+
+//Shared Base type that future implementations of the param interfaces can modify as needed
+type PrismaUserByIdParamsBase = Omit<Prisma.UserWhereUniqueInput, "id"> & { id: number };
+
+// Modified the params to require id
+export type PrismaRemoveUserByIdParams = PrismaUserByIdParamsBase;
+
+export type PrismaSetUserPasswordParams = {
   where: Prisma.UserWhereUniqueInput;
   password: string;
 };
-export type SetLastLoggedInParams = {
+export type PrismaSetLastLoggedInParams = {
   where: Prisma.UserWhereUniqueInput;
   lastLoggedIn: Date;
 };
-export type GetUserParams = {
+export type PrismaGetUserParams = {
     where: Prisma.UserWhereUniqueInput
 };
-export type GetUserByIdParams = Prisma.UserWhereUniqueInput;
-export type GetUserByEmailParams = Prisma.UserWhereUniqueInput; // Uses `email`
-export type GetUserFavoriteBooksParams = Prisma.UserWhereUniqueInput;
+export type PrismaGetUserByIdParams = PrismaUserByIdParamsBase;
+export type PrismaGetUserByEmailParams = Omit<Prisma.UserWhereUniqueInput, "email"> & { email: string };
+export type PrismaGetUserByIdFavoriteBooksParams = PrismaUserByIdParamsBase;
