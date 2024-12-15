@@ -22,7 +22,17 @@
         "development": {
           "args": ["node-env=development"]
         }
-      }
+      },
+      "outputs": ["{options.outputPath}"],
+      "afterBuild": [
+        {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "cp -r apps/react-mahi-book-store-backend/scripts/* {options.outputPath}/scripts",
+            "cwd": "apps/react-mahi-book-store-backend"
+          }
+        }
+      ]
     },
     "serve": {
       "executor": "@nx/js:node",

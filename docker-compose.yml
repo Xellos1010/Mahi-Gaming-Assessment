@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: bookstore_db_prod
+    ports:
+      - '5433:5432'  # Changed host port to avoid conflicts
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bookstore
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - bookstore_network
+
+  backend:
+    build:
+      context: ./
+      dockerfile: apps/react-mahi-book-store-backend/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/bookstore
+    networks:
+      - bookstore_network
+    ports:
+      - '3001:3000'  # Changed host port to 3001
+      # cat -v /app/scripts/startup.sh dos2unix
+    # command: ["sh", "-c", "pwd && ls -d $(pwd)/* && ls -d /app/scripts/* || 'no scripts folder' && cat -v /app/scripts/startup.sh || 'Startup script cannot be logged' && chmod +x /app/scripts/startup.sh && /app/scripts/startup.sh || echo 'no startup script, books not initialized in database. Ensure the scripts/startup.sh is present' && /app/scripts/startup.sh || 'no startup script, books not initialized in database. Ensure the /app/scripts/startup.sh is present'"]
+    # command: ["sh", "-c", "chmod +x scripts/startup.sh && scripts/startup.sh || echo 'no startup script, books not initialized in database. Ensure the scripts/startup.sh is present'"]
+    # command: ["sh", "-c", "scripts/startup.sh || 'no startup script, books not initialized in database. Ensure the scripts/startup.sh is present'"] 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      timeout: 10s
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_prod
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '8081:80'  # Changed host port to 8081
+    networks:
+      - bookstore_network
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: apps/react-mahi-book-store/Dockerfile
+    ports:
+      - '4201:80'  # Changed to map to NGINX's default port
+    environment:
+      - VITE_PROXY=/api=http://backend:3000
+    depends_on:
+      - backend
+    networks:
+      - bookstore_network
+
+volumes:
+  pgdata:
+
+networks:
+  bookstore_network:
+    driver: bridge

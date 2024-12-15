@@ -25,6 +25,8 @@ RUN apk add --no-cache openssl
 # Copy package files and production files
 COPY package.json package-lock.json ./
 COPY libs/prisma/prisma prisma
+
+# Copy the dist app files
 COPY dist/apps/react-mahi-book-store-backend dist/apps/react-mahi-book-store-backend
 
 # Install production dependencies
@@ -35,6 +37,14 @@ RUN npx prisma generate --schema=prisma/schema.prisma
 
 # Adjust ownership of the directory
 RUN chown -R react-mahi-book-store-backend:react-mahi-book-store-backend .
+
+# Copy the startup script and add-books.sh to the container
+# COPY apps/react-mahi-book-store-backend/scripts/startup.sh scripts/startup.sh
+# COPY apps/react-mahi-book-store-backend/scripts/add-books.sh scripts/add-books.sh
+COPY apps/react-mahi-book-store-backend/scripts/startup.sh scripts/startup.sh
+COPY apps/react-mahi-book-store-backend/scripts/add-books.sh scripts/add-books.sh
+RUN chmod +x scripts/startup.sh scripts/add-books.sh
+# RUN chmod +x scripts/startup.sh scripts/add-books.sh
 
 # Use a shell command to run database migrations and then start the application
 CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db push && node dist/apps/react-mahi-book-store-backend/main.js"]

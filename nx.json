@@ -77,6 +77,24 @@
         "production",
         "^production"
       ]
+    },
+    "docker:up": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f docker-compose.yml up --build"
+      }
+    },
+    "docker:down": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f docker-compose.yml down"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run-many --target=lint"
+      }
     }
   },
   "generators": {

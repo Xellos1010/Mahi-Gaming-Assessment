@@ -7,6 +7,8 @@ const mockBooks : Book[]= [
       author: "F. Scott Fitzgerald",
       description: "A novel about the Jazz Age in the 1920s.",
       imageId: "https://via.placeholder.com/100x150?text=The+Great+Gatsby",
+      createdAt: new Date(),
+      updatedAt: null
     },
     {
       id: 2,
@@ -14,6 +16,8 @@ const mockBooks : Book[]= [
       author: "Harper Lee",
       description: "A classic of modern American literature.",
       imageId: "https://via.placeholder.com/100x150?text=To+Kill+a+Mockingbird",
+      createdAt: new Date(),
+      updatedAt: null
     },
     {
       id: 3,
@@ -21,6 +25,8 @@ const mockBooks : Book[]= [
       author: "George Orwell",
       description: "A dystopian novel set in a totalitarian society.",
       imageId: "https://via.placeholder.com/100x150?text=1984",
+      createdAt: new Date(),
+      updatedAt: null
     },
   ];
   
