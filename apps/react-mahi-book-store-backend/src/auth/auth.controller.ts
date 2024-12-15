@@ -8,6 +8,7 @@ import {
 } from '../dtos/auth.dto';
 import { HandleControllerError } from "../decorators/errorHandling/controller.error.handler";
 import { WrapApiResponse } from '../decorators/controller.api-response.';
+import { BaseApiResponseDto } from '@dto/base.response.dto';
 
 
 @Controller('auth')
@@ -17,27 +18,30 @@ export class AuthController {
   @Post('register')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(201)
-  @HandleControllerError('Registering a new user')
-  @WrapApiResponse()
-  async register(@Body() createUserDto: CreateUserRequestDto): Promise<BaseCreateUserDatabaseResponseDto> {
-    return await this.authService.register(createUserDto) as BaseCreateUserDatabaseResponseDto;
+  ////@HandleControllerError('Registering a new user')
+  // @WrapApiResponse()
+  //@HandleControllerError()
+  async register(@Body() createUserDto: CreateUserRequestDto): Promise<BaseApiResponseDto<BaseCreateUserDatabaseResponseDto>> {
+    return await this.authService.register(createUserDto);
   }
 
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(200)
-  @HandleControllerError('Logging in a user')
-  @WrapApiResponse()
-  async login(@Body() loginUserDto: LoginUserRequestDto): Promise<LoginUserDatabaseResponseDto> {
-    return await this.authService.login(loginUserDto) as LoginUserDatabaseResponseDto;
+  ////@HandleControllerError('Logging in a user')
+  // @WrapApiResponse()
+  //@HandleControllerError()
+  async login(@Body() loginUserDto: LoginUserRequestDto): Promise<BaseApiResponseDto<LoginUserDatabaseResponseDto>> {
+    return await this.authService.login(loginUserDto);
   }
 
   @Post('logout')
   @HttpCode(200)
-  @HandleControllerError('Logging out a user')
-  @WrapApiResponse()
-  async logout() {
-    // Typically handle client-side token clearing or server-side token invalidation. 
-    return { message: 'Logout successful' };  // This will be wrapped by WrapApiResponse 
+  ////@HandleControllerError('Logging out a user')
+  // @WrapApiResponse()
+  //@HandleControllerError()
+  async logout(): Promise<BaseApiResponseDto<string>> {
+    // Typically handle client-side token clearing or server-side token invalidation.
+    return this.authService.logout();
   }
 }

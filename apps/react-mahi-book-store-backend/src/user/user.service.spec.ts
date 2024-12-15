@@ -1,7 +1,16 @@
+// apps/react-mahi-book-store-backend/src/user/user.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { prismaOperations } from '@prismaDist/index';
-
+import { PrismaUserResponseWithFavoriteBooks } from '@prismaDist/interfaces/user/user.types';
+import { PrismaGetAllUsersResponse, PrismaGetUserByIdResponse, PrismaGetUserFavoriteBooksResponse } from '@prismaDist/interfaces/user/user.query.operations.interface';
+import { AddUserRequestDto, BaseGetUserByIdRequestDto, BaseUserByIdRequestDto, BaseUserDatabaseResponseDto, BaseUsersDatabaseResponseDto, SetUserPasswordRequestDto } from '@dto/user.dto';
+import { PrismaAddUserResponse, PrismaRemoveUserByIdResponse, PrismaUpdateUserResponse } from '@prismaDist/interfaces/user/user.mutation.operations.interface';
+import { PrismaSetLastLoggedInNowParams, PrismaSetLastLoggedInParams, PrismaSetUserPasswordParams } from '@prismaDist/shared/types/user.types';
+import { favoriteBooks, mockUser, mockUsers } from '../consts/shared.tests.consts';
+import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { BaseBooksDatabaseResponseDto } from '@dto/book.dto';
+import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 jest.mock('@prismaDist/index', () => ({
     prismaOperations: {
         userQuery: {
@@ -21,39 +30,10 @@ jest.mock('@prismaDist/index', () => ({
 describe('UserService', () => {
     let userService: UserService;
 
-    const mockUser = {
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        password: 'securepassword',
-        lastLoggedIn: new Date(),
+    const mockUserWithBooks: PrismaUserResponseWithFavoriteBooks = {
+        ...mockUser,
+        favoriteBooks
     };
-
-    const mockUsers = [
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'johndoe@example.com',
-            password: 'securepassword',
-            lastLoggedIn: new Date(),
-        },
-    ];
-
-    const mockUserWithBooks = [{
-        id: 1,
-        title: 'The Great Gatsby',
-        author: 'F. Scott Fitzgerald',
-        description: 'A classic novel.',
-        imageId: 'image123',
-    }];
-    // const mockUserWithBooks = [
-    //     {
-    //         id: 1,
-    //         name: 'The Great Gatsby',
-    //         description: 'A classic novel.',
-    //         imageId: 'image123',
-    //     },
-    // ];
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -69,95 +49,132 @@ describe('UserService', () => {
 
     describe('getAllUsers', () => {
         it('should call prismaOperations.userQuery.getAllUsers and return users', async () => {
-            jest.spyOn(prismaOperations.userQuery, 'getAllUsers').mockResolvedValue(mockUsers);
+            const mockUserServiceResolvedValue: BaseApiResponseDto<BaseUsersDatabaseResponseDto> = wrapResponseSuccess(new BaseUsersDatabaseResponseDto(
+                mockUsers
+            ));
+            jest.spyOn(prismaOperations.userQuery, 'getAllUsers').mockResolvedValue(mockUserServiceResolvedValue.data);
 
             const result = await userService.getAllUsers();
-
             expect(prismaOperations.userQuery.getAllUsers).toHaveBeenCalled();
-            expect(result).toEqual(mockUsers);
+            expect(result).toEqual(mockUserServiceResolvedValue);
         });
     });
 
     describe('getUserById', () => {
         it('should call prismaOperations.userQuery.getUserById with correct id', async () => {
-            jest.spyOn(prismaOperations.userQuery, 'getUserById').mockResolvedValue(mockUser);
-
-            const result = await userService.getUserById(mockUser.id);
-
-            expect(prismaOperations.userQuery.getUserById).toHaveBeenCalledWith({
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(new BaseUserDatabaseResponseDto(
+                mockUser
+            ));
+            jest.spyOn(prismaOperations.userQuery, 'getUserById').mockResolvedValue(mockResolvedValue.data);
+            const params: BaseGetUserByIdRequestDto = {
                 id: mockUser.id
-            });
-            expect(result).toEqual(mockUser);
+            };
+            const result = await userService.getUserById(params);
+
+            expect(prismaOperations.userQuery.getUserById).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
     });
 
     describe('addUser', () => {
         it('should call prismaOperations.userMutation.addUser with correct data', async () => {
-            const mockResponse = mockUser;
-            jest.spyOn(prismaOperations.userMutation, 'addUser').mockResolvedValue(mockResponse);
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(
+                new BaseUserDatabaseResponseDto(
+                    mockUser
+                )
+            );
+            jest.spyOn(prismaOperations.userMutation, 'addUser').mockResolvedValue(mockResolvedValue.data);
+            const params: AddUserRequestDto =
+            {
+                ...mockUser
+            };
+            const result = await userService.addUser(params);
 
-            const result = await userService.addUser(mockUser);
-
-            expect(prismaOperations.userMutation.addUser).toHaveBeenCalledWith(mockUser);
-            expect(result).toEqual(mockResponse);
+            expect(prismaOperations.userMutation.addUser).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
     });
 
     describe('removeUserById', () => {
         it('should call prismaOperations.userMutation.removeUserById with correct id', async () => {
-            const mockResponse = mockUser;
-            jest.spyOn(prismaOperations.userMutation, 'removeUserById').mockResolvedValue(mockResponse);
-
-            const result = await userService.removeUserById(mockUser.id);
-
-            expect(prismaOperations.userMutation.removeUserById).toHaveBeenCalledWith({
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(
+                new BaseUserDatabaseResponseDto(
+                    mockUser
+                )
+            );
+            jest.spyOn(prismaOperations.userMutation, 'removeUserById').mockResolvedValue(mockResolvedValue.data);
+            const params: BaseGetUserByIdRequestDto = {
                 id: mockUser.id
-            });
-            expect(result).toEqual(mockResponse);
+            };
+            const result = await userService.removeUserById(params);
+
+            expect(prismaOperations.userMutation.removeUserById).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
     });
 
     describe('setUserPassword', () => {
         it('should call prismaOperations.userMutation.setUserPassword with correct id and password', async () => {
-            const mockResponse = mockUser;
-            jest.spyOn(prismaOperations.userMutation, 'setUserPassword').mockResolvedValue(mockResponse);
+            const userPassword: string = 'newpassword';
 
-            const result = await userService.setUserPassword(mockUser.id, { password: 'newpassword' });
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(
+                new BaseUserDatabaseResponseDto(
+                    mockUser
+                )
+            );
 
-            expect(prismaOperations.userMutation.setUserPassword).toHaveBeenCalledWith({
-                where: {id: mockUser.id}, 
-                password:  'newpassword'
-            });
-            expect(result).toEqual(mockResponse);
+            jest.spyOn(prismaOperations.userMutation, 'setUserPassword').mockResolvedValue(mockResolvedValue.data);
+
+            const params: SetUserPasswordRequestDto = {
+                id: mockUser.id,
+                password: userPassword
+            };
+            const result = await userService.setUserPassword(params);
+
+            const expectedToHaveBeenCalledWith: PrismaSetUserPasswordParams = {
+                where: { id: mockUser.id },
+                password: userPassword
+            }
+            expect(prismaOperations.userMutation.setUserPassword).toHaveBeenCalledWith(expectedToHaveBeenCalledWith);
+            expect(result).toEqual(mockResolvedValue);
         });
     });
 
-    describe('setLastLoggedIn', () => {
-        it('should call prismaOperations.userMutation.setLastLoggedIn with correct id and date', async () => {
-            const date = new Date();
-            const mockResponse = { lastLoggedIn: date, ...mockUser };
-            jest.spyOn(prismaOperations.userMutation, 'setLastLoggedIn').mockResolvedValue(mockResponse);
+    describe('setLastLoggedInNow', () => {
+        it('should call prismaOperations.userMutation.setLastLoggedIn with correct id', async () => {
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(new BaseUserDatabaseResponseDto(
+                mockUser
+            ));
+            jest.spyOn(prismaOperations.userMutation, 'setLastLoggedIn').mockResolvedValue(mockResolvedValue.data);
 
-            const result = await userService.setLastLoggedIn(mockUser.id, { lastLoggedIn: date });;
+            const params: BaseUserByIdRequestDto = new BaseUserByIdRequestDto(
+                mockUser.id
+            );
+            const result = await userService.setLastLoggedInNow(params);;
 
-            expect(prismaOperations.userMutation.setLastLoggedIn).toHaveBeenCalledWith({
-                where: { id:mockUser.id}, 
-                lastLoggedIn: { lastLoggedIn: date }
-            });
-            expect(result).toEqual(mockResponse);
+            const expectedToHaveBeenCalledWith: PrismaSetLastLoggedInParams = {
+                where: { id: mockUser.id },
+                lastLoggedIn: expect.any(Date)
+            };
+            expect(prismaOperations.userMutation.setLastLoggedIn).toHaveBeenCalledWith(expectedToHaveBeenCalledWith);
+            expect(result).toEqual(mockResolvedValue);
         });
     });
 
     describe('getUserFavoriteBooks', () => {
         it('should call prismaOperations.userQuery.getUserFavoriteBooks with correct id', async () => {
-            jest.spyOn(prismaOperations.userQuery, 'getUserFavoriteBooks').mockResolvedValue(mockUserWithBooks);
+            const mockResolvedValue: BaseApiResponseDto<BaseBooksDatabaseResponseDto> = wrapResponseSuccess(new BaseBooksDatabaseResponseDto(
+                favoriteBooks
+            ));
+            jest.spyOn(prismaOperations.userQuery, 'getUserFavoriteBooks').mockResolvedValue(mockResolvedValue.data);
 
-            const result = await userService.getUserFavoriteBooks(mockUser.id);
-
-            expect(prismaOperations.userQuery.getUserFavoriteBooks).toHaveBeenCalledWith(
-                { id: mockUser.id }
+            const params: BaseGetUserByIdRequestDto = new BaseGetUserByIdRequestDto(
+                mockUser.id
             );
-            expect(result).toEqual(mockUserWithBooks);
+            const result = await userService.getUserFavoriteBooks(params);
+
+            expect(prismaOperations.userQuery.getUserFavoriteBooks).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
     });
 });

@@ -2,39 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common/exceptions';
+import { BaseGetUserByIdRequestDto, BaseUserDatabaseResponseDto, BaseUsersDatabaseResponseDto, SetUserPasswordRequestDto, UpdateUserPasswordDto } from '@dto/user.dto';
+import { mockUsers, mockUser, mockBooks } from '../consts/shared.tests.consts';
+import { CreateUserRequestDto } from '@dto/auth.dto';
+import { BaseBooksDatabaseResponseDto } from '@dto/book.dto';
+import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 
 describe('UserController', () => {
     let userController: UserController;
     let userService: UserService;
-
-    const mockUser = {
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        password: 'securepassword',
-        lastLoggedIn: new Date(),
-    };
-
-    const mockUsers = [
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'johndoe@example.com',
-            password: 'securepassword',
-            lastLoggedIn: new Date(),
-        },
-    ];
-
-    const mockUserWithBooks = [
-        {
-            id: 1,
-            title: 'The Great Gatsby',
-            author: "Author 1",
-            description: 'A classic novel.',
-            imageId: 'image123',
-        },
-    ];
-
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -65,12 +42,15 @@ describe('UserController', () => {
 
     describe('getAllUsers', () => {
         it('should call UserService.getAllUsers and return all users', async () => {
-            jest.spyOn(userService, 'getAllUsers').mockResolvedValue(mockUsers);
+            const mockResolvedValue: BaseApiResponseDto<BaseUsersDatabaseResponseDto> = wrapResponseSuccess(new BaseUsersDatabaseResponseDto(
+                mockUsers
+            ));
+            jest.spyOn(userService, 'getAllUsers').mockResolvedValue(mockResolvedValue);
 
             const result = await userController.getAllUsers();
 
             expect(userService.getAllUsers).toHaveBeenCalled();
-            expect(result).toEqual(mockUsers);
+            expect(result).toEqual(mockResolvedValue);
         });
         it('should throw an error if UserService.getAllUsers fails', async () => {
             jest.spyOn(userService, 'getAllUsers').mockRejectedValue(new BadRequestException('Get all users failed'));
@@ -79,30 +59,37 @@ describe('UserController', () => {
     });
 
     describe('getUserById', () => {
+        const params: BaseGetUserByIdRequestDto = new BaseGetUserByIdRequestDto(
+            mockUser.id
+        );
         it('should call UserService.getUserById with correct id', async () => {
-            jest.spyOn(userService, 'getUserById').mockResolvedValue(mockUser);
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(new BaseUserDatabaseResponseDto(
+                mockUser
+            ));
+            jest.spyOn(userService, 'getUserById').mockResolvedValue(mockResolvedValue);
 
-            const result = await userController.getUserById(mockUser.id);
-
-            expect(userService.getUserById).toHaveBeenCalledWith(mockUser.id);
-            expect(result).toEqual(mockUser);
+            const result = await userController.getUserById(params);
+            expect(userService.getUserById).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
         it('should throw an error if UserService.getUserById fails', async () => {
-            const mockId = 1;
-            jest.spyOn(userService, 'getUserById').mockRejectedValue(new NotFoundException(`User with ID ${mockId} not found`));
-            await expect(userController.getUserById(mockId)).rejects.toThrow(NotFoundException);
+            jest.spyOn(userService, 'getUserById').mockRejectedValue(new NotFoundException(`User with ID ${params.id} not found`));
+            await expect(userController.getUserById(params)).rejects.toThrow(NotFoundException);
         });
     });
 
     describe('addUser', () => {
         it('should call UserService.addUser with correct data', async () => {
-            const mockResponse = mockUser;
-            jest.spyOn(userService, 'addUser').mockResolvedValue(mockResponse);
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(new BaseUserDatabaseResponseDto(
+                mockUser
+            ));
+            jest.spyOn(userService, 'addUser').mockResolvedValue(mockResolvedValue);
 
-            const result = await userController.addUser(mockUser);
+            const params: CreateUserRequestDto = mockUser as CreateUserRequestDto;
+            const result = await userController.addUser(params);
 
-            expect(userService.addUser).toHaveBeenCalledWith(mockUser);
-            expect(result).toEqual(mockResponse);
+            expect(userService.addUser).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
         it('should throw an error if UserService.addUser fails', async () => {
             jest.spyOn(userService, 'addUser').mockRejectedValue(new BadRequestException('Invalid user data'));
@@ -111,78 +98,66 @@ describe('UserController', () => {
     });
 
     describe('removeUser', () => {
+        const params: BaseGetUserByIdRequestDto = {
+            id: mockUser.id
+        };
         it('should call UserService.removeUserById with correct id', async () => {
-            const mockResponse = mockUser;
-            jest.spyOn(userService, 'removeUserById').mockResolvedValue(mockUser);
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(new BaseUserDatabaseResponseDto(
+                mockUser
+            ));
+            jest.spyOn(userService, 'removeUserById').mockResolvedValue(mockResolvedValue);
+            const result = await userController.removeUserById(params);
 
-            const result = await userController.removeUserById(mockUser.id);
-
-            expect(userService.removeUserById).toHaveBeenCalledWith(mockUser.id);
-            expect(result).toEqual(mockResponse);
+            expect(userService.removeUserById).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
         it('should throw an error if UserService.removeUserById fails', async () => {
-            const mockId = 1;
             jest.spyOn(userService, 'removeUserById').mockRejectedValue(new Error('Remove user failed'));
-            await expect(userController.removeUserById(mockId)).rejects.toThrow(Error);
+            await expect(userController.removeUserById(params)).rejects.toThrow(Error);
         });
     });
 
     describe('setUserPassword', () => {
+        const userWithPasswordData = { password: 'newpassword', ...mockUser };
+        const expectedToHaveBeenCalledWith: SetUserPasswordRequestDto = {
+            id: mockUser.id,
+            password: userWithPasswordData.password
+        };
         it('should call UserService.setUserPassword with correct id and password', async () => {
-            const userWithPasswordData = { password: 'newpassword', ...mockUser };
-            jest.spyOn(userService, 'setUserPassword').mockResolvedValue(userWithPasswordData);
-
-            const result = await userController.setUserPassword(mockUser.id, { password: userWithPasswordData.password });
+            const mockResolvedValue: BaseApiResponseDto<BaseUserDatabaseResponseDto> = wrapResponseSuccess(new BaseUserDatabaseResponseDto(
+                userWithPasswordData
+            ));
+            jest.spyOn(userService, 'setUserPassword').mockResolvedValue(mockResolvedValue);
+            const result = await userController.setUserPassword(new BaseGetUserByIdRequestDto(expectedToHaveBeenCalledWith.id), new UpdateUserPasswordDto(expectedToHaveBeenCalledWith.password));
 
             expect(userService.setUserPassword).toHaveBeenCalledWith(
-                mockUser.id, // This is the 'where' condition
-                { password: userWithPasswordData.password } // This is the password
+                expectedToHaveBeenCalledWith
             );
-            expect(result).toEqual(userWithPasswordData);
+            expect(result).toEqual(mockResolvedValue);
         });
         it('should throw an error if UserService.setUserPassword fails', async () => {
-            const mockId = 1;
             jest.spyOn(userService, 'setUserPassword').mockRejectedValue(new BadRequestException('Password set failed'));
-            await expect(userController.setUserPassword(mockId, { password: 'newpassword' })).rejects.toThrow(BadRequestException);
+            await expect(userController.setUserPassword(new BaseGetUserByIdRequestDto(expectedToHaveBeenCalledWith.id), new UpdateUserPasswordDto(expectedToHaveBeenCalledWith.password))).rejects.toThrow(BadRequestException);
         });
     });
-
-    describe('setLastLoggedIn', () => {
-        it('should call UserService.setLastLoggedIn with correct id and date', async () => {
-            const lastLoggedIn: Date = new Date(); // Ensure it matches the expected shape
-            const mockResponse = { ...mockUser, lastLoggedIn }; // Updated mock response
-            jest.spyOn(userService, 'setLastLoggedIn').mockResolvedValue(mockResponse);
-
-            const result = await userController.setLastLoggedIn(mockUser.id, { lastLoggedIn });
-
-            expect(userService.setLastLoggedIn).toHaveBeenCalledWith(
-                mockUser.id, // The 'where' clause for the id
-                { lastLoggedIn: lastLoggedIn } // The actual data being updated
-            );
-            expect(result).toEqual(mockResponse);
-        });
-        it('should throw an error if UserService.setLastLoggedIn fails', async () => {
-            const mockId = 1;
-            jest.spyOn(userService, 'setLastLoggedIn').mockRejectedValue(new Error('Set last logged in failed'));
-            await expect(userController.setLastLoggedIn(mockId, { lastLoggedIn: new Date() })).rejects.toThrow(Error);
-        });
-    });
-
 
     describe('getUserFavoriteBooks', () => {
+        const params: BaseGetUserByIdRequestDto = {
+            id: mockUser.id
+        };
         it('should call UserService.getUserFavoriteBooks with correct id', async () => {
+            const mockResolvedValue: BaseApiResponseDto<BaseBooksDatabaseResponseDto> = wrapResponseSuccess(new BaseBooksDatabaseResponseDto(
+                mockBooks
+            ));
+            jest.spyOn(userService, 'getUserFavoriteBooks').mockResolvedValue(mockResolvedValue);
+            const result = await userController.getUserFavoriteBooks(params);
 
-            jest.spyOn(userService, 'getUserFavoriteBooks').mockResolvedValue(mockUserWithBooks);
-
-            const result = await userController.getUserFavoriteBooks(mockUser.id);
-
-            expect(userService.getUserFavoriteBooks).toHaveBeenCalledWith(mockUser.id);
-            expect(result).toEqual(mockUserWithBooks);
+            expect(userService.getUserFavoriteBooks).toHaveBeenCalledWith(params);
+            expect(result).toEqual(mockResolvedValue);
         });
         it('should throw an error if UserService.getUserFavoriteBooks fails', async () => {
-            const mockId = 1;
             jest.spyOn(userService, 'getUserFavoriteBooks').mockRejectedValue(new Error('Get favorite books failed'));
-            await expect(userController.getUserFavoriteBooks(mockId)).rejects.toThrow(Error);
+            await expect(userController.getUserFavoriteBooks(params)).rejects.toThrow(Error);
         });
     });
 });

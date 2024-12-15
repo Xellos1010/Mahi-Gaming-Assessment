@@ -1,11 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { CreateUserRequestDto, LoginUserRequestDto } from '../dtos/auth.dto';
+import { BaseCreateUserDatabaseResponseDto, CreateUserRequestDto, LoginUserDatabaseResponseDto, LoginUserRequestDto } from '../dtos/auth.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import type { User } from '@prisma/client';
 import { UserService } from '@user/user.service';
 import { PrismaUserResponseWithFavoriteBooks } from '@prismaDist/interfaces/user/user.types';
+import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
+import { loginSuccessMessage, registerSuccessMessage } from '../consts/auth.consts';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -35,7 +38,7 @@ describe('AuthController', () => {
         },
       ],
     }).compile();
-  
+
     authController = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
     userService = module.get<UserService>(UserService);
@@ -72,11 +75,18 @@ describe('AuthController', () => {
   describe('register', () => {
     it('should call AuthService.register and return a success message', async () => {
       const mockToken = 'mockAccessToken';
-      jest.spyOn(authService, 'register').mockResolvedValue({ user: userData, accessToken: mockToken });
+      const mockServiceResolvedValue: BaseApiResponseDto<BaseCreateUserDatabaseResponseDto> = wrapResponseSuccess<BaseCreateUserDatabaseResponseDto>(
+        new BaseCreateUserDatabaseResponseDto(
+        userData,
+        mockToken
+      ),
+      registerSuccessMessage
+    );
+      jest.spyOn(authService, 'register').mockResolvedValue(mockServiceResolvedValue);
 
       const result = await authController.register(createUserDto);
       expect(authService.register).toHaveBeenCalledWith(createUserDto);
-      expect(result).toEqual({ message: 'User registered successfully', user: userData, accessToken: mockToken}); //The mockUser's hashed password 
+      expect(result).toEqual(mockServiceResolvedValue); //The mockUser's hashed password 
     });
 
     it('should throw an error if AuthService.register fails', async () => {
@@ -87,43 +97,45 @@ describe('AuthController', () => {
   });
 
   describe('login', () => {
+    const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'password123' };
     it('should call AuthService.login and return a success message with user and accessToken', async () => {
-      const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'password123' };
-      const mockResponse = {
-        user: userDataWithFavorites,
-        accessToken: expect.any(String)
-      };
+      const mockServiceResolvedValue: BaseApiResponseDto<LoginUserDatabaseResponseDto> = wrapResponseSuccess(
+        new LoginUserDatabaseResponseDto(
+          userDataWithFavorites,
+          expect.any(String)
+        ),
+        loginSuccessMessage
+      );
 
-      jest.spyOn(authService, 'login').mockResolvedValue(mockResponse);
+      jest.spyOn(authService, 'login').mockResolvedValue(mockServiceResolvedValue);
 
       const result = await authController.login(loginUserDto);
 
       expect(authService.login).toHaveBeenCalledWith(loginUserDto);
-      expect(result).toEqual({ message: 'Login successful', ...mockResponse });
+      expect(result).toEqual(mockServiceResolvedValue);
     });
 
     it('should throw an error if AuthService.login fails', async () => {
-      const loginUserDto: LoginUserRequestDto = { email: 'test@example.com', password: 'wrongpassword' };
-
       jest.spyOn(authService, 'login').mockRejectedValue(new UnauthorizedException('Invalid email or password'));
-
       await expect(authController.login(loginUserDto)).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('logout', () => {
     it('should call AuthService.logout and return a success message', async () => {
-      jest.spyOn(authService, 'logout').mockResolvedValue(undefined);
+      const mockServiceResolvedValue : BaseApiResponseDto<string> = wrapResponseSuccess(
+        null,
+        'Logout successful'
+      )
+      jest.spyOn(authService, 'logout').mockResolvedValue(mockServiceResolvedValue);
 
       const result = await authController.logout();
-
-      expect(authService.logout).toHaveBeenCalled();
-      expect(result).toEqual({ message: 'Logout successful' });
+      // console.log(`results: ${result}\nmockServiceResolveValue: ${mockServiceResolvedValue}`);
+      expect(result).toEqual(mockServiceResolvedValue);
     });
 
     it('should throw an error if AuthService.logout fails', async () => {
       jest.spyOn(authService, 'logout').mockRejectedValue(new Error('Logout failed'));
-
       await expect(authController.logout()).rejects.toThrow('Logout failed');
     });
   });

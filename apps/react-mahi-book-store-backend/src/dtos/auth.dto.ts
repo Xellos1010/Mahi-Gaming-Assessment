@@ -58,20 +58,20 @@ export class LoginUserDatabaseResponseDtoMod {
   }
 }
 
-export class CreateUserApiResponseDto extends BaseApiResponseDto<BaseCreateUserDatabaseResponseDto> {
-  constructor(status: boolean, user: User, accessToken: string, error?: string) {
-    super(status, { user, accessToken }, error); // Set success to true and populate the data
-  }
-}
+// export class CreateUserApiResponseDto extends BaseApiResponseDto<BaseCreateUserDatabaseResponseDto> {
+//   constructor(status: boolean, user: User, accessToken: string, error?: string) {
+//     super(status, { user, accessToken }, error); // Set success to true and populate the data
+//   }
+// }
 
-export class LoginUserApiResponseDto extends BaseApiResponseDto<LoginUserDatabaseResponseDto> {
-  constructor(
-    status: boolean,
-    user: PrismaUserResponseWithFavoriteBooks,
-    accessToken: string,
-    error?: string
-  ) {
-    const data = new LoginUserDatabaseResponseDto(user, accessToken); // Create the expected type
-    super(status, data, error);
-  }
-}
+// export class LoginUserApiResponseDto extends BaseApiResponseDto<LoginUserDatabaseResponseDto> {
+//   constructor(
+//     status: boolean,
+//     user: PrismaUserResponseWithFavoriteBooks,
+//     accessToken: string,
+//     error?: string
+//   ) {
+//     const data = new LoginUserDatabaseResponseDto(user, accessToken); // Create the expected type
+//     super(status, data, error);
+//   }
+// }

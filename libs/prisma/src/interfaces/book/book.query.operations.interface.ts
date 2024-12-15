@@ -4,7 +4,7 @@ import type { Book } from "@prisma/client"; //We are importing the generated boo
 
 export interface IBookQueryOperations {
   getAllBooks(): Promise<PrismaGetAllBooksResponse>;
-  getBookById(params: PrismaGetBookByIdParams): Promise<PrismaGetBookByIdResponse>;
+  getBook(params: PrismaGetBookByIdParams): Promise<PrismaGetBookByIdResponse>;
 }
 
 // Exportable response interfaces for each method

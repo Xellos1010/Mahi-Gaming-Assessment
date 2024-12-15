@@ -29,7 +29,7 @@ class PrismaBookQueryOperationsImpl implements IBookQueryOperations {
     }
   }
 
-  async getBookById({ id }: PrismaGetBookByIdParams): Promise<PrismaGetBookByIdResponse> {
+  async getBook({ id }: PrismaGetBookByIdParams): Promise<PrismaGetBookByIdResponse> {
     try {
       const book = await prisma.book.findUnique({ where: { id } });
       if (!book) {

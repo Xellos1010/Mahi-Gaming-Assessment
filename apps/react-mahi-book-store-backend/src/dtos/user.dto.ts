@@ -86,7 +86,7 @@ export class BaseUserDatabaseResponseDto {
   }
 }
 
-export class BaseUsersApiResponseDto {
+export class BaseUsersDatabaseResponseDto {
   @IsArray()
   users: User[];
 

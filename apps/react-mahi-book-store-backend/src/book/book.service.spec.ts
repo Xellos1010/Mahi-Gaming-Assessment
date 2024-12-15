@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookService } from './book.service';
 import { prismaOperations } from '@prismaDist/index';
+import { mockBooks, mockBook } from '../consts/shared.tests.consts';
+import { BaseBookDatabaseResponseDto, BaseBooksDatabaseResponseDto, BaseGetBookByIdRequestDto } from '@dto/book.dto';
+import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 
 jest.mock('@prismaDist/index', () => ({
   prismaOperations: {
@@ -17,23 +21,6 @@ jest.mock('@prismaDist/index', () => ({
     },
   },
 }));
-
-const mockBooks = [
-  {
-    id: 1,
-    title: 'Book 1',
-    author: 'Author 1',
-    description: 'Test description',
-    imageId: 'img1'
-  },
-];
-const mockBook = {
-  id: 1,
-  title: 'Book 1',
-  author: 'Author 1',
-  description: 'Test description',
-  imageId: 'img1',
-};
 
 describe('BookService', () => {
   let service: BookService;
@@ -52,21 +39,30 @@ describe('BookService', () => {
 
   describe('getAllBooks', () => {
     it('should call prisma to fetch all books', async () => {
-      jest.spyOn(prismaOperations.bookQuery, 'getAllBooks').mockResolvedValue(mockBooks);
+      const mockServiceResolvedValue: BaseApiResponseDto<BaseBooksDatabaseResponseDto> = wrapResponseSuccess(
+        new BaseBooksDatabaseResponseDto(mockBooks)
+      );
+      jest.spyOn(prismaOperations.bookQuery, 'getAllBooks').mockResolvedValue(mockServiceResolvedValue.data);
 
-      expect(await service.getAllBooks()).toEqual(mockBooks);
+      expect(await service.getAllBooks()).toEqual(mockServiceResolvedValue);
       expect(prismaOperations.bookQuery.getAllBooks).toHaveBeenCalled();
     });
   });
 
   describe('getBook', () => {
     it('should call prisma to fetch a book by ID', async () => {
-      jest.spyOn(prismaOperations.bookQuery, 'getBook').mockResolvedValue(mockBook);
-
-      expect(await service.getBook(mockBook.id)).toEqual(mockBook);
-      expect(prismaOperations.bookQuery.getBook).toHaveBeenCalledWith(
-        { id: mockBook.id }
+      const mockServiceResolvedValue: BaseApiResponseDto<BaseBookDatabaseResponseDto> = wrapResponseSuccess(
+        new BaseBookDatabaseResponseDto(
+          mockBook
+        )
       );
+      jest.spyOn(prismaOperations.bookQuery, 'getBook').mockResolvedValue(mockServiceResolvedValue.data);
+
+      const params: BaseGetBookByIdRequestDto = {
+        id: mockBook.id
+      }
+      expect(await service.getBook(params)).toEqual(mockServiceResolvedValue);
+      expect(prismaOperations.bookQuery.getBook).toHaveBeenCalledWith(params);
     });
   });
 });

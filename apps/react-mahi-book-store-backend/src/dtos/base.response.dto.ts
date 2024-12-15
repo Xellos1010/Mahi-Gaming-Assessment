@@ -1,5 +1,6 @@
 // apps/react-mahi-book-store-backend/src/dtos/base.response.dto.ts
 import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
+import { ApiError } from '../interfaces/ApiError';
 
 export class BaseApiResponseDto<T> {
   @IsBoolean()
@@ -9,12 +10,17 @@ export class BaseApiResponseDto<T> {
   @IsOptional()
   data?: T;
 
+  @IsObject()
+  @IsOptional()
+  error?: ApiError;
+
   @IsString()
   @IsOptional()
-  error?: string;
+  message?: string;
 
-  constructor(success: boolean, data?: T, error?: string) {
+  constructor(success: boolean, data?: T, error?: ApiError, message? :string) {
     this.success = success;
+    this.message = message;
     this.data = data;
     this.error = error;
   }
