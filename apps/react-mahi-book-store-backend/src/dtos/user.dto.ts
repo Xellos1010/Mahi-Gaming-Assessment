@@ -1,110 +1,19 @@
-import { PrismaDto } from './prisma-dto.utility';
-import { Prisma } from '@prisma/client';
 import { User } from '@prisma/client';
-import { PrismaUserResponseWithFavoriteBooks } from '@prismaDist/interfaces/user/user.types';
-import { IsString, IsDate, IsNumber, IsArray, IsEmail, IsObject, MinLength, IsOptional } from 'class-validator';
+import { IsString, IsDate, IsNumber, IsArray, IsEmail, IsObject, MinLength } from 'class-validator';
+import { PrismaUserResponseWithFavoriteBooks } from 'libs/dtos/src/lib/types/user.types';
+import { BaseUserPasswordDto, BaseUserIdDto, BaseSetUserPasswordRequestDto, BaseUserLastLoggedInDto, BaseCreateUserRequestDto, BaseEmailDto, SingleUserResponseWithFavoriteBooksDto, SingleUserResponseDto, UsersListResponseDto } from 'libs/dtos/src/lib/user.dto';
 
-export type TUserUpdateDto = PrismaDto<Prisma.UserUpdateInput>;
-
-export class BaseUserPasswordDto {
-  @IsString()
-  @MinLength(6)
-  password: string;
-
-  constructor(password: string) {
-    this.password = password;
-  }
-}
-
-export class BaseUserByIdRequestDto implements PrismaDto<User> {
+// Base classes for shared properties
+export class BaseDecoratedUserIdDto implements BaseUserIdDto{
   @IsNumber()
-  id: number;
+  id: number
 
   constructor(id: number) {
     this.id = id;
   }
 }
 
-export class UpdateUserPasswordDto extends BaseUserPasswordDto {
-  constructor(password: string) {
-    super(password);  // Initializes the password field in the base class 
-  }
-}
-
-export class SetUserPasswordRequestDto extends BaseUserPasswordDto {
-  @IsNumber()
-  id: number;
-
-  constructor(id: number, password: string) {
-    super(password);  // Pass the password to the base class constructor 
-    this.id = id;  // Set the id property 
-  }
-}
-
-export class UpdateUserLastLoggedInDto {
-  @IsDate()
-  lastLoggedIn: Date;
-
-  constructor(lastLoggedIn: Date) {
-    this.lastLoggedIn = lastLoggedIn;
-  }
-}
-
-export class AddUserRequestDto implements PrismaDto<Prisma.UserCreateInput> {
-  @IsString()
-  name: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(6)
-  password: string;
-
-  constructor(name: string, email: string, password: string) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-  }
-}
-
-export class UserWithFavoritesDatabaseResponseDto {
-  @IsObject()
-  user: PrismaUserResponseWithFavoriteBooks;
-
-  constructor(user: PrismaUserResponseWithFavoriteBooks) {
-    this.user = user;
-  }
-}
-
-export class BaseUserDatabaseResponseDto {
-  @IsObject()
-  user: User;
-
-  constructor(user: User) {
-    this.user = user;
-  }
-}
-
-export class BaseUsersDatabaseResponseDto {
-  @IsArray()
-  users: User[];
-
-  constructor(users: User[]) {
-    this.users = users;
-  }
-}
-
-export class BaseGetUserByIdRequestDto implements Pick<User, 'id'> {
-  @IsNumber()
-  id: number;
-
-  constructor(id: number) {
-    this.id = id;
-  }
-}
-
-export class BaseGetUserByEmailRequestDto implements Pick<User, 'email'> {
+export class BaseUserEmailDto implements BaseEmailDto{
   @IsEmail()
   email: string;
 
@@ -113,22 +22,79 @@ export class BaseGetUserByEmailRequestDto implements Pick<User, 'email'> {
   }
 }
 
-// Ensure that PrismaDto is properly extended for any derived classes. 
-export class UserUpdateDto implements TUserUpdateDto {
+export class BasePasswordDto implements BaseUserPasswordDto{
   @IsString()
-  @IsOptional()
-  name: string | Prisma.StringFieldUpdateOperationsInput;
-  @IsEmail()
-  @IsOptional()
-  email: string | Prisma.StringFieldUpdateOperationsInput;
-  @IsString()
-  @IsOptional()
   @MinLength(6)
-  password: string | Prisma.StringFieldUpdateOperationsInput
-  // Add any specific fields or methods as needed 
-  constructor(partial: UserUpdateDto) {
-    this.name = partial.name;
-    this.email = partial.email;
-    this.password = partial.password;
+  password: string;
+
+  constructor(password: string) {
+    this.password = password;
+  }
+}
+
+export class BaseGetUserByEmailRequestDto extends BaseUserEmailDto {}
+
+export class GetUserByIdRequestDto extends BaseDecoratedUserIdDto {}
+
+//Extends and implements to enforce DRY
+export class SetUserPasswordRequestDto extends BasePasswordDto implements BaseSetUserPasswordRequestDto {
+  id: number;
+
+  constructor(id: number, password: string) {
+    super(password);  // Pass the password to the base class constructor
+    // Delegate ID processing to a BaseDecoratedUserIdDto instance to enforce DRY
+    const userIdDto = new BaseDecoratedUserIdDto(id);
+    this.id = userIdDto.id; // Extract the validated `id` from the instance
+  }
+}
+
+
+export class UpdateUserLastLoggedInDto implements BaseUserLastLoggedInDto {
+  @IsDate()
+  lastLoggedIn: Date;
+
+  constructor(lastLoggedIn: Date) {
+    this.lastLoggedIn = lastLoggedIn;
+  }
+}
+
+export class CreateUserRequestDto extends BasePasswordDto implements BaseCreateUserRequestDto {
+  @IsString()
+  name: string;
+  email: string;
+
+  constructor(name: string, email: string, password: string) {
+    super(password)
+    this.name = name;
+    const userEmailDto = new BaseUserEmailDto(email);
+    this.email = userEmailDto.email;
+    this.email = email;
+  }
+}
+
+export class UserWithFavoritesDatabaseResponseDto implements SingleUserResponseWithFavoriteBooksDto {
+  @IsObject()
+  user: PrismaUserResponseWithFavoriteBooks;
+
+  constructor(user: PrismaUserResponseWithFavoriteBooks) {
+    this.user = user;
+  }
+}
+
+export class BaseUserDatabaseResponseDto implements SingleUserResponseDto {
+  @IsObject()
+  user: User;
+
+  constructor(user: User) {
+    this.user = user;
+  }
+}
+
+export class BaseUsersDatabaseResponseDto implements UsersListResponseDto {
+  @IsArray()
+  users: User[];
+
+  constructor(users: User[]) {
+    this.users = users;
   }
 }

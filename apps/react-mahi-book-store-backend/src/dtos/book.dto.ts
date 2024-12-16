@@ -2,8 +2,18 @@ import { IsString, IsOptional, IsNumber, IsObject, IsArray } from 'class-validat
 import { PrismaDto } from './prisma-dto.utility';
 import { Prisma } from '@prisma/client';
 import type { Book } from "@prisma/client";
+import { BaseBookIdDto, BaseCreateBookDto, BaseUpdateBookDto, BaseUserFavoriteBookRequestDto, BooksListResponseDto, SingleBookResponseDto } from 'libs/dtos/src/lib/book.dto';
 
-export class CreateBookDto implements PrismaDto<Prisma.BookCreateInput> {
+export class BaseGetBookByIdRequestDto implements BaseBookIdDto {
+  @IsNumber()
+  id: number;
+
+  constructor(id: number) {
+    this.id = id;
+  }
+}
+
+export class CreateBookDto implements BaseCreateBookDto {
   @IsString()
   title: string;
 
@@ -31,7 +41,7 @@ export class CreateBookDto implements PrismaDto<Prisma.BookCreateInput> {
   }
 }
 
-export class UpdateBookDto implements PrismaDto<Prisma.BookUpdateInput> {
+export class UpdateBookDto implements BaseUpdateBookDto {
   @IsOptional()
   @IsString()
   title?: string;
@@ -61,28 +71,32 @@ export class UpdateBookDto implements PrismaDto<Prisma.BookUpdateInput> {
   }
 }
 
-export class UpdateBookApiRequestDto implements BaseGetBookByIdRequestDto {
-  @IsNumber()
-  id: number;
+export class UpdateBookApiRequestDto extends BaseGetBookByIdRequestDto implements BaseGetBookByIdRequestDto {
 
   @IsObject()
-  data: UpdateBookDto;
+  data: BaseUpdateBookDto;
 
   constructor(id: number,
-    data: UpdateBookDto | {
+    data: BaseUpdateBookDto | {
       title?: string;
       author?: string;
       description?: string;
       imageId?: string;
     }) {
-    this.id = id;
-    this.data = data instanceof UpdateBookDto
-      ? data
-      : new UpdateBookDto(data);
+    super(id);
+    this.data = this.initializeData(data);
+  }
+
+  private initializeData(data: BaseUpdateBookDto): BaseUpdateBookDto {
+    // If 'data' is a valid BaseUpdateBookDto
+    if (data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length > 0) {
+      return { ...data } as BaseUpdateBookDto; // Spread operator to return all defined properties
+    }
+    return {};
   }
 }
 
-export class BaseBookDatabaseResponseDto {
+export class BaseBookDatabaseResponseDto implements SingleBookResponseDto {
   @IsObject()
   book: Book;
 
@@ -91,7 +105,7 @@ export class BaseBookDatabaseResponseDto {
   }
 }
 
-export class BaseBooksDatabaseResponseDto {
+export class BaseBooksDatabaseResponseDto implements BooksListResponseDto{
   @IsArray()
   books: Book[];
 
@@ -100,16 +114,7 @@ export class BaseBooksDatabaseResponseDto {
   }
 }
 
-export class BaseGetBookByIdRequestDto implements Pick<Book, 'id'> {
-  @IsNumber()
-  id: number;
-
-  constructor(id: number) {
-    this.id = id;
-  }
-}
-
-export class BaseUserFavoriteBookDto {
+export class BaseUserFavoriteBookDto implements BaseUserFavoriteBookRequestDto {
   @IsNumber()
   bookId: number;
 
