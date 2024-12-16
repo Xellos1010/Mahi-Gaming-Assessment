@@ -6,7 +6,7 @@ import {
   BaseUserIdDto
 } from "../../dtos";
 import { HandleDatabaseError } from "../../decorators/handle-database-error.decorator";
-import { PrismaDatabaseSetUserPasswordParams, PrismaDatabaseUpdateUserParams } from "../../types/user.types";
+import { PrismaDatabaseSetUserPasswordParams, PrismaDatabaseUpdateUserParams } from "../../types";
 
 export class PrismaUserMutationOperationsImpl implements IUserMutationOperations {
   @HandleDatabaseError('Add User')

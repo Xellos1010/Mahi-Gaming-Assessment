@@ -1,8 +1,6 @@
 import { IsString, IsOptional, IsNumber, IsObject, IsArray } from 'class-validator';
-import { PrismaDto } from './prisma-dto.utility';
-import { Prisma } from '@prisma/client';
 import type { Book } from "@prisma/client";
-import { BaseBookIdDto, BaseCreateBookDto, BaseUpdateBookDto, BaseUserFavoriteBookRequestDto, BooksListResponseDto, SingleBookResponseDto } from 'libs/dtos/src/lib/book.dto';
+import { BaseBookIdDto, BaseCreateBookDto, BaseUpdateBookDto, BaseUserFavoriteBookRequestDto, BooksListResponseDto, SingleBookResponseDto } from '@prismaDist/dtos/lib/book.dto';
 
 export class BaseGetBookByIdRequestDto implements BaseBookIdDto {
   @IsNumber()
@@ -71,28 +69,13 @@ export class UpdateBookDto implements BaseUpdateBookDto {
   }
 }
 
-export class UpdateBookApiRequestDto extends BaseGetBookByIdRequestDto implements BaseGetBookByIdRequestDto {
-
+export class UpdateBookApiRequestDto extends BaseGetBookByIdRequestDto implements UpdateBookApiRequestDto {
   @IsObject()
-  data: BaseUpdateBookDto;
+  data: UpdateBookDto;
 
-  constructor(id: number,
-    data: BaseUpdateBookDto | {
-      title?: string;
-      author?: string;
-      description?: string;
-      imageId?: string;
-    }) {
+  constructor(id: number, data: UpdateBookDto) {
     super(id);
-    this.data = this.initializeData(data);
-  }
-
-  private initializeData(data: BaseUpdateBookDto): BaseUpdateBookDto {
-    // If 'data' is a valid BaseUpdateBookDto
-    if (data && typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length > 0) {
-      return { ...data } as BaseUpdateBookDto; // Spread operator to return all defined properties
-    }
-    return {};
+    this.data = new UpdateBookDto(data); //Applies Parameter validation decoration
   }
 }
 
@@ -105,7 +88,7 @@ export class BaseBookDatabaseResponseDto implements SingleBookResponseDto {
   }
 }
 
-export class BaseBooksDatabaseResponseDto implements BooksListResponseDto{
+export class BaseBooksDatabaseResponseDto implements BooksListResponseDto {
   @IsArray()
   books: Book[];
 

@@ -3,13 +3,12 @@ import { IBookMutationOperations } from "../../interfaces/book/book.mutation.ope
 import { 
   BaseCreateBookDto, 
   BaseBookIdDto, 
-  BaseUpdateBookDto, 
   BaseUserFavoriteBookRequestDto, 
   SingleBookResponseDto 
 } from "../../dtos/lib/book.dto";
 import { HandleDatabaseError } from "../../decorators/handle-database-error.decorator";
 import { convertDateTimeToDatabaseFormat } from "../../utilities/datetime.util";
-import { PrismaDatabaseUpdateBookParams } from "../../types/book.types";
+import { PrismaDatabaseUpdateBookParams } from "../../types";
 
 export class PrismaBookMutationOperationsImpl implements IBookMutationOperations {
   @HandleDatabaseError('Add Book')

@@ -1,5 +1,7 @@
 import type { Book, User } from "@prisma/client";
-import { PrismaUserResponseWithFavoriteBooks } from "@prismaDist/interfaces/user/user.types";
+import { PrismaUserWithFavoriteBooksResponse, SingleUserResponseWithFavoriteBooksDto } from "@prismaDist/dtos/lib/user.dto";
+import { PrismaUserResponseWithFavoriteBooks } from "libs/dtos/src/lib/types/user.types";
+import { PrismaUserWithFavoriteBooks } from "libs/prisma/src/dtos/lib/types/user.types";
 
 
 export const mockUser: User = {
@@ -8,7 +10,7 @@ export const mockUser: User = {
     email: 'test@example.com',
     password: 'hashedPassword',
     lastLoggedIn: undefined,
-    createdAt: undefined,
+    createdAt: new Date(),
     updatedAt: undefined
 };
 
@@ -24,7 +26,7 @@ export const mockBook: Book = {
     author: 'Author 1',
     description: 'Test description',
     imageId: 'img1',
-    createdAt: undefined,
+    createdAt: new Date(),
     updatedAt: undefined
 };
 
@@ -40,7 +42,7 @@ export const favoriteBooks: Book[] = [
     },
 ];
 
-export const mockUserWithBooks: PrismaUserResponseWithFavoriteBooks = {
+export const mockUserWithBooks: PrismaUserWithFavoriteBooks = {
     ...mockUser,
     favoriteBooks
 };

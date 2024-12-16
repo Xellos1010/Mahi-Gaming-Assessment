@@ -18,7 +18,7 @@ export interface SingleBookResponseDto {
 }
 
 export interface BooksListResponseDto {
-  books: Book[];
+  books: Book[] | [] | null;
 }
 
 export interface BaseUserFavoriteBookRequestDto {

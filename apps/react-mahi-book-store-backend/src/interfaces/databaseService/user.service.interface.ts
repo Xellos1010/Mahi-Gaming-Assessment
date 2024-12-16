@@ -1,17 +1,16 @@
-import { BaseApiResponseDto } from "@dto/base.response.dto";
-import { BaseBooksDatabaseResponseDto } from "@dto/book.dto";
-import { AddUserRequestDto, BaseUserDatabaseResponseDto, BaseUsersDatabaseResponseDto, BaseGetUserByIdRequestDto, BaseGetUserByEmailRequestDto, UserWithFavoritesDatabaseResponseDto, SetUserPasswordRequestDto, BaseUserByIdRequestDto } from "@dto/user.dto";
+import { ApiResponseDto } from "@nestDtos/base.api-response.dto";
+import { CreateUserRequestDto, BaseUserDatabaseResponseDto, BaseUsersDatabaseResponseDto, BaseGetUserByEmailRequestDto, UserWithFavoritesDatabaseResponseDto, SetUserPasswordRequestDto, GetUserByIdRequestDto } from "@nestDtos/user.dto";
 
 
 
 export interface IUserServiceInterface {
-    addUser(data: AddUserRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>>;
-    removeUserById(params: BaseGetUserByIdRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>>;
-    setUserPassword(params: SetUserPasswordRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>>;
-    setLastLoggedInNow(params: BaseUserByIdRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>>;
-    getAllUsers(): Promise<BaseApiResponseDto<BaseUsersDatabaseResponseDto>>;
-    getUserById(params: BaseGetUserByIdRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>>;
-    getUserByEmailIncludeFavoriteBooks(params: BaseGetUserByEmailRequestDto): Promise<BaseApiResponseDto<UserWithFavoritesDatabaseResponseDto>>;
-    getUserFavoriteBooks(params: BaseGetUserByIdRequestDto): Promise<BaseApiResponseDto<BaseBooksDatabaseResponseDto>>;
+    addUser(data: CreateUserRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>;
+    removeUserById(params: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>;
+    setUserPassword(params: SetUserPasswordRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>;
+    setLastLoggedInNow(params: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>;
+    getAllUsers(): Promise<ApiResponseDto<BaseUsersDatabaseResponseDto>>;
+    getUserById(params: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>;
+    getUserByEmailIncludeFavoriteBooks(params: BaseGetUserByEmailRequestDto): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>>;
+    getUserFavoriteBooks(params: GetUserByIdRequestDto): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>>;
   }
   

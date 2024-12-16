@@ -1,23 +1,23 @@
 import type { User } from '@prisma/client';
-import { AddUserRequestDto, PrismaUserResponseWithFavoriteBooks } from './user.dto';
+import { PrismaUserResponseWithFavoriteBooks } from './types/user.types';
 import { BaseApiResponseDto } from './base-api-response.dto';
 
-export interface CreateUserRequestDto extends AddUserRequestDto { };
-
-export interface BaseCreateUserDatabaseResponseDto {
-  user: User;
+export interface BaseAccessTokenResponse {
   accessToken: string;
 }
 
-export interface LoginUserRequestDto {
+export interface BaseCreateUserDatabaseResponseDto extends BaseAccessTokenResponse{
+  user: User;
+}
+
+export interface BaseLoginUserRequestDto {
   email: string;
   password: string;
 }
 
 //TODO: Technically this does not adhere to SRP but in the interest of ensuring all features are implemented will forgoe this part until all bonus features are implemented and will circle back to this time willing
-export interface LoginUserDatabaseResponseDto {
+export interface BaseLoginUserDatabaseResponseDto extends BaseAccessTokenResponse{
   user: PrismaUserResponseWithFavoriteBooks;
-  accessToken: string;
 }
 export interface AuthTokenPayload {
   sub: number;  // user ID
@@ -27,4 +27,4 @@ export interface AuthTokenPayload {
 }
 export interface CreateUserApiResponseDto extends BaseApiResponseDto<BaseCreateUserDatabaseResponseDto> {}
 
-export interface LoginUserApiResponseDto extends BaseApiResponseDto<LoginUserDatabaseResponseDto> {}
+export interface LoginUserApiResponseDto extends BaseApiResponseDto<BaseLoginUserDatabaseResponseDto> {}

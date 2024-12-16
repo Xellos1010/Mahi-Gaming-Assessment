@@ -1,5 +1,4 @@
-// apps/react-mahi-book-store-backend/src/decorators/controller.api-response..ts
-import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 
 /**
 * Wraps the controller method response in a BaseApiResponseDto to enforce consistent response formatting for success cases.
@@ -18,7 +17,7 @@ export function WrapApiResponse() {
                 const data = await originalMethod.apply(this, args);
 
                 // Wrap the result in BaseApiResponseDto 
-                return new BaseApiResponseDto(true, data, null);
+                return new ApiResponseDto(true, data, null);
             } catch (error) {
                 // Ensure errors are propagated for HandleControllerError 
                 throw error;

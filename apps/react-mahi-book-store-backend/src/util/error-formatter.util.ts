@@ -1,5 +1,5 @@
-import { ApiError } from '../interfaces/ApiError';
-import { BaseApiResponseDto } from '../dtos/base.response.dto';
+import { ApiError } from '@prismaDist/dtos/lib/interfaces/api-errors';
+import { ApiResponseDto } from '../dtos/base.api-response.dto';
 import { wrapResponseFail } from './api-responses-formatter.util';
 
 /**
@@ -8,7 +8,7 @@ import { wrapResponseFail } from './api-responses-formatter.util';
  * @param operation - The operation where the error occurred.
  * @returns An instance of BaseApiResponseDto containing error details.
  */
-export function formatError(error: Error, operation: string): BaseApiResponseDto<any> {
+export function formatError(error: Error, operation: string): ApiResponseDto<any> {
     return wrapResponseFail(
         null,
         {

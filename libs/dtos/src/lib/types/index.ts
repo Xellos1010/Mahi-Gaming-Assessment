@@ -1,1 +1,1 @@
-export * from './api-errors'
+export * from './user.types'

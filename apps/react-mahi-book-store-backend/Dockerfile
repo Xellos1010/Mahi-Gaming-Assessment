@@ -34,9 +34,6 @@ RUN npx prisma generate --schema=prisma/schema.prisma
 # Copy the dist app files
 COPY dist/apps/react-mahi-book-store-backend dist/apps/react-mahi-book-store-backend
 
-# Copy the data lib
-COPY dist/libs/dtos/src dist/libs/dtos/src
-
 # Adjust ownership of the directory
 RUN chown -R react-mahi-book-store-backend:react-mahi-book-store-backend .
 

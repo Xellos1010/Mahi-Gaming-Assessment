@@ -1,12 +1,12 @@
-import { BaseApiResponseDto } from "@dto/base.response.dto";
-import { BaseGetBookByIdRequestDto, BaseBooksDatabaseResponseDto, BaseBookDatabaseResponseDto, CreateBookDto, UpdateBookApiRequestDto, UpdateBookDto, BaseUserFavoriteBookDto } from "@dto/book.dto";
+import { ApiResponseDto } from "@nestDtos/base.api-response.dto";
+import { BaseGetBookByIdRequestDto, BaseBookDatabaseResponseDto, CreateBookDto, UpdateBookApiRequestDto, UpdateBookDto, BaseUserFavoriteBookDto, BaseBooksDatabaseResponseDto } from "@nestDtos/book.dto";
 
 export interface IBookServiceInterface {
-  addBook(data: CreateBookDto): Promise<BaseApiResponseDto<BaseBookDatabaseResponseDto>>;
-  updateBook(params: UpdateBookApiRequestDto): Promise<BaseApiResponseDto<BaseBookDatabaseResponseDto>>;
-  removeBookById(params: BaseGetBookByIdRequestDto): Promise<BaseApiResponseDto<BaseBookDatabaseResponseDto>>;
-  getAllBooks(): Promise<BaseApiResponseDto<BaseBooksDatabaseResponseDto>>;
-  getBook(params: BaseGetBookByIdRequestDto): Promise<BaseApiResponseDto<BaseBookDatabaseResponseDto>>;
-  addUserToFavoriteBook(params: BaseUserFavoriteBookDto): Promise<BaseApiResponseDto<BaseBookDatabaseResponseDto>>;
-  removeBookFromFavorites(params: BaseUserFavoriteBookDto): Promise<BaseApiResponseDto<BaseBookDatabaseResponseDto>>;
+  addBook(data: CreateBookDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>>;
+  updateBook(params: UpdateBookApiRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>>;
+  removeBookById(params: BaseGetBookByIdRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>>;
+  getAllBooks(): Promise<ApiResponseDto<BaseBooksDatabaseResponseDto>>;
+  getBook(params: BaseGetBookByIdRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>>;
+  addUserToFavoriteBook(params: BaseUserFavoriteBookDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>>;
+  removeBookFromFavorites(params: BaseUserFavoriteBookDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>>;
 }

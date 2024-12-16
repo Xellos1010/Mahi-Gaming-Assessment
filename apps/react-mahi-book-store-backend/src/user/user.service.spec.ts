@@ -1,16 +1,16 @@
-// apps/react-mahi-book-store-backend/src/user/user.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { prismaOperations } from '@prismaDist/index';
-import { PrismaUserResponseWithFavoriteBooks } from '@prismaDist/interfaces/user/user.types';
-import { PrismaGetAllUsersResponse, PrismaGetUserByIdResponse, PrismaGetUserFavoriteBooksResponse } from '@prismaDist/interfaces/user/user.query.operations.interface';
-import { AddUserRequestDto, BaseGetUserByIdRequestDto, BaseUserByIdRequestDto, BaseUserDatabaseResponseDto, BaseUsersDatabaseResponseDto, SetUserPasswordRequestDto } from '@dto/user.dto';
-import { PrismaAddUserResponse, PrismaRemoveUserByIdResponse, PrismaUpdateUserResponse } from '@prismaDist/interfaces/user/user.mutation.operations.interface';
-import { PrismaSetLastLoggedInNowParams, PrismaSetLastLoggedInParams, PrismaSetUserPasswordParams } from '@prismaDist/shared/types/user.types';
-import { favoriteBooks, mockUser, mockUsers } from '../consts/shared.tests.consts';
-import { BaseApiResponseDto } from '@dto/base.response.dto';
-import { BaseBooksDatabaseResponseDto } from '@dto/book.dto';
+
+import { favoriteBooks, mockUser, mockUsers } from '../decorators/consts/shared.tests.consts';
+
 import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
+import { BaseUsersDatabaseResponseDto, BaseUserDatabaseResponseDto, SetUserPasswordRequestDto, CreateUserRequestDto, GetUserByIdRequestDto } from '@nestDtos/user.dto';
+import { BaseApiResponseDto, BaseUserIdDto } from '@prismaDist/dtos';
+
+import { PrismaDatabaseSetUserPasswordParams, PrismaUserResponseWithFavoriteBooks } from 'libs/prisma/src/types/user.types';
+import { PrismaUserWithFavoriteBooksResponse } from 'libs/prisma/src/dtos/lib/user.dto';
+
 jest.mock('@prismaDist/index', () => ({
     prismaOperations: {
         userQuery: {
@@ -66,7 +66,7 @@ describe('UserService', () => {
                 mockUser
             ));
             jest.spyOn(prismaOperations.userQuery, 'getUserById').mockResolvedValue(mockResolvedValue.data);
-            const params: BaseGetUserByIdRequestDto = {
+            const params: GetUserByIdRequestDto = {
                 id: mockUser.id
             };
             const result = await userService.getUserById(params);
@@ -84,7 +84,7 @@ describe('UserService', () => {
                 )
             );
             jest.spyOn(prismaOperations.userMutation, 'addUser').mockResolvedValue(mockResolvedValue.data);
-            const params: AddUserRequestDto =
+            const params: CreateUserRequestDto =
             {
                 ...mockUser
             };
@@ -103,7 +103,7 @@ describe('UserService', () => {
                 )
             );
             jest.spyOn(prismaOperations.userMutation, 'removeUserById').mockResolvedValue(mockResolvedValue.data);
-            const params: BaseGetUserByIdRequestDto = {
+            const params: GetUserByIdRequestDto = {
                 id: mockUser.id
             };
             const result = await userService.removeUserById(params);
@@ -131,7 +131,7 @@ describe('UserService', () => {
             };
             const result = await userService.setUserPassword(params);
 
-            const expectedToHaveBeenCalledWith: PrismaSetUserPasswordParams = {
+            const expectedToHaveBeenCalledWith: PrismaDatabaseSetUserPasswordParams = {
                 where: { id: mockUser.id },
                 password: userPassword
             }
@@ -147,15 +147,10 @@ describe('UserService', () => {
             ));
             jest.spyOn(prismaOperations.userMutation, 'setLastLoggedIn').mockResolvedValue(mockResolvedValue.data);
 
-            const params: BaseUserByIdRequestDto = new BaseUserByIdRequestDto(
-                mockUser.id
-            );
+            const params: GetUserByIdRequestDto = new GetUserByIdRequestDto(mockUser.id);
             const result = await userService.setLastLoggedInNow(params);;
 
-            const expectedToHaveBeenCalledWith: PrismaSetLastLoggedInParams = {
-                where: { id: mockUser.id },
-                lastLoggedIn: expect.any(Date)
-            };
+            const expectedToHaveBeenCalledWith: BaseUserIdDto  = { id: mockUser.id }; 
             expect(prismaOperations.userMutation.setLastLoggedIn).toHaveBeenCalledWith(expectedToHaveBeenCalledWith);
             expect(result).toEqual(mockResolvedValue);
         });
@@ -163,14 +158,10 @@ describe('UserService', () => {
 
     describe('getUserFavoriteBooks', () => {
         it('should call prismaOperations.userQuery.getUserFavoriteBooks with correct id', async () => {
-            const mockResolvedValue: BaseApiResponseDto<BaseBooksDatabaseResponseDto> = wrapResponseSuccess(new BaseBooksDatabaseResponseDto(
-                favoriteBooks
-            ));
+            const mockResolvedValue: BaseApiResponseDto<PrismaUserWithFavoriteBooksResponse> = wrapResponseSuccess({ user: { ...mockUser, favoriteBooks } } as PrismaUserWithFavoriteBooksResponse);
             jest.spyOn(prismaOperations.userQuery, 'getUserFavoriteBooks').mockResolvedValue(mockResolvedValue.data);
 
-            const params: BaseGetUserByIdRequestDto = new BaseGetUserByIdRequestDto(
-                mockUser.id
-            );
+            const params: GetUserByIdRequestDto = { id: mockUser.id };
             const result = await userService.getUserFavoriteBooks(params);
 
             expect(prismaOperations.userQuery.getUserFavoriteBooks).toHaveBeenCalledWith(params);

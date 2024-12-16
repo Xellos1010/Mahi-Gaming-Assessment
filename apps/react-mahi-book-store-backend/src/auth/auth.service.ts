@@ -3,17 +3,16 @@ import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import {
-  CreateUserRequestDto,
-  BaseCreateUserDatabaseResponseDto,
+  CreateUserDatabaseResponseDto,
   LoginUserRequestDto,
   LoginUserDatabaseResponseDto
 } from '../dtos/auth.dto';
 import { comparePasswords, hashPassword } from '../util/crypto.util';
-import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
-import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
-import { BaseGetUserByEmailRequestDto, UserWithFavoritesDatabaseResponseDto } from '@dto/user.dto';
-import { loginSuccessMessage, registerSuccessMessage } from '../consts/auth.consts';
+import { BaseGetUserByEmailRequestDto, CreateUserRequestDto, UserWithFavoritesDatabaseResponseDto } from '@nestDtos/user.dto';
+import { loginSuccessMessage, registerSuccessMessage } from '../decorators/consts/auth.consts';
+import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
 
 @Injectable()
 export class AuthService {
@@ -22,11 +21,10 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) { }
 
-  ////@HandleServiceError('Registering a new user')
-  //@HandleServiceError()
-  async register(createUserDto: CreateUserRequestDto): Promise<BaseApiResponseDto<BaseCreateUserDatabaseResponseDto>> {
+  @HandleServiceError()
+  async register(createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>> {
     const getUserParams: BaseGetUserByEmailRequestDto = new BaseGetUserByEmailRequestDto(createUserDto.email);
-    const existingUserResponse = await this.userService.getUserByEmailIncludeFavoriteBooks(getUserParams) as BaseApiResponseDto<UserWithFavoritesDatabaseResponseDto>;
+    const existingUserResponse = await this.userService.getUserByEmailIncludeFavoriteBooks(getUserParams) as ApiResponseDto<UserWithFavoritesDatabaseResponseDto>;
     if (existingUserResponse.data.user) {
       throw new BadRequestException('Email is already in use');
     }
@@ -38,12 +36,11 @@ export class AuthService {
     });
     const { user } = createUserResponse.data;
     const accessToken = this.jwtService.sign({ user });
-    return wrapResponseSuccess<BaseCreateUserDatabaseResponseDto>(new BaseCreateUserDatabaseResponseDto(user, accessToken), registerSuccessMessage);
+    return wrapResponseSuccess<CreateUserDatabaseResponseDto>(new CreateUserDatabaseResponseDto(user, accessToken), registerSuccessMessage);
   }
 
-  ////@HandleServiceError('Logging in user')
-  //@HandleServiceError()
-  async login(loginUserDto: LoginUserRequestDto): Promise<BaseApiResponseDto<LoginUserDatabaseResponseDto>> {
+  @HandleServiceError()
+  async login(loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>> {
     const { user } = (await this.userService.getUserByEmailIncludeFavoriteBooks({ email: loginUserDto.email })).data;
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
@@ -60,9 +57,8 @@ export class AuthService {
     return wrapResponseSuccess<LoginUserDatabaseResponseDto>(new LoginUserDatabaseResponseDto(user, accessToken), loginSuccessMessage);
   }
 
-  ////@HandleServiceError('Logging out user')
-  //@HandleServiceError()
-  async logout(): Promise<BaseApiResponseDto<string>> {
+  @HandleServiceError()
+  async logout(): Promise<ApiResponseDto<string>> {
     // Typically handle client-side token clearing or server-side token invalidation here.
     return wrapResponseSuccess<string>('Logout successful');
   }

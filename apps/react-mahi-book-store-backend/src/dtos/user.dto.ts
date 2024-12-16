@@ -1,7 +1,6 @@
 import { User } from '@prisma/client';
+import { BaseCreateUserRequestDto, BaseEmailDto, BaseSetUserPasswordRequestDto, BaseUserIdDto, BaseUserLastLoggedInDto, BaseUserPasswordDto, PrismaUserWithFavoriteBooksResponse, SingleUserResponseDto, SingleUserResponseWithFavoriteBooksDto, UsersListResponseDto } from '@prismaDist/dtos/lib/user.dto';
 import { IsString, IsDate, IsNumber, IsArray, IsEmail, IsObject, MinLength } from 'class-validator';
-import { PrismaUserResponseWithFavoriteBooks } from 'libs/dtos/src/lib/types/user.types';
-import { BaseUserPasswordDto, BaseUserIdDto, BaseSetUserPasswordRequestDto, BaseUserLastLoggedInDto, BaseCreateUserRequestDto, BaseEmailDto, SingleUserResponseWithFavoriteBooksDto, SingleUserResponseDto, UsersListResponseDto } from 'libs/dtos/src/lib/user.dto';
 
 // Base classes for shared properties
 export class BaseDecoratedUserIdDto implements BaseUserIdDto{
@@ -61,22 +60,21 @@ export class UpdateUserLastLoggedInDto implements BaseUserLastLoggedInDto {
 export class CreateUserRequestDto extends BasePasswordDto implements BaseCreateUserRequestDto {
   @IsString()
   name: string;
+  //Validation is performed in the constructor
   email: string;
 
   constructor(name: string, email: string, password: string) {
     super(password)
     this.name = name;
-    const userEmailDto = new BaseUserEmailDto(email);
-    this.email = userEmailDto.email;
-    this.email = email;
+    this.email = new BaseUserEmailDto(email).email;
   }
 }
 
 export class UserWithFavoritesDatabaseResponseDto implements SingleUserResponseWithFavoriteBooksDto {
   @IsObject()
-  user: PrismaUserResponseWithFavoriteBooks;
+  user: PrismaUserWithFavoriteBooksResponse;
 
-  constructor(user: PrismaUserResponseWithFavoriteBooks) {
+  constructor(user: PrismaUserWithFavoriteBooksResponse) {
     this.user = user;
   }
 }

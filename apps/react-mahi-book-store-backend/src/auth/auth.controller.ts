@@ -1,14 +1,12 @@
 import { Controller, Post, Body, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
-  BaseCreateUserDatabaseResponseDto,
-  CreateUserRequestDto,
+  CreateUserDatabaseResponseDto,
   LoginUserDatabaseResponseDto,
   LoginUserRequestDto
 } from '../dtos/auth.dto';
-import { HandleControllerError } from "../decorators/errorHandling/controller.error.handler";
-import { WrapApiResponse } from '../decorators/controller.api-response.';
-import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
+import { CreateUserRequestDto } from '@nestDtos/user.dto';
 
 
 @Controller('auth')
@@ -18,29 +16,20 @@ export class AuthController {
   @Post('register')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(201)
-  ////@HandleControllerError('Registering a new user')
-  // @WrapApiResponse()
-  //@HandleControllerError()
-  async register(@Body() createUserDto: CreateUserRequestDto): Promise<BaseApiResponseDto<BaseCreateUserDatabaseResponseDto>> {
+  async register(@Body() createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>> {
     return await this.authService.register(createUserDto);
   }
 
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(200)
-  ////@HandleControllerError('Logging in a user')
-  // @WrapApiResponse()
-  //@HandleControllerError()
-  async login(@Body() loginUserDto: LoginUserRequestDto): Promise<BaseApiResponseDto<LoginUserDatabaseResponseDto>> {
+  async login(@Body() loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>> {
     return await this.authService.login(loginUserDto);
   }
 
   @Post('logout')
   @HttpCode(200)
-  ////@HandleControllerError('Logging out a user')
-  // @WrapApiResponse()
-  //@HandleControllerError()
-  async logout(): Promise<BaseApiResponseDto<string>> {
+  async logout(): Promise<ApiResponseDto<string>> {
     // Typically handle client-side token clearing or server-side token invalidation.
     return this.authService.logout();
   }

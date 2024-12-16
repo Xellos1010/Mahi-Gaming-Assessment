@@ -1,6 +1,8 @@
 // apps/react-mahi-book-store-backend/src/dtos/base.response.dto.ts
+import { ApiError } from '@prismaDist/dtos';
+import { BaseApiResponseDto } from '@prismaDist/dtos/lib/base-api-response.dto';
 import { IsBoolean, IsObject, IsOptional, IsString } from 'class-validator';
-import { ApiError, BaseApiResponseDto } from 'libs/dtos/src/lib';
+
 
 export class ApiResponseDto<T> implements BaseApiResponseDto<T>  {
   @IsBoolean()

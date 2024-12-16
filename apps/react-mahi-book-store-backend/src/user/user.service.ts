@@ -2,39 +2,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { prismaOperations } from '@prismaDist/index';
 import {
-  AddUserRequestDto,
+  CreateUserRequestDto,
   BaseUserDatabaseResponseDto,
   BaseUsersDatabaseResponseDto,
-  BaseGetUserByIdRequestDto,
   BaseGetUserByEmailRequestDto,
   UserWithFavoritesDatabaseResponseDto,
   SetUserPasswordRequestDto,
-  BaseUserByIdRequestDto
-} from '@dto/user.dto';
-import {
-  PrismaAddUserParams,
-  PrismaGetUserByEmailParams,
-  PrismaGetUserByIdFavoriteBooksParams,
-  PrismaSetLastLoggedInParams,
-  PrismaSetUserPasswordParams
-} from '@prismaDist/shared/types/user.types';
-import { BaseBooksDatabaseResponseDto } from '@dto/book.dto';
+  GetUserByIdRequestDto
+} from '@nestDtos/user.dto';
 import { IUserServiceInterface } from '../interfaces/databaseService/user.service.interface';
-import { BaseApiResponseDto } from '@dto/base.response.dto';
+import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
-import { PrismaUpdateUserResponse } from '@prismaDist/interfaces/user/user.mutation.operations.interface';
+import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
+import { SingleUserResponseWithFavoriteBooksDto } from '@prismaDist/dtos/lib/user.dto';
 
 @Injectable()
 export class UserService implements IUserServiceInterface {
-  ////@HandleServiceError('Fetching all users')
-  //@HandleServiceError()
-  async getAllUsers(): Promise<BaseApiResponseDto<BaseUsersDatabaseResponseDto>> {
+
+  @HandleServiceError()
+  async getAllUsers(): Promise<ApiResponseDto<BaseUsersDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUsersDatabaseResponseDto>(await prismaOperations.userQuery.getAllUsers() as BaseUsersDatabaseResponseDto);
   }
 
-  ////@HandleServiceError('Fetching user by ID')
-  //@HandleServiceError()
-  async getUserById({ id }: BaseGetUserByIdRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>> {
+  @HandleServiceError()
+  async getUserById({ id }: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     const user = await prismaOperations.userQuery.getUserById({ id });
     if (!user) {
       throw new NotFoundException(`User with ID  ${id}  not found`);
@@ -42,25 +33,22 @@ export class UserService implements IUserServiceInterface {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(user as BaseUserDatabaseResponseDto);
   }
 
-  ////@HandleServiceError('Fetching user by email with favorite books')
-  //@HandleServiceError()
-  async getUserByEmailIncludeFavoriteBooks({ email }: BaseGetUserByEmailRequestDto): Promise<BaseApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {
-    const user = await prismaOperations.userQuery.getUserByEmailIncludeFavoriteBooks({ email } as PrismaGetUserByEmailParams);
+  @HandleServiceError()
+  async getUserByEmailIncludeFavoriteBooks(params: BaseGetUserByEmailRequestDto): Promise<ApiResponseDto<SingleUserResponseWithFavoriteBooksDto>> {
+    const user = await prismaOperations.userQuery.getUserByEmailIncludeFavoriteBooks(params);
     if (!user) {
-      throw new NotFoundException(`User with email  ${email}  not found`);
+      throw new NotFoundException(`User with email ${params.email}  not found`);
     }
-    return wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(user as UserWithFavoritesDatabaseResponseDto);
+    return wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(user as SingleUserResponseWithFavoriteBooksDto);
   }
 
-  ////@HandleServiceError('Adding a new user')
-  //@HandleServiceError()
-  async addUser(data: AddUserRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>> {
-    return wrapResponseSuccess<BaseUserDatabaseResponseDto>(await prismaOperations.userMutation.addUser(data as PrismaAddUserParams) as BaseUserDatabaseResponseDto);
+  @HandleServiceError()
+  async addUser(data: CreateUserRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
+    return wrapResponseSuccess<BaseUserDatabaseResponseDto>(await prismaOperations.userMutation.addUser(data as CreateUserRequestDto) as BaseUserDatabaseResponseDto);
   }
 
-  ////@HandleServiceError('Removing user by ID')
-  //@HandleServiceError()
-  async removeUserById({ id }: BaseGetUserByIdRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>> {
+  @HandleServiceError()
+  async removeUserById({ id }: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     const user = await prismaOperations.userMutation.removeUserById({ id });
     if (!user) {
       throw new NotFoundException(`User with ID  ${id}  not found`);
@@ -68,10 +56,9 @@ export class UserService implements IUserServiceInterface {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(user as BaseUserDatabaseResponseDto);
   }
 
-  ////@HandleServiceError('Setting user password')
-  //@HandleServiceError()
-  async setUserPassword({ id, password }: SetUserPasswordRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>> {
-    const params: PrismaSetUserPasswordParams = {
+  @HandleServiceError()
+  async setUserPassword({ id, password }: SetUserPasswordRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
+    const params = {
       where: { id },
       password: password
     };
@@ -80,15 +67,10 @@ export class UserService implements IUserServiceInterface {
     );
   }
 
-  ////@HandleServiceError('Setting last logged-in time for user')
-  //@HandleServiceError()
-  async setLastLoggedInNow({ id }: BaseUserByIdRequestDto): Promise<BaseApiResponseDto<BaseUserDatabaseResponseDto>> {
-    const params: PrismaSetLastLoggedInParams = {
-      where: { id },
-      lastLoggedIn: new Date()
-    };
+  @HandleServiceError()
+  async setLastLoggedInNow(params: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(
-      await prismaOperations.userMutation.setLastLoggedIn(params) as PrismaUpdateUserResponse
+      await prismaOperations.userMutation.setLastLoggedIn(params) as BaseUserDatabaseResponseDto
     );
   }
 
@@ -96,14 +78,12 @@ export class UserService implements IUserServiceInterface {
     throw new Error('Method not implemented.');
   }
 
-  ////@HandleServiceError('Fetching user favorite books')
-  //@HandleServiceError()
-  async getUserFavoriteBooks({ id }: BaseGetUserByIdRequestDto): Promise<BaseApiResponseDto<BaseBooksDatabaseResponseDto>> {
-    const params: PrismaGetUserByIdFavoriteBooksParams = { id };
-    const books = await prismaOperations.userQuery.getUserFavoriteBooks(params) as BaseBooksDatabaseResponseDto;
-    if (!books || (Array.isArray(books) && books.length === 0)) {
-      throw new NotFoundException(`No favorite books found for user with ID  ${id} `);
+  @HandleServiceError()
+  async getUserFavoriteBooks(params: GetUserByIdRequestDto): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {
+    const userWithBooks = await prismaOperations.userQuery.getUserFavoriteBooks(params) as SingleUserResponseWithFavoriteBooksDto;
+    if (!userWithBooks || (Array.isArray(userWithBooks.user.favoriteBooks) && userWithBooks.user.favoriteBookslength === 0)) {
+      throw new NotFoundException(`No favorite books found for user with ID  ${params.id} `);
     }
-    return wrapResponseSuccess<BaseBooksDatabaseResponseDto>(books as BaseBooksDatabaseResponseDto);
+    return wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(userWithBooks as UserWithFavoritesDatabaseResponseDto);
   }
 }

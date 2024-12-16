@@ -1,9 +1,10 @@
-import { BaseCreateUserDatabaseResponseDto, CreateUserRequestDto, LoginUserDatabaseResponseDto, LoginUserRequestDto } from "@dto/auth.dto";
-import { BaseApiResponseDto } from "@dto/base.response.dto";
+import { CreateUserDatabaseResponseDto, LoginUserDatabaseResponseDto, LoginUserRequestDto } from "@nestDtos/auth.dto";
+import { ApiResponseDto } from "@nestDtos/base.api-response.dto";
+import { CreateUserRequestDto } from "@nestDtos/user.dto";
 
 export interface IAuthServiceInterface {
-    register(createUserDto: CreateUserRequestDto): Promise<BaseApiResponseDto<BaseCreateUserDatabaseResponseDto>>;
-    login(loginUserDto: LoginUserRequestDto): Promise<BaseApiResponseDto<LoginUserDatabaseResponseDto>>;
-    logout(): Promise<BaseApiResponseDto<void>>; //Nothing is returned from loging out right now.
+    register(createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>>;
+    login(loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>>;
+    logout(): Promise<ApiResponseDto<void>>; //Nothing is returned from loging out right now.
   }
   

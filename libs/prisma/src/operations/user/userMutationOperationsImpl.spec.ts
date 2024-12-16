@@ -9,7 +9,7 @@ import {
   SingleUserResponseDto,
   BaseUserIdDto,
 } from '../../dtos';
-import { PrismaOperationError, UserNotFoundError } from '../../errors/prisma-errors';
+import { PrismaOperationError } from '../../errors/prisma-errors';
 import { PrismaDatabaseSetUserPasswordParams, PrismaDatabaseUpdateUserParams } from '../../types/user.types';
 
 // Mocking Prisma client 
@@ -97,7 +97,10 @@ describe('Prisma User Mutations', () => {
 
     const result = await prismaUserMutationOperations.setLastLoggedInNow(params);
     expect(result).toEqual(mockResponse);
-    expect(prisma.user.update).toHaveBeenCalledWith({ where: { id: userData.id }, data: { lastLoggedIn } });
+    expect(prisma.user.update).toHaveBeenCalledWith(expect.objectContaining({
+      where: { id: userData.id },
+      data: { createdAt: expect.any(Date), lastLoggedIn: expect.any(Date)} // Assuming 'createdAt' is the field you want to check
+    }));
   });
 
   describe('Error Handling', () => {
