@@ -1,171 +1,77 @@
-// libs/prisma/src/operations/user/userQueryOperationsImpl.ts
 import { prisma } from "../../client";
-import { Prisma } from "@prisma/client";
+import { IUserQueryOperations } from "../../interfaces/user/user.query.operations.interface";
 import {
-  PrismaGetAllUsersResponse,
-  PrismaGetUserByEmailIncludeFavoriteBooksResponse,
-  PrismaGetUserByEmailResponse,
-  PrismaGetUserByIdResponse,
-  PrismaGetUserFavoriteBooksResponse,
-  IUserQueryOperations
-} from "../../interfaces/user/user.query.operations.interface";
-import {
-  PrismaGetUserByEmailParams,
-  PrismaGetUserByIdParams,
-  PrismaGetUserByIdFavoriteBooksParams
-} from "../../shared/types/user.types";
-import {
-  PrismaOperationError,
-  UserNotFoundError,
-  DatabaseConnectionError,
-  logPrismaError
-} from "../../errors/prisma-errors";
+  SingleUserResponseDto,
+  BaseUserIdDto,
+  BaseEmailDto,
+  PrismaUserWithFavoriteBooksResponse,
+  UsersListResponseDto
+} from "../../dtos";
+import { HandleDatabaseError } from "../../decorators/handle-database-error.decorator";
 
-class PrismaUserQueryOperationsImpl implements IUserQueryOperations {
-  async getAllUsers(): Promise<PrismaGetAllUsersResponse> {
-    try {
-      const users = await prisma.user.findMany();
-      return { users };
-    } catch (error) {
-      // Handle database connection or other errors
-      if (error instanceof Prisma.PrismaClientInitializationError) {
-        const connectionError = new DatabaseConnectionError(error);
-        logPrismaError(connectionError);
-        throw connectionError;
-      }
-
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve users',
-        'Get All Users',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
-    }
+export class PrismaUserQueryOperationsImpl implements IUserQueryOperations {
+  @HandleDatabaseError('Get All Users')
+  async getAllUsers(): Promise<UsersListResponseDto> {
+    const users = await prisma.user.findMany();
+    return { users };
   }
 
-  async getUserById({ id }: PrismaGetUserByIdParams): Promise<PrismaGetUserByIdResponse> {
-    try {
-      const user = await prisma.user.findUnique({ where: { id } });
+  @HandleDatabaseError('Get User By ID')
+  async getUserById(params: BaseUserIdDto): Promise<SingleUserResponseDto> {
+    const user = await prisma.user.findUnique({
+      where: { id: params.id }
+    });
 
-      if (!user) {
-        const notFoundError = new UserNotFoundError(
-          id.toString(),
-          'Get User By ID'
-        );
-        logPrismaError(notFoundError);
-        throw notFoundError;
-      }
-
-      return { user };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw error;
-      }
-
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve user by ID',
-        'Get User By ID',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
+    if (!user) {
+      throw new Error(`User not found with ID: ${params.id}`);
     }
+
+    return { user };
   }
 
-  async getUserByEmail({ email }: PrismaGetUserByEmailParams): Promise<PrismaGetUserByEmailResponse> {
-    try {
-      const user = await prisma.user.findUnique({ where: { email } });
+  @HandleDatabaseError('Get User By Email')
+  async getUserByEmail(params: BaseEmailDto): Promise<SingleUserResponseDto> {
+    const user = await prisma.user.findUnique({
+      where: { email: params.email }
+    });
 
-      if (!user) {
-        const notFoundError = new UserNotFoundError(
-          email,
-          'Get User By Email'
-        );
-        logPrismaError(notFoundError);
-        throw notFoundError;
-      }
-
-      return { user };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw error;
-      }
-
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve user by Email',
-        'Get User By Email',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
+    if (!user) {
+      throw new Error(`User not found with email: ${params.email}`);
     }
+
+    return { user };
   }
 
-  async getUserByEmailIncludeFavoriteBooks({ email }: PrismaGetUserByEmailParams): Promise<PrismaGetUserByEmailIncludeFavoriteBooksResponse> {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { email },
-        include: { favoriteBooks: true }
-      });
+  @HandleDatabaseError('Get User Favorite Books')
+  async getUserFavoriteBooks(params: BaseUserIdDto): Promise<PrismaUserWithFavoriteBooksResponse> {
+    const user = await prisma.user.findUnique({
+      where: { id: params.id },
+      select: { favoriteBooks: true },
+    });
 
-      if (!user) {
-        const notFoundError = new UserNotFoundError(
-          email,
-          'Get User By Email with Favorite Books'
-        );
-        logPrismaError(notFoundError);
-        throw notFoundError;
-      }
-
-      return { user };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw error;
-      }
-
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve user by email with favorite books',
-        'Get User By Email with Favorite Books',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
+    if (!user) {
+      throw new Error(`User not found with ID: ${params.id}`);
     }
+
+    return {
+      user
+    } as PrismaUserWithFavoriteBooksResponse;
   }
 
-  async getUserFavoriteBooks({ id }: PrismaGetUserByIdFavoriteBooksParams): Promise<PrismaGetUserFavoriteBooksResponse> {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id },
-        select: { favoriteBooks: true },
-      });
+  @HandleDatabaseError('Get User By Email with Favorite Books')
+  async getUserByEmailIncludeFavoriteBooks(
+    params: BaseEmailDto
+  ): Promise<PrismaUserWithFavoriteBooksResponse> {
+    const user = await prisma.user.findUnique({
+      where: { email: params.email },
+      include: { favoriteBooks: true }
+    });
 
-      if (!user) {
-        const notFoundError = new UserNotFoundError(
-          id.toString(),
-          'Get User Favorite Books'
-        );
-        logPrismaError(notFoundError);
-        throw notFoundError;
-      }
-
-      return {
-        books: user.favoriteBooks || []
-      };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw error;
-      }
-
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve user favorite books',
-        'Get User Favorite Books',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
+    if (!user) {
+      throw new Error(`User not found with email: ${params.email}`);
     }
+
+    return { user };
   }
 }
 

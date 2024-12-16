@@ -12,8 +12,9 @@
   "files": [],
   "include": [
     "prisma/schema.prisma",
-    "src/shared/*"
-  ],
+    "src/shared/*",
+    "../../dtos/src/**/*"
+, "src/types"  ],
   "references": [
     {
       "path": "./tsconfig.lib.json"

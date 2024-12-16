@@ -1,33 +1,31 @@
-import { PrismaGetUserByIdParams, PrismaGetUserByEmailParams, PrismaGetUserByIdFavoriteBooksParams } from '../../shared/types/user.types';
-import type { Book, User } from '@prisma/client'; //We are importing the generated book type and utilizing this for the return.
-import { PrismaUserResponseWithFavoriteBooks } from './user.types';
+import { SingleUserResponseDto, BaseUserIdDto, BaseEmailDto, PrismaUserWithFavoriteBooksResponse, UsersListResponseDto } from "../../dtos";
 
-// Response types for each operation 
-export interface PrismaGetAllUsersResponse {
-  users: User[];
-}
-
-export interface PrismaGetUserByIdResponse {
-  user: User;
-}
-
-export interface PrismaGetUserByEmailResponse {
-  user: User;
-}
-
-export interface PrismaGetUserFavoriteBooksResponse {
-  books: Book[];
-}
-
-export interface PrismaGetUserByEmailIncludeFavoriteBooksResponse {
-  user: PrismaUserResponseWithFavoriteBooks;
-}
-
-// Extending IUserQueryOperations to use the defined response types 
 export interface IUserQueryOperations {
-  getAllUsers(): Promise<PrismaGetAllUsersResponse>;
-  getUserById(params: PrismaGetUserByIdParams): Promise<PrismaGetUserByIdResponse>;
-  getUserByEmail(params: PrismaGetUserByEmailParams): Promise<PrismaGetUserByEmailResponse>;
-  getUserFavoriteBooks(params: PrismaGetUserByIdFavoriteBooksParams): Promise<PrismaGetUserFavoriteBooksResponse>;
-  getUserByEmailIncludeFavoriteBooks(params: PrismaGetUserByEmailParams): Promise<PrismaGetUserByEmailIncludeFavoriteBooksResponse>;
+  getAllUsers(): Promise<UsersListResponseDto>;
+  getUserById(params: BaseUserIdDto): Promise<SingleUserResponseDto>;
+  getUserByEmail(params: BaseEmailDto): Promise<SingleUserResponseDto>;
+  getUserFavoriteBooks(params: BaseUserIdDto): Promise<PrismaUserWithFavoriteBooksResponse>;
+  getUserByEmailIncludeFavoriteBooks(params: BaseEmailDto): Promise<PrismaUserWithFavoriteBooksResponse>;
 }
+
+//These have been removed as the response objects have been reduces to Single or BookList responses. I will leave these here in the future so that if requirements change and more specific responses are required then these can be uncommented and implemented.
+// Response types for each operation 
+// export interface PrismaGetAllUsersResponse {
+//   users: User[];
+// }
+
+// export interface PrismaGetUserByIdResponse {
+//   user: User;
+// }
+
+// export interface PrismaGetUserByEmailResponse {
+//   user: User;
+// }
+
+// export interface PrismaGetUserFavoriteBooksResponse {
+//   books: Book[];
+// }
+
+// export interface PrismaGetUserByEmailIncludeFavoriteBooksResponse {
+//   user: PrismaUserResponseWithFavoriteBooks;
+// }

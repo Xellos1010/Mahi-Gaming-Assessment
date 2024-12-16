@@ -15,11 +15,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@react-monorepo/dtos": ["libs/dtos/src/index.ts"],
-      "@sharedDtos/*": ["dist/libs/dtos/src/index.ts"],
+      // Due to the prisma lib not having the dto lib files under the same root dir, due to time constraints I cannot investigate being able to create generic DTO's to future proof database migrations. It's not in scope anyway so I will continue forward 12/16/24 @ 12:22am
+      // "@react-monorepo/dtos": ["libs/dtos/src/index.ts"],
+      // "@sharedDtos/*": ["dist/libs/dtos/src/index.ts"], 
+      //This is needed so that unit tests can be written
       "@nestDtos/*": ["apps/react-mahi-book-store-backend/src/dtos/*"],
       "@prismaDist/*": ["dist/libs/prisma/src/*"],
-      "@react-monorepo/prisma": ["libs/prisma/src/index.ts"],
+      // "@react-monorepo/prisma": ["libs/prisma/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]

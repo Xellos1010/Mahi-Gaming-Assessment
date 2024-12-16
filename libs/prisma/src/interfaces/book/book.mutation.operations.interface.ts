@@ -1,31 +1,21 @@
-import { PrismaAddBookParams, PrismaRemoveBookByIdParams, PrismaUpdateBookParams, PrismaUserFavoriteBookParams } from "../../shared/types/book.types";
-import type { Book } from "@prisma/client"; //We are importing the generated book type and utilizing this for the return.
-
+import { BaseBookIdDto, BaseCreateBookDto, BaseUserFavoriteBookRequestDto, SingleBookResponseDto } from "../../dtos/lib/book.dto";
+import { PrismaDatabaseUpdateBookParams } from "../../types/book.types";
 
 export interface IBookMutationOperations {
-  addBook(params: PrismaAddBookParams): Promise<PrismaAddBookResponse>;
-  removeBookById(params: PrismaRemoveBookByIdParams): Promise<PrismaRemoveBookByIdResponse>;
-  updateBook(params: PrismaUpdateBookParams): Promise<PrismaUpdateBookResponse>;
-  addUserToFavoriteBook(params: PrismaUserFavoriteBookParams): Promise<PrismaAddUserToFavoriteBookResponse>;
-  removeBookFromFavorites(params: PrismaUserFavoriteBookParams): Promise<PrismaRemoveBookFromFavoritesResponse>;
+  addBook(params: BaseCreateBookDto): Promise<SingleBookResponseDto>;
+  removeBookById(params: BaseBookIdDto): Promise<SingleBookResponseDto>;
+  updateBook(params: PrismaDatabaseUpdateBookParams): Promise<SingleBookResponseDto>;
+  addUserToFavoriteBook(params: BaseUserFavoriteBookRequestDto): Promise<SingleBookResponseDto>;
+  removeBookFromFavorites(params: BaseUserFavoriteBookRequestDto): Promise<SingleBookResponseDto>;
 }
 
-export interface PrismaAddBookResponse {
-  book: Book;
-}
+//These have been removed as the response objects have been reduces to Single or BookList responses. I will leave these here in the future so that if requirements change and more specific responses are required then these can be uncommented and implemented.
+// export interface PrismaAddBookResponse extends SingleBookResponseDto {}
 
-export interface PrismaRemoveBookByIdResponse {
-  book: Book;
-}
+// export interface PrismaRemoveBookByIdResponse extends SingleBookResponseDto {}
 
-export interface PrismaUpdateBookResponse {
-  book: Book;
-}
+// export interface PrismaUpdateBookResponse extends SingleBookResponseDto {}
 
-export interface PrismaAddUserToFavoriteBookResponse {
-  book: Book;
-}
+// export interface PrismaAddUserToFavoriteBookResponse extends SingleBookResponseDto {}
 
-export interface PrismaRemoveBookFromFavoritesResponse {
-  book: Book;
-}
+// export interface PrismaRemoveBookFromFavoritesResponse extends SingleBookResponseDto {}

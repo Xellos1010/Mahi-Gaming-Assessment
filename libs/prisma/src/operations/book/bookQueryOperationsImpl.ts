@@ -1,60 +1,30 @@
-// libs/prisma/src/operations/book/bookQueryOperationsImpl.ts
 import { prisma } from "../../client";
-import {
-  PrismaGetAllBooksResponse,
-  PrismaGetBookByIdResponse,
-  IBookQueryOperations
-} from "../../interfaces/book/book.query.operations.interface";
-import {
-  PrismaGetBookByIdParams
-} from "../../shared/types/book.types";
-import {
-  PrismaOperationError,
-  logPrismaError
-} from "../../errors/prisma-errors";
+import { IBookQueryOperations } from "../../interfaces/book/book.query.operations.interface";
+import { 
+  BooksListResponseDto, 
+  SingleBookResponseDto, 
+  BaseBookIdDto 
+} from "../../dtos/lib/book.dto";
+import { HandleDatabaseError } from "../../decorators/handle-database-error.decorator";
 
-class PrismaBookQueryOperationsImpl implements IBookQueryOperations {
-  async getAllBooks(): Promise<PrismaGetAllBooksResponse> {
-    try {
-      const books = await prisma.book.findMany();
-      return { books };
-    } catch (error) {
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve books',
-        'Get All Books',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
-    }
+export class PrismaBookQueryOperationsImpl implements IBookQueryOperations {
+  @HandleDatabaseError('Get All Books')
+  async getAllBooks(): Promise<BooksListResponseDto> {
+    const books = await prisma.book.findMany();
+    return { books };
   }
 
-  async getBook({ id }: PrismaGetBookByIdParams): Promise<PrismaGetBookByIdResponse> {
-    try {
-      const book = await prisma.book.findUnique({ where: { id } });
-      if (!book) {
-        const operationError = new PrismaOperationError(
-          `Book not found with ID: ${id}`,
-          'Get Book By ID',
-          new Error('Book not found')
-        );
-        logPrismaError(operationError);
-        throw operationError;
-      }
-      return { book };
-    } catch (error) {
-      // If it's already a PrismaOperationError, rethrow
-      if (error instanceof PrismaOperationError) {
-        throw error;
-      }
-      const operationError = new PrismaOperationError(
-        'Failed to retrieve book by ID',
-        'Get Book By ID',
-        error instanceof Error ? error : new Error('Unknown error')
-      );
-      logPrismaError(operationError);
-      throw operationError;
+  @HandleDatabaseError('Get Book')
+  async getBook(params: BaseBookIdDto): Promise<SingleBookResponseDto> {
+    const book = await prisma.book.findUnique({ 
+      where: { id: params.id } 
+    });
+
+    if (!book) {
+      throw new Error(`Book not found with ID: ${params.id}`);
     }
+
+    return { book };
   }
 }
 

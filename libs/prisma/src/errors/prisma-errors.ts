@@ -1,5 +1,3 @@
-// libs/prisma/src/errors/prisma-errors.ts
-
 export class PrismaOperationError extends Error {
     public readonly operationType: string;
     public readonly originalError: Error;

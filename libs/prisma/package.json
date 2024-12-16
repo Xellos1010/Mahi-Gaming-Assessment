@@ -2,9 +2,7 @@
   "name": "@react-monorepo/prisma",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0",
-    "@prisma/client": "^6.0.1",
-    "prisma": "^6.0.1"
+    "tslib": "^2.3.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",
