@@ -61,13 +61,15 @@ export class UpdateUserLastLoggedInDto implements BaseUserLastLoggedInDto {
 export class CreateUserRequestDto extends BasePasswordDto implements BaseCreateUserRequestDto {
   @IsString()
   name: string;
-  //Validation is performed in the constructor
+  //Validation is performed in the constructor - NOTE: tried to implement DRY but parameters come in undefined if we try to utilize the new BaseUserEmailDto(). Implementing Validation here on non-sensitive information - still ppi but not a password
+  @IsEmail()
   email: string;
 
   constructor(name: string, email: string, password: string) {
     super(password)
     this.name = name;
-    this.email = new BaseUserEmailDto(email).email;
+    // this.email = new BaseUserEmailDto(email).email;
+    this.email = email;
   }
 }
 

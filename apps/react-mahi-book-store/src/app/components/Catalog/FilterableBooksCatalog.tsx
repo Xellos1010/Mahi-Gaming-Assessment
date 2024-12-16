@@ -20,8 +20,8 @@ const FilterableBooksCatalog: React.FC<BooksInfoProps> = ({ books }) => {
     })
     : [];
   
-  console.log('Is books an array?', Array.isArray(books));
-  console.log('books?', books);
+  // console.log('Is books an array?', Array.isArray(books));
+  // console.log('books?', books);
 
   return (
     <div className={styles.catalogContainer}>

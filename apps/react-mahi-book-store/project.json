@@ -38,6 +38,27 @@
       "outputs": [
         "coverage/apps/react-mahi-book-store"
       ]
+    },
+    "docker-compose-up-front-back-database": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f ../../docker-compose.yml up --build",
+        "cwd": "apps/react-mahi-book-store-backend"
+      }
+    },
+    "add-books-prod": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sh ../../scripts/add-books.sh",
+        "cwd": "apps/react-mahi-book-store-backend"
+      }
+    },
+    "clear-books-prod": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "sh ../../scripts/clear-books.sh",
+        "cwd": "apps/react-mahi-book-store-backend"
+      }
     }
   }
 }

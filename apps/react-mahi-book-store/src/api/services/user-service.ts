@@ -6,7 +6,7 @@ import { LogAll } from '@shared-decorators';
 
 export class UserService extends BaseApiService {
   constructor() {
-    super('http://localhost:3000/api/users');
+    super('/users');
   }
 
   async fetchFavorites(id: number): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {

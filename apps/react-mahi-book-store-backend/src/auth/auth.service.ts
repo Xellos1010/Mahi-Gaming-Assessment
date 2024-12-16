@@ -13,6 +13,7 @@ import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 import { BaseGetUserByEmailRequestDto, CreateUserRequestDto, UserWithFavoritesDatabaseResponseDto } from '@nestDtos/user.dto';
 import { loginSuccessMessage, registerSuccessMessage } from '../decorators/consts/auth.consts';
 import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
+import { PrismaOperationError } from 'libs/prisma/src/errors/prisma-errors';
 
 @Injectable()
 export class AuthService {
@@ -24,10 +25,26 @@ export class AuthService {
   @HandleServiceError()
   async register(createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>> {
     const getUserParams: BaseGetUserByEmailRequestDto = new BaseGetUserByEmailRequestDto(createUserDto.email);
-    const existingUserResponse = await this.userService.getUserByEmailIncludeFavoriteBooks(getUserParams) as ApiResponseDto<UserWithFavoritesDatabaseResponseDto>;
-    if (existingUserResponse.data.user) {
-      throw new BadRequestException('Email is already in use');
+    let existingUserResponse;
+    try {
+      // Attempt to find an existing user by email
+      existingUserResponse = await this.userService.getUserByEmailIncludeFavoriteBooks(getUserParams) as ApiResponseDto<UserWithFavoritesDatabaseResponseDto>;
+    } catch (error) {
+      // Handle the case where the user is not found
+      if (error instanceof ApiResponseDto && error.error.message.includes("User not found")) {
+        console.log(`existingUserResponse: `, existingUserResponse);
+        existingUserResponse = null;
+      } else {
+        // Rethrow if it's another error
+        console.log(`error service level: `, error);
+        throw new BadRequestException('Email is already in use');
+      }
     }
+    
+    // const existingUserResponse = await this.userService.getUserByEmailIncludeFavoriteBooks(getUserParams) as ApiResponseDto<UserWithFavoritesDatabaseResponseDto>;
+    // if (existingUserResponse.data.user) {
+    //   throw new BadRequestException('Email is already in use');
+    // }
 
     const hashedPassword = await hashPassword(createUserDto.password);
     const createUserResponse = await this.userService.addUser({

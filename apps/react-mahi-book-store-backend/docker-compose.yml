@@ -1,44 +1,49 @@
 version: '3.8'
 services:
-  postgres:
+  dev-postgres:
     image: postgres:latest
-    container_name: bookstore_db
+    container_name: bookstore_dev_db
     ports:
-      - '5432:5432'
+     - '5433:5432'  # Changed port to avoid conflict with production
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: bookstore
+      POSTGRES_DB: bookstore_dev
     volumes:
-      - pgdata:/var/lib/postgresql/data
+     - dev-pgdata:/var/lib/postgresql/data
     networks:
-      - bookstore_network
+     - bookstore_dev_network
 
-  backend:
+  dev-backend:
     build:
-      context: ../../  # Build context set to the root of the monorepo
-      dockerfile: apps/react-mahi-book-store-backend/Dockerfile  # Path to Dockerfile
+      context: ../../ # Build context set to the root of the monorepo
+      dockerfile: apps/react-mahi-book-store-backend/Dockerfile # Path to Dockerfile
     depends_on:
-      - postgres
+     - dev-postgres
+    volumes:
+     - ../../dist/apps/react-mahi-book-store-backend:/app/dist/apps/react-mahi-book-store-backend  # Mount dist folder for hot reloading
     environment:
-      DATABASE_URL: postgres://user:password@postgres:5432/bookstore
+      DATABASE_URL: postgres://user:password@dev-postgres:5432/bookstore_dev
+      PORT: 3000  # Changed port to avoid conflict
     networks:
-      - bookstore_network
+     - bookstore_dev_network
     ports:
-      - '3000:3000'
-  pgadmin:
+     - '3000:3000'  # Match the internal PORT
+
+  dev-pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin
+    container_name: bookstore_dev_pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - '8080:80'
+     - '8081:80'  # Changed port to avoid conflict
     networks:
-      - bookstore_network
+     - bookstore_dev_network
+
 volumes:
-  pgdata:
+  dev-pgdata:
 
 networks:
-  bookstore_network:
+  bookstore_dev_network:
     driver: bridge

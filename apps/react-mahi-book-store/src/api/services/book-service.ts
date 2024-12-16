@@ -5,7 +5,7 @@ import { LogAll } from '@shared-decorators';
 import { ReactBooksListResponseDto } from '../../dtos/books.dtos';
 export class BookService extends BaseApiService {
   constructor() {
-    super('http://localhost:3000/api/books');
+    super('/books');
   }
 
   @LogAll()

@@ -5,8 +5,9 @@ import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 export class BaseApiService {
   protected baseUrl: string;
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+  constructor(endpoint: string) {
+    // Use environment variable or fallback to default
+    this.baseUrl = `/api${endpoint}`;
   }
 
   protected async handleRequest<T>(

@@ -19,6 +19,9 @@ RUN addgroup --system react-mahi-book-store-frontend && \
 # Copy the built app to NGINX's public directory
 COPY --from=builder /app/dist/apps/react-mahi-book-store /usr/share/nginx/html
 
+# Copy custom Nginx configuration
+COPY apps/react-mahi-book-store/nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose the port NGINX serves on
 EXPOSE 80
 

@@ -6,7 +6,7 @@ import { LogAll } from '@shared-decorators';
 
 export class AuthService extends BaseApiService {
   constructor() {
-    super('http://localhost:3000/api/auth');
+    super('/auth');
   }
 
   @LogAll()
