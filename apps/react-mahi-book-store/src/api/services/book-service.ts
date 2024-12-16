@@ -1,15 +1,16 @@
 import { BaseApiService } from './base-api-service';
-import { LogAll } from '../decorators/log-decorators';
-import { BaseBookIdDto, BaseCreateBookDto, BaseUpdateBookDto, BooksListResponseDto, SingleBookResponseDto } from '@prismaDist/dtos/lib/book.dto';
+import { BaseBookIdDto, BaseCreateBookDto, BaseUpdateBookDto, SingleBookResponseDto } from '@prismaDist/dtos/lib/book.dto';
 import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
+import { LogAll } from '@shared-decorators';
+import { ReactBooksListResponseDto } from '../../dtos/books.dtos';
 export class BookService extends BaseApiService {
   constructor() {
     super('http://localhost:3000/api/books');
   }
 
   @LogAll()
-  async fetchAll(params?: Record<string, any>): Promise<ApiResponseDto<BooksListResponseDto>> {
-    return this.handleRequest<ApiResponseDto<BooksListResponseDto>>('get', '', undefined, { params });
+  async fetchAll(params?: Record<string, any>): Promise<ReactBooksListResponseDto> {
+    return this.handleRequest<ReactBooksListResponseDto>('get', '', undefined, { params });
   }
 
   @LogAll()

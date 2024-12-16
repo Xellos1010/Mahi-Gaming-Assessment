@@ -1,9 +1,8 @@
 import { BaseUserDatabaseResponseDto, GetUserByIdRequestDto, UserWithFavoritesDatabaseResponseDto } from '@nestDtos/user.dto';
-import { LogAll } from '../decorators/log-decorators';
 import { BaseApiService } from './base-api-service';
-import { Book, User } from '@prisma/client';
 import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 import { BaseCreateUserRequestDto, BaseUserUpdateDto, UsersListResponseDto } from '@prismaDist/dtos';
+import { LogAll } from '@shared-decorators';
 
 export class UserService extends BaseApiService {
   constructor() {

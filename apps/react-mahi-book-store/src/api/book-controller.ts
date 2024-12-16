@@ -1,16 +1,23 @@
-import { Book } from "@prisma/client";
 import { handleError } from "./handleError";
 import { BookService } from "../api/services/book-service";
 import { ApiResponseDto } from "@nestDtos/base.api-response.dto";
-import { SingleBookResponseDto } from "@prismaDist/dtos/lib/book.dto";
+import { ReactBooksListResponseDto } from "../dtos/books.dtos";
+import { SingleBookResponseDto } from "@prismaDist/dtos";
+// import { LogAll } from "@shared-decorators";
 
 const bookService = new BookService();
 
-export const fetchBooks = async (): Promise<Book[]> => {
+export const fetchBooks = async (): Promise<ReactBooksListResponseDto> => {
     try {
         const response = await bookService.fetchAll();
-        return response.data?.books || [];
+
+        // Log the response data for debugging purposes
+        console.log('Fetched books response:', response);
+        
+        return response;
     } catch (error) {
+        // Log the error for debugging
+        console.error('Error fetching books:', error);
         throw handleError(error); // Handle errors
     }
 };

@@ -1,9 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { formatError } from '../../util/error-formatter.util';
+import { sanitizeInput } from '@shared-decorators';
 
 export interface ErrorHandlingOptions {
-    // Options to customize error handling behavior
-    // operation?: string;
     logInput?: boolean;
     measurePerformance?: boolean;
     sensitiveFields?: string[];
@@ -24,17 +23,17 @@ export abstract class BaseErrorHandler {
 /**
  * (SRP) Centralizes and unifies error handling and logging logic to sanitize sensitive information and measure performance.
  * 
- * Design Principles Considerations:
+ * Design Principles:
  * - Single Responsibility Principle (SRP): Handles logging, sanitization, and performance tracking
  * - Open/Closed Principle: Allows extension through abstract method
  * - Dependency Inversion: Depends on abstraction (abstract method)
- * - DRY: Centralizes common error handling logic
+ * - DRY: Centralizes common error handling logic and uses shared sanitization utility
  */
 export function BaseHandleError(options: ErrorHandlingOptions = {}) {
     const {
         logInput = true,
         measurePerformance = true,
-        sensitiveFields = ['password', 'token', 'accessToken', 'refreshToken']
+        sensitiveFields = ['password', 'accessToken']
     } = options;
 
     return function (
@@ -47,31 +46,6 @@ export function BaseHandleError(options: ErrorHandlingOptions = {}) {
 
         descriptor.value = async function (...args: any[]) {
             const methodOperation = `Executing ${propertyKey}`;
-
-            const sanitizeInput = (input: any) => {
-                if (!logInput || !input) return input;
-                try {
-                    const sanitized = JSON.parse(JSON.stringify(input));
-
-                    const recursiveSanitize = (obj: any) => {
-                        if (typeof obj !== 'object' || obj === null) return obj;
-
-                        for (const key of Object.keys(obj)) {
-                            if (sensitiveFields.some(field => key.toLowerCase().includes(field.toLowerCase()))) {
-                                obj[key] = '****';
-                            } else if (typeof obj[key] === 'object') {
-                                recursiveSanitize(obj[key]);
-                            }
-                        }
-
-                        return obj;
-                    };
-
-                    return recursiveSanitize(sanitized);
-                } catch {
-                    return '[Unable to sanitize]';
-                }
-            };
 
             try {
                 if (logInput) {

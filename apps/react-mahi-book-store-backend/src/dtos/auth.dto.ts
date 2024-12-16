@@ -1,7 +1,6 @@
-// dtos/auth.dto.ts 
-import { IsString, IsObject, isEmail, IsEmail } from 'class-validator';
+import { IsString, IsObject, IsEmail } from 'class-validator';
 import type { User } from '@prisma/client';
-import { BasePasswordDto, BaseUserEmailDto, UserWithFavoritesDatabaseResponseDto } from './user.dto';
+import { BasePasswordDto, UserWithFavoritesDatabaseResponseDto } from './user.dto';
 import { BaseCreateUserDatabaseResponseDto, BaseLoginUserRequestDto, BaseLoginUserDatabaseResponseDto, SingleUserResponseWithFavoriteBooksDto } from '@prismaDist/dtos';
 import { PrismaUserWithFavoriteBooks } from '@prismaDist/dtos/lib/types/user.types';
 

@@ -1,3 +1,5 @@
+import { sanitizeInput } from "../utils/sanitizeInput.util";
+
 // Centralized logger configuration
 const createLogger = (loggerName: string) => {
   return {
@@ -21,35 +23,6 @@ const errorLogger = createLogger('ErrorLogger');
  */
 function generateCorrelationId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-}
-
-/**
- * Sanitizes input to prevent logging sensitive information
- * @param input - Input to sanitize
- * @returns Sanitized input
- */
-function sanitizeInput(input: any): any {
-  if (typeof input === 'object' && input !== null) {
-    const sanitizedInput = { ...input };
-
-    // Remove sensitive fields
-    const sensitiveFields = [
-      'password', 'token', 'credentials',
-      'secretKey', 'accessToken', 'pin'
-    ];
-
-    sensitiveFields.forEach(field => {
-      if (field in sanitizedInput) {
-        delete sanitizedInput[field];
-      }
-    });
-
-    // Truncate large objects
-    return Object.keys(sanitizedInput).length > 10
-      ? { ...sanitizedInput, __truncated: true }
-      : sanitizedInput;
-  }
-  return input;
 }
 
 /**
@@ -112,7 +85,7 @@ export function LogParameters(): MethodDecorator {
         correlationId,
         className,
         methodName,
-        parameters: args.map(sanitizeInput)
+        parameters: args.map(arg => sanitizeInput(arg))
       });
 
       try {
@@ -152,7 +125,7 @@ export function LogErrors(): MethodDecorator {
           errorType: error instanceof Error ? error.name : 'Unknown Error',
           errorMessage: error instanceof Error ? error.message : String(error),
           errorStack: error instanceof Error ? error.stack : undefined,
-          parameters: args.map(sanitizeInput)
+          parameters: args.map(arg => sanitizeInput(arg))
         });
 
         // Rethrow the error after logging

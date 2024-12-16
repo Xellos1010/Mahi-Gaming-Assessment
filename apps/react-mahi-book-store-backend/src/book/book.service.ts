@@ -13,16 +13,18 @@ import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 import { prismaOperations } from 'libs/prisma/src/operations/prismaOperationsImpl';
 import { PrismaDatabaseUpdateBookParams } from 'libs/prisma/src/types/book.types';
+import { LogAll } from '@shared-decorators';
 
 @Injectable()
 export class BookService implements IBookServiceInterface {
 
-  // @HandleServiceError()
+  @HandleServiceError()
+  @LogAll()
   async getAllBooks(): Promise<ApiResponseDto<BaseBooksDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBooksDatabaseResponseDto>(await prismaOperations.bookQuery.getAllBooks() as BaseBooksDatabaseResponseDto);
   }
 
-  // @HandleServiceError()
+  @HandleServiceError()
   async getBook(params: BaseGetBookByIdRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookQuery.getBook(params) as BaseBookDatabaseResponseDto);
   }
