@@ -1,4 +1,3 @@
-import ToastContainer from '@frontend/app/components/Toast/ToastContainer';
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';

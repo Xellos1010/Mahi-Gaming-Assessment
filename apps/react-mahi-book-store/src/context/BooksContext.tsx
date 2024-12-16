@@ -2,7 +2,7 @@ import React, { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { Book } from "@prisma/client";
-import { fetchBooks } from "@frontend/api/book";
+import { fetchBooks } from "../api/book-controller";
 
 interface BooksContextValue {
     books: Book[];

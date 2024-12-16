@@ -1,10 +1,11 @@
 import React, { SetStateAction, useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../validation/authSchemas";
-import { useAuth } from "@frontend/context/AuthContext";
-import { useToast } from "../../../context/ToastContext";
 import styles from './RegisterComponent.module.scss';
+import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../..//context/ToastContext";
+import { BaseCreateUserRequestDto } from "@prismaDist/dtos/lib/user.dto";
 
 interface RegisterComponentProps {
     onTabChange?: (tab: SetStateAction<"login" | "register" | "catalog" | "favorites">) => void;
@@ -20,23 +21,17 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
         handleSubmit,
         watch,
         formState: { errors, isSubmitting }
-    } = useForm<{
-        name: string
-        email: string;
-        password: string;
-        confirmPassword: string
-    }>({
+    } = useForm<BaseCreateUserRequestDto & { confirmPassword: string }>({
         resolver: zodResolver(registerSchema)
     });
 
-    const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const onSubmit: SubmitHandler<BaseCreateUserRequestDto & { confirmPassword: string }> = async (data) => {
         try {
             const { name, email, password } = data;
-            console.log('Name:', name); // Log the name to check its value
-            await registerUser(name, email, password);
+            await registerUser({ name, email, password });
             addToast("Registration successful!", "success");
         } catch (error) {
-            addToast(error as string, "error");
+            addToast(error instanceof Error ? error.message : String(error), "error");
         }
     };
 
@@ -66,10 +61,11 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
                     />
                     {errors.name && (
                         <p className={styles.errorMessage}>
-                            {errors.name.message?.toString()}
+                            {errors.name.message}
                         </p>
                     )}
                 </div>
+
                 <div className={styles.formGroup}>
                     <label htmlFor="email" className={styles.label}>
                         Email Address
@@ -82,7 +78,7 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
                     />
                     {errors.email && (
                         <p className={styles.errorMessage}>
-                            {errors.email.message?.toString()}
+                            {errors.email.message}
                         </p>
                     )}
                 </div>
@@ -109,7 +105,7 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
                     </div>
                     {errors.password && (
                         <p className={styles.errorMessage}>
-                            {errors.password.message?.toString()}
+                            {errors.password.message}
                         </p>
                     )}
                 </div>
@@ -127,7 +123,7 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
                     />
                     {errors.confirmPassword && (
                         <p className={styles.errorMessage}>
-                            {errors.confirmPassword.message?.toString()}
+                            {errors.confirmPassword.message}
                         </p>
                     )}
                 </div>
@@ -135,8 +131,8 @@ const RegisterComponent: React.FC<RegisterComponentProps> = ({ onTabChange }) =>
                 <div className={styles.passwordStrength}>
                     <p>Password Strength:
                         <span className={`
-              ${passwordValue?.length >= 8 ? styles.strongPassword : styles.weakPassword}
-            `}>
+                            ${passwordValue?.length >= 8 ? styles.strongPassword : styles.weakPassword}
+                        `}>
                             {passwordValue?.length >= 8 ? 'Strong' : 'Weak'}
                         </span>
                     </p>

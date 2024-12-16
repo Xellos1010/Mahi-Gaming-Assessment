@@ -1,55 +1,106 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
-import { loginUser, registerUser } from "@frontend/api/auth"; // Implement these API calls
-import { User } from "@prisma/client";
-import { LoginResponse, RegisterResponse } from "@frontend/api/types/auth";
+import React, { createContext, useCallback, useContext, useState, useEffect } from "react";
+
+import { AuthService } from "../api/services/authentication-service";
+import { BaseLoginUserRequestDto } from "@prismaDist/dtos/lib/auth.dto";
+import { LoginResponse, RegisterResponse } from "../api/services/types/auth";
+import { BaseCreateUserRequestDto } from "@prismaDist/dtos";
+import { PrismaUserWithFavoriteBooks } from "@prismaDist/dtos/lib/types/user.types";
+
+// Secure token storage and management
+const TOKEN_KEY = 'book_store_access_token';
+const USER_KEY = 'book_store_user';
 
 interface AuthContextValue {
-  user: User | null; // User type from Prisma
+  user: PrismaUserWithFavoriteBooks | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<LoginResponse>;
-  register: (name: string, email: string, password: string) => Promise<RegisterResponse>;
-  logout: () => void;
+  login: (credentials: BaseLoginUserRequestDto) => Promise<LoginResponse>;
+  register: (userData: BaseCreateUserRequestDto) => Promise<RegisterResponse>;
+  logout: () => Promise<void>;
 }
 
-
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const authService = new AuthService();
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string>(""); //This will need to be researched with time pending on how to store the jwt client side and validate it on subsequent app loads
-  const login = useCallback(async (email: string, password: string): Promise<LoginResponse> => {
+  const [user, setUser] = useState<PrismaUserWithFavoriteBooks | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Load user and token from local storage on initial load
+  useEffect(() => {
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    const storedUser = localStorage.getItem(USER_KEY);
+
+    if (storedToken && storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        // Clear invalid storage
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+      }
+    }
+  }, []);
+
+  const login = useCallback(async (credentials: BaseLoginUserRequestDto): Promise<LoginResponse> => {
     try {
-      //errors throw in loginUser
-      const loggedInUser = await loginUser(email, password);
-      console.log(loggedInUser.message);
-      setUser(loggedInUser.user);
-      setAccessToken(loggedInUser.accessToken);
-      return loggedInUser;
+      const loginResponse: LoginResponse = await authService.login(credentials);
+
+      // Store user and token
+      console.log(`Login Response: ${loginResponse.data?.user}`);
+      setUser(loginResponse.data?.user || null);
+      setIsAuthenticated(true);
+      localStorage.setItem(TOKEN_KEY, loginResponse.data?.accessToken || 'null');
+      localStorage.setItem(USER_KEY, JSON.stringify(loginResponse.data?.user));
+
+      return loginResponse;
     } catch (error) {
-      // Optional: add error handling logic
+      setIsAuthenticated(false);
       throw error;
     }
   }, []);
 
-  const register = useCallback(async (name: string, email: string, password: string): Promise<RegisterResponse> => {
+  const register = useCallback(async (userData: BaseCreateUserRequestDto): Promise<RegisterResponse> => {
     try {
-      const registeredUser = await registerUser(name, email, password);
-      console.log(registeredUser.message);
-      setUser(registeredUser.user);
-      setAccessToken(registeredUser.accessToken);
-      return registeredUser;
+      const registerResponse = await authService.register(userData);
+
+      // Store user and token
+      setUser(registerResponse.data?.user as PrismaUserWithFavoriteBooks || null);
+      setIsAuthenticated(true);
+      localStorage.setItem(TOKEN_KEY, registerResponse.data?.accessToken || 'null');
+      localStorage.setItem(USER_KEY, JSON.stringify(registerResponse.data?.user));
+
+      return registerResponse;
     } catch (error) {
-      // Optional: add error handling logic
+      setIsAuthenticated(false);
       throw error;
     }
   }, []);
 
-  const logout = useCallback(() => {
-    setUser(null);
+  const logout = useCallback(async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear user data and tokens
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated,
+      login,
+      register,
+      logout
+    }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import styles from './CatalogTab.module.scss';
 import FilterableBooksCatalog from "../Catalog/FilterableBooksCatalog";
-import { useBooks } from "@frontend/context/BooksContext";
+import { useBooks } from "../../../context/BooksContext";
 
 const CatalogTab: React.FC = () => {
   const { books, isLoading } = useBooks();

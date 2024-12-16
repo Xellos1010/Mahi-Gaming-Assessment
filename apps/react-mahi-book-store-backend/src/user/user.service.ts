@@ -81,7 +81,7 @@ export class UserService implements IUserServiceInterface {
   @HandleServiceError()
   async getUserFavoriteBooks(params: GetUserByIdRequestDto): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {
     const userWithBooks = await prismaOperations.userQuery.getUserFavoriteBooks(params) as SingleUserResponseWithFavoriteBooksDto;
-    if (!userWithBooks || (Array.isArray(userWithBooks.user.favoriteBooks) && userWithBooks.user.favoriteBookslength === 0)) {
+    if (!userWithBooks || (Array.isArray(userWithBooks.user.favoriteBooks) && userWithBooks.user.favoriteBooks.length === 0)) {
       throw new NotFoundException(`No favorite books found for user with ID  ${params.id} `);
     }
     return wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(userWithBooks as UserWithFavoritesDatabaseResponseDto);

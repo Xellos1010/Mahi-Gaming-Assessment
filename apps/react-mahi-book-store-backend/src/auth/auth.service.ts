@@ -41,6 +41,7 @@ export class AuthService {
 
   @HandleServiceError()
   async login(loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>> {
+    console.log("Login request data:", loginUserDto);
     const { user } = (await this.userService.getUserByEmailIncludeFavoriteBooks({ email: loginUserDto.email })).data;
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');

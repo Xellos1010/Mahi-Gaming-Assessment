@@ -23,5 +23,5 @@
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
     "src/**/*.d.ts"
-  ]
+, "src/api/services/types/base-response.dto.ts"  ]
 }

@@ -1,8 +1,9 @@
 // apps/react-mahi-book-store/src/context/UserContext.tsx
 import React, { createContext, useContext, useState } from "react";
 import { Book } from "@prisma/client";
-import { addFavoriteBook, removeFavoriteBook } from "@frontend/api/user";
+
 import { useToast } from "./ToastContext";
+import { addFavoriteBook, removeFavoriteBook } from "../api/user-controller";
 
 // Define the shape of dependencies
 interface UserContextDependencies {
@@ -50,7 +51,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({
 
     try {
       const updatedFavorites = await addFavoriteBook(userId, bookId);
-      setFavoriteBooks(updatedFavorites);
+      // TODO: Setup Favorite Books return added to favorites array
+      // setFavoriteBooks(updatedFavorites.data?.book);
     } catch (error) {
       addToast("Failed to add book to favorites", "error");
       console.error(error);
@@ -70,7 +72,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({
 
     try {
       const updatedFavorites = await removeFavoriteBook(userId, bookId);
-      setFavoriteBooks(updatedFavorites);
+      // TODO: Setup update of favorite books array
+      // setFavoriteBooks(updatedFavorites);
     } catch (error) {
       addToast("Failed to remove book from favorites", "error");
       console.error(error);

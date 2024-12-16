@@ -1,7 +1,7 @@
 // src/api/auth.ts 
 import axios from "axios";
 import { handleError } from "./handleError";
-import { LoginResponse, RegisterResponse } from "./types/auth";
+import { LoginResponse, RegisterResponse } from "./services/types/auth";
 
 const API_BASE_URL = "http://localhost:3000/api/auth";  // Base URL for authentication endpoints 
 

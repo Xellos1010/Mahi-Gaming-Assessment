@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CreateUserDto } from '@dto/auth.dto';
+import { CreateUserDto } from '@nestDtos/auth.dto';
 const BASE_URL = 'http://localhost:3000/api/users';
 
 describe('UserController E2E Tests', () => {

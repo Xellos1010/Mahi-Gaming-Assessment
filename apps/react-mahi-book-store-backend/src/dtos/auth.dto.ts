@@ -1,8 +1,9 @@
 // dtos/auth.dto.ts 
-import { IsString, IsObject } from 'class-validator';
+import { IsString, IsObject, isEmail, IsEmail } from 'class-validator';
 import type { User } from '@prisma/client';
 import { BasePasswordDto, BaseUserEmailDto, UserWithFavoritesDatabaseResponseDto } from './user.dto';
 import { BaseCreateUserDatabaseResponseDto, BaseLoginUserRequestDto, BaseLoginUserDatabaseResponseDto, SingleUserResponseWithFavoriteBooksDto } from '@prismaDist/dtos';
+import { PrismaUserWithFavoriteBooks } from '@prismaDist/dtos/lib/types/user.types';
 
 
 export class BaseAccessTokenResponse implements BaseAccessTokenResponse {
@@ -25,19 +26,20 @@ export class CreateUserDatabaseResponseDto extends BaseAccessTokenResponse imple
 }
 
 export class LoginUserRequestDto extends BasePasswordDto implements BaseLoginUserRequestDto{
+  @IsEmail()
   email: string;
 
   constructor(email: string, password: string) {
     super(password);  // Pass the password to the base class constructor
-    this.email = new BaseUserEmailDto(email).email;  // Set the email property 
+    // this.email = new BaseUserEmailDto(email).email;  // Set the email property 
+    this.email = email;  // Set the email property 
   }
 }
 
 export class LoginUserDatabaseResponseDto extends BaseAccessTokenResponse implements BaseLoginUserDatabaseResponseDto {
+  user: PrismaUserWithFavoriteBooks;
 
-  user: SingleUserResponseWithFavoriteBooksDto;
-
-  constructor(user: SingleUserResponseWithFavoriteBooksDto, accessToken: string) {
+  constructor(user: PrismaUserWithFavoriteBooks, accessToken: string) {
     super(accessToken); // Casting to access Token for the super constructor call
     this.user = new UserWithFavoritesDatabaseResponseDto(user).user; // Set the user property in the subclass
   }

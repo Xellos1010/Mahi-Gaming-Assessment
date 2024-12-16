@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styles from './FilterableFavoritesCatalog.module.scss';
 import SearchFilterableBooksCatalogInput from './SearchFilterableBooksCatalogInput';
 import { Filter } from './FiltersInterfaces';
-import { useUser } from '@frontend/context/UserContext';
 import FilterableScrollableBooksDisplay from './FilterableScrollableBooksDisplay';
+import { useUser } from '../../..//context/UserContext';
 
 interface FilterableFavoritesCatalogProps {
   isEditing?: boolean;

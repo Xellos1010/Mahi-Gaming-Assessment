@@ -3,9 +3,9 @@ import styles from './TabViewManager.module.scss';
 import CatalogTab from "./CatalogTab";
 import FavoritesTab from "./FavoritesTab";
 import RegisterComponent from "../Auth/RegisterComponent";
-import { useToast } from "@frontend/context/ToastContext";
-import { useAuth } from "@frontend/context/AuthContext";
 import LoginComponent from "../Auth/LoginComponent";
+import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../..//context/ToastContext";
 
 const TabViewManager: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"catalog" | "favorites" | "login" | "register">("catalog");

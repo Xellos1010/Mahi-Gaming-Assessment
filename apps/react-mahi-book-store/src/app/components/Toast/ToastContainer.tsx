@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ToastContainer.module.scss';
-import { useToast } from '@frontend/context/ToastContext';
 import Toast from './Toast';
+import { useToast } from '../../../context/ToastContext';
 
 const ToastContainer: React.FC = () => {
   const { toasts, removeToast } = useToast();

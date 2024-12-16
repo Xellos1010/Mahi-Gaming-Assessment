@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CreateBookDto } from '@dto/book.dto';
+import { CreateBookDto } from '@nestDtos/book.dto';
 const BASE_URL = 'http://localhost:3000/api/books';
 
 describe('BookController E2E Tests', () => {

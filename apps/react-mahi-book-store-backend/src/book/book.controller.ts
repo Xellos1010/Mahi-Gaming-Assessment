@@ -33,7 +33,7 @@ export class BookController {
   @Patch(':id')
   //@HandleControllerError()
   async updateBook(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) { id }: BaseGetBookByIdRequestDto,
     @Body() updateData: UpdateBookDto,
   ): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return await this.bookService.updateBook(new UpdateBookApiRequestDto(id, updateData)) as ApiResponseDto<BaseBookDatabaseResponseDto>;

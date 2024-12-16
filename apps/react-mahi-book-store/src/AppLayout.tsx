@@ -30,28 +30,28 @@ const AppLayout: React.FC = () => {
       <ToastProvider>
         <Header title="Mahi Book Store" />
         <main className={styles.mainContent}>
-            <UserProvider
-              dependencies={{
-                // Provide a method to get current user ID
-                getCurrentUserId: () => {
-                  console.log(user);
-                  return user?.id ?? null;
-                },
+          <UserProvider
+            dependencies={{
+              // Provide a method to get current user ID
+              getCurrentUserId: () => {
+                console.log(user);
+                return user?.id ?? null;
+              },
 
-                // Optional: Add custom unauthorized handling
-                onUnauthorized: () => {
-                  // Example: Redirect to login page
-                  // router.push('/login');
+              // Optional: Add custom unauthorized handling
+              onUnauthorized: () => {
+                // Example: Redirect to login page
+                // router.push('/login');
 
-                  // Or open a login modal
-                  // openLoginModal();
-                }
-              }}
-            >
-              <BooksProvider>
-                <TabViewManager />
-              </BooksProvider>
-            </UserProvider>
+                // Or open a login modal
+                // openLoginModal();
+              }
+            }}
+          >
+            <BooksProvider>
+              <TabViewManager />
+            </BooksProvider>
+          </UserProvider>
         </main>
       </ToastProvider>
 

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import styles from './FavoritesView.module.scss';
 import FilterableFavoritesCatalog from "../Catalog/FilterableFavoritesCatalog";
-import { useUser } from '@frontend/context/UserContext';
-import { useToast } from '@frontend/context/ToastContext';
-
+import { useToast } from "../../../context/ToastContext";
+import { useUser } from "../../../context/UserContext";
 const FavoritesView: React.FC = () => {
   const { favoriteBooks, clearFavorites } = useUser();
   const { addToast } = useToast();

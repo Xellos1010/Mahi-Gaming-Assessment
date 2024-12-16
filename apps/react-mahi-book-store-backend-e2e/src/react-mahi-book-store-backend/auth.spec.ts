@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CreateUserDto, LoginUserDto } from '@dto/auth.dto';
+import { CreateUserDto, LoginUserDto } from '@nestDtos/auth.dto';
 
 const BASE_URL = 'http://localhost:3000/api/auth';
 
