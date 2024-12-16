@@ -6,8 +6,10 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --production
 COPY dist/apps/react-mahi-book-store dist/apps/react-mahi-book-store
+# Copy the shared DTO objects
+COPY dist/libs/dtos/src dist/libs/dtos/src
 # Step 2: Serve the static files using NGINX
 FROM nginx:alpine
 

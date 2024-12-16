@@ -1,5 +1,6 @@
 const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
 const { join } = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   output: {
@@ -15,6 +16,13 @@ module.exports = {
       optimization: false,
       outputHashing: 'none',
       generatePackageJson: true,
+    }),
+
+    // Use CopyWebpackPlugin to copy the startup.ts to the dist folder
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/startup.js', to: 'startup.js' }
+      ],
     })
   ],
 };
