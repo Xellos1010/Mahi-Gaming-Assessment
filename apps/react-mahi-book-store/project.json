@@ -43,9 +43,25 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "docker-compose -f ../../docker-compose.yml up --build",
-        "cwd": "apps/react-mahi-book-store-backend"
+        "cwd": "apps/react-mahi-book-store"
       }
     },
+    "docker-compose-up-detached": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker-compose -f ../../docker-compose.yml up --build -d",
+        "cwd": "apps/react-mahi-book-store"
+      }
+    },
+
+    "docker-compose-down": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "docker-compose -f ../../docker-compose.yml down",
+      "cwd": "apps/react-mahi-book-store-backend"
+    }
+  },
+    
     "add-books-prod": {
       "executor": "nx:run-commands",
       "options": {

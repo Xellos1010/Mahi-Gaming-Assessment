@@ -25,14 +25,15 @@ const FavoritesView: React.FC = () => {
           >
             {isEditing ? "Done" : "Edit"}
           </button>
-          {isEditing && (
+          {/* Right now the clear all button is only a visual cue to clear the list and is not connected to the server. it may be uncommented to view the graphic feature*/}
+          {/* {isEditing && (
             <button 
               className={`${styles.actionButton} ${styles.clearButton}`}
               onClick={handleClearFavorites}
             >
               Clear All
             </button>
-          )}
+          )} */}
         </div>
       
       </div>

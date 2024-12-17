@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "docker:up": "docker-compose -f docker-compose.yml up --build",
-    "docker:down": "docker-compose down"
+    "deploy": "nx run prisma:generate && nx build prisma && nx build react-mahi-book-store-backend && nx build react-mahi-book-store && nx run react-mahi-book-store:docker-compose-up-detached && sh scripts/startup.sh",
+    "docker:up": "nx run react-mahi-book-store:docker-compose-up-front-back-database",
+    "docker:down": "nx run react-mahi-book-store:docker-compose-down",
+    "add-books-prod": "sh scripts/startup.sh"
   },
   "private": true,
   "dependencies": {

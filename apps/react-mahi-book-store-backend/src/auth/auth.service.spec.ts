@@ -100,7 +100,7 @@ describe('AuthService', () => {
     it('should validate user credentials and return accessToken', async () => {
       jest.spyOn(userService, 'getUserByEmailIncludeFavoriteBooks').mockResolvedValue(
         wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(
-          new UserWithFavoritesDatabaseResponseDto({user: mockUserWithBooks})
+          new UserWithFavoritesDatabaseResponseDto(mockUserWithBooks)
         )
       );
       jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
@@ -115,7 +115,7 @@ describe('AuthService', () => {
       expect(userService.setLastLoggedInNow).toHaveBeenCalledWith({ id: mockUser.id });
       expect(result).toEqual(
         wrapResponseSuccess<LoginUserDatabaseResponseDto>(
-          new LoginUserDatabaseResponseDto({user: mockUserWithBooks}, mockAccessToken),
+          new LoginUserDatabaseResponseDto(mockUserWithBooks, mockAccessToken),
           loginSuccessMessage
         )
       );
