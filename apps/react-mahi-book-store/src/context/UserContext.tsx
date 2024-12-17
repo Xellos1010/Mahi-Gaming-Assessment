@@ -1,9 +1,10 @@
 // apps/react-mahi-book-store/src/context/UserContext.tsx
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { Book } from "@prisma/client";
 
 import { useToast } from "./ToastContext";
-import { addFavoriteBook, removeFavoriteBook } from "../api/user-controller";
+import { addFavoriteBook, fetchUserFavorites, removeFavoriteBook } from "../api/user-controller";
+import { SingleBookResponseDto } from "@prismaDist/dtos";
 
 // Define the shape of dependencies
 interface UserContextDependencies {
@@ -28,31 +29,73 @@ interface UserProviderProps {
   dependencies: UserContextDependencies;
 }
 
-export const UserProvider: React.FC<UserProviderProps> = ({ 
-  children, 
-  dependencies: { 
-    getCurrentUserId, 
-    onUnauthorized 
-  } 
+export const UserProvider: React.FC<UserProviderProps> = ({
+  children,
+  dependencies: {
+    getCurrentUserId,
+    onUnauthorized
+  }
 }) => {
   const [favoriteBooks, setFavoriteBooks] = useState<Book[]>([]);
   const { addToast } = useToast();
 
+  // Fetch favorites (you can keep this if you want to load them on provider mount)
+  useEffect(() => {
+    const loadFavorites = async () => {
+      const userId = getCurrentUserId();
+      if (userId) {
+        try {
+          const { user } = await fetchUserFavorites(userId);
+          setFavoriteBooks(user.favoriteBooks);
+        } catch (error) {
+          addToast("Failed to fetch favorite books", "error");
+          console.error(error);
+        }
+      }
+    };
+    loadFavorites();
+  }, [getCurrentUserId]);
+
+  const getCurrentUserFavoriteBooks = async () => {
+    const userId = getCurrentUserId();
+    if (!userId) {
+      return null; // Handle as necessary if user is not logged in
+    }
+    try {
+      const { user } = await fetchUserFavorites(userId);
+      return user.favoriteBooks;
+    } catch (error) {
+      addToast("Failed to fetch favorite books", "error");
+      console.error(error);
+      return null;
+    }
+  };
+
   const addToFavorites = async (bookId: number) => {
     const userId = getCurrentUserId();
-    
+
     if (!userId) {
       // Call optional onUnauthorized callback
       onUnauthorized?.();
-      
-      addToast("Must be logged in to add favorites", "error");
+      addToast("User must be logged in to add favorites", "error");
       return;
     }
-
     try {
-      const updatedFavorites = await addFavoriteBook(userId, bookId);
-      // TODO: Setup Favorite Books return added to favorites array
-      // setFavoriteBooks(updatedFavorites.data?.book);
+      const updatedFavorites: SingleBookResponseDto = await addFavoriteBook(userId, bookId);
+      
+      if (updatedFavorites && updatedFavorites.book) {
+        // Check if the book is already in the favorites array
+        const bookExists = favoriteBooks.some(book => book.id === updatedFavorites.book.id);
+        if (!bookExists) {
+          // Add the new book to the favorites array
+          setFavoriteBooks([...favoriteBooks, updatedFavorites.book]);
+        } else {
+          addToast("Book is already in favorites", "info");
+        }
+      }
+      else {
+        throw new Error("Unable to add book to favorite");
+      }
     } catch (error) {
       addToast("Failed to add book to favorites", "error");
       console.error(error);
@@ -61,19 +104,23 @@ export const UserProvider: React.FC<UserProviderProps> = ({
 
   const removeFromFavorites = async (bookId: number) => {
     const userId = getCurrentUserId();
-    
+
     if (!userId) {
       // Call optional onUnauthorized callback
       onUnauthorized?.();
-      
+
       addToast("Must be logged in to remove favorites", "error");
       return;
     }
 
     try {
       const updatedFavorites = await removeFavoriteBook(userId, bookId);
-      // TODO: Setup update of favorite books array
-      // setFavoriteBooks(updatedFavorites);
+      if (updatedFavorites.book) {
+        // Filter out the book to be removed from the favorites
+        const newFavoriteBooks = favoriteBooks.filter(book => book.id !== bookId);
+      } else {
+        throw new Error("Unable to add book to favorite");
+      }
     } catch (error) {
       addToast("Failed to remove book from favorites", "error");
       console.error(error);
@@ -82,11 +129,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({
 
   const clearFavorites = async () => {
     const userId = getCurrentUserId();
-    
+
     if (!userId) {
       // Call optional onUnauthorized callback
       onUnauthorized?.();
-      
+
       addToast("Must be logged in to clear favorites", "error");
       return;
     }
@@ -96,12 +143,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({
   };
 
   return (
-    <UserContext.Provider 
-      value={{ 
-        favoriteBooks, 
-        addToFavorites, 
-        removeFromFavorites, 
-        clearFavorites 
+    <UserContext.Provider
+      value={{
+        favoriteBooks,
+        addToFavorites,
+        removeFromFavorites,
+        clearFavorites
       }}
     >
       {children}

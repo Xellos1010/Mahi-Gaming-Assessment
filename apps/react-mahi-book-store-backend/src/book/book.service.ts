@@ -18,22 +18,25 @@ import { LogAll } from '@shared-decorators';
 @Injectable()
 export class BookService implements IBookServiceInterface {
 
-  @HandleServiceError()
   @LogAll()
+  @HandleServiceError()
   async getAllBooks(): Promise<ApiResponseDto<BaseBooksDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBooksDatabaseResponseDto>(await prismaOperations.bookQuery.getAllBooks() as BaseBooksDatabaseResponseDto);
   }
-
+  
+  @LogAll()
   @HandleServiceError()
   async getBook(params: BaseGetBookByIdRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookQuery.getBook(params) as BaseBookDatabaseResponseDto);
   }
 
+  @LogAll()
   @HandleServiceError()
   async addBook(data: CreateBookDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookMutation.addBook(data) as BaseBookDatabaseResponseDto);
   }
 
+  @LogAll()
   @HandleServiceError()
   async updateBook({ id, data }: UpdateBookApiRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookMutation.updateBook({
@@ -42,18 +45,22 @@ export class BookService implements IBookServiceInterface {
     } as PrismaDatabaseUpdateBookParams) as BaseBookDatabaseResponseDto);
   }
 
+  @LogAll()
   @HandleServiceError()
   async removeBookById(params: BaseGetBookByIdRequestDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookMutation.removeBookById(params) as BaseBookDatabaseResponseDto);
   }
 
+  @LogAll()
   @HandleServiceError()
   async addUserToFavoriteBook(params: BaseUserFavoriteBookDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookMutation.addUserToFavoriteBook(params) as BaseBookDatabaseResponseDto);
   }
 
+  @LogAll()
   @HandleServiceError()
   async removeBookFromFavorites(params: BaseUserFavoriteBookDto): Promise<ApiResponseDto<BaseBookDatabaseResponseDto>> {
+    console.log(params);
     return wrapResponseSuccess<BaseBookDatabaseResponseDto>(await prismaOperations.bookMutation.removeBookFromFavorites(params) as BaseBookDatabaseResponseDto);
   }
 }

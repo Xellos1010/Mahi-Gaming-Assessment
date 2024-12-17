@@ -7,6 +7,7 @@ import {
 } from '../dtos/auth.dto';
 import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 import { CreateUserRequestDto } from '@nestDtos/user.dto';
+import { LogAll } from '@shared-decorators';
 
 
 @Controller('auth')
@@ -16,6 +17,7 @@ export class AuthController {
   @Post('register')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(201)
+  @LogAll()
   async register(@Body() createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>> {
     return await this.authService.register(createUserDto);
   }
@@ -23,12 +25,14 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @HttpCode(200)
+  @LogAll()
   async login(@Body() loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>> {
     return await this.authService.login(loginUserDto);
   }
 
   @Post('logout')
   @HttpCode(200)
+  @LogAll()
   async logout(): Promise<ApiResponseDto<string>> {
     // Typically handle client-side token clearing or server-side token invalidation.
     return this.authService.logout();

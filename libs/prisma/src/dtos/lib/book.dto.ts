@@ -14,11 +14,15 @@ export interface UpdateBookApiRequestDto extends BaseBookIdDto {
 }
 
 export interface SingleBookResponseDto {
+  book: Book;
+}
+
+export interface SingleBookResponseWithNullDto {
   book: Book | null;
 }
 
 export interface BooksListResponseDto {
-  books: Book[] | [] | null;
+  books: Book[] | [];
 }
 
 export interface BaseUserFavoriteBookRequestDto {

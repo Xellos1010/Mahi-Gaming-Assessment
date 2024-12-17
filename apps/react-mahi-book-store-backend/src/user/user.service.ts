@@ -8,23 +8,27 @@ import {
   BaseGetUserByEmailRequestDto,
   UserWithFavoritesDatabaseResponseDto,
   SetUserPasswordRequestDto,
-  GetUserByIdRequestDto
+  GetUserByIdRequestDto,
+  BaseUserEmailDto
 } from '@nestDtos/user.dto';
 import { IUserServiceInterface } from '../interfaces/databaseService/user.service.interface';
 import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
 import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
 import { SingleUserResponseWithFavoriteBooksDto } from '@prismaDist/dtos/lib/user.dto';
+import { LogAll } from '@shared-decorators';
 
 @Injectable()
 export class UserService implements IUserServiceInterface {
 
   @HandleServiceError()
+  @LogAll()
   async getAllUsers(): Promise<ApiResponseDto<BaseUsersDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUsersDatabaseResponseDto>(await prismaOperations.userQuery.getAllUsers() as BaseUsersDatabaseResponseDto);
   }
 
   @HandleServiceError()
+  @LogAll()
   async getUserById({ id }: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     const user = await prismaOperations.userQuery.getUserById({ id });
     if (!user) {
@@ -34,7 +38,8 @@ export class UserService implements IUserServiceInterface {
   }
 
   @HandleServiceError()
-  async getUserByEmailIncludeFavoriteBooks(params: BaseGetUserByEmailRequestDto): Promise<ApiResponseDto<SingleUserResponseWithFavoriteBooksDto>> {
+  @LogAll()
+  async getUserByEmailIncludeFavoriteBooks(params: BaseUserEmailDto): Promise<ApiResponseDto<SingleUserResponseWithFavoriteBooksDto>> {
     const user = await prismaOperations.userQuery.getUserByEmailIncludeFavoriteBooks(params);
     if (!user) {
       throw new NotFoundException(`User with email ${params.email}  not found`);
@@ -43,11 +48,13 @@ export class UserService implements IUserServiceInterface {
   }
 
   @HandleServiceError()
+  @LogAll()
   async addUser(data: CreateUserRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(await prismaOperations.userMutation.addUser(data as CreateUserRequestDto) as BaseUserDatabaseResponseDto);
   }
 
   @HandleServiceError()
+  @LogAll()
   async removeUserById({ id }: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     const user = await prismaOperations.userMutation.removeUserById({ id });
     if (!user) {
@@ -57,6 +64,7 @@ export class UserService implements IUserServiceInterface {
   }
 
   @HandleServiceError()
+  @LogAll()
   async setUserPassword({ id, password }: SetUserPasswordRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     const params = {
       where: { id },
@@ -68,6 +76,7 @@ export class UserService implements IUserServiceInterface {
   }
 
   @HandleServiceError()
+  @LogAll()
   async setLastLoggedInNow(params: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(
       await prismaOperations.userMutation.setLastLoggedIn(params) as BaseUserDatabaseResponseDto
@@ -79,9 +88,11 @@ export class UserService implements IUserServiceInterface {
   }
 
   @HandleServiceError()
+  @LogAll()
   async getUserFavoriteBooks(params: GetUserByIdRequestDto): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {
     const userWithBooks = await prismaOperations.userQuery.getUserFavoriteBooks(params) as SingleUserResponseWithFavoriteBooksDto;
-    if (!userWithBooks || (Array.isArray(userWithBooks.user.favoriteBooks) && userWithBooks.user.favoriteBooks.length === 0)) {
+    console.log('User with Books returned from database: ', userWithBooks);
+    if (!userWithBooks || (!Array.isArray(userWithBooks.user.favoriteBooks))) {
       throw new NotFoundException(`No favorite books found for user with ID  ${params.id} `);
     }
     return wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(userWithBooks as UserWithFavoritesDatabaseResponseDto);

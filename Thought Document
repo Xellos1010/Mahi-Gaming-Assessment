@@ -288,3 +288,8 @@ I need to sync up the AddFavorites which returns the book and update the User's 
 Once that is done then I need to be able to remove the favorite book and when browsing in catalog mode toggle between the favorite and non-favorite books.
 
 Once in the Favorites Tab then i need a way to clear all favorite books of the user and update the server.
+
+
+12/16/24 @ 7:50:
+So everything works except getting user favorite books with the user while logging in to optimize database calls. getting user favorites by ID works though. Everything also compiles to run with 1 docker compose command. 
+I have a little time left before midnight whereby michael from qstaff said the project had to be submitted. the plan is to spend from 8:30-9:30 creating the Readme's and instructions.

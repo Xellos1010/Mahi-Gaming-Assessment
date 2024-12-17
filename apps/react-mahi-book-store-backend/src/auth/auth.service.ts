@@ -14,6 +14,7 @@ import { BaseGetUserByEmailRequestDto, CreateUserRequestDto, UserWithFavoritesDa
 import { loginSuccessMessage, registerSuccessMessage } from '../decorators/consts/auth.consts';
 import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
 import { PrismaOperationError } from 'libs/prisma/src/errors/prisma-errors';
+import { LogAll } from '@shared-decorators';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
   ) { }
 
   @HandleServiceError()
+  @LogAll()
   async register(createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>> {
     const getUserParams: BaseGetUserByEmailRequestDto = new BaseGetUserByEmailRequestDto(createUserDto.email);
     let existingUserResponse;
@@ -57,6 +59,7 @@ export class AuthService {
   }
 
   @HandleServiceError()
+  @LogAll()
   async login(loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>> {
     console.log("Login request data:", loginUserDto);
     const { user } = (await this.userService.getUserByEmailIncludeFavoriteBooks({ email: loginUserDto.email })).data;
@@ -76,6 +79,7 @@ export class AuthService {
   }
 
   @HandleServiceError()
+  @LogAll()
   async logout(): Promise<ApiResponseDto<string>> {
     // Typically handle client-side token clearing or server-side token invalidation here.
     return wrapResponseSuccess<string>('Logout successful');

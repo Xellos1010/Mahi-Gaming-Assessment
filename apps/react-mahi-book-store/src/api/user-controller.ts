@@ -1,18 +1,18 @@
-import axios from "axios";
-import { Book, User } from "@prisma/client";
+
 import { handleError } from "./handleError";
 import { UserService } from "./services/user-service";
+import { SingleUserResponseWithFavoriteBooksDto } from "@prismaDist/dtos/lib/user.dto";
 export { addFavoriteBook, removeFavoriteBook } from './book-controller' //These endpoints live in the Book Controller, I may migrate them to the user controller since favorites management is handled by the UserContext - for now this works in an effort to save time before submission @ 12/12/11:32 pm
 
 const userService = new UserService();
-// export const fetchUserFavorites = async (userId: number): Promise<Book[]> => {
-//     try {
-//         const response = await userService.fetchFavorites(userId);
-//         return response.data?.user.user.favoriteBooks;
-//     } catch (error) {
-//         throw handleError(error);
-//     } 
-// };
+export const fetchUserFavorites = async (userId: number): Promise<SingleUserResponseWithFavoriteBooksDto> => {
+    try {
+        const response = await userService.fetchFavorites(userId);
+        return response;
+    } catch (error) {
+        throw handleError(error);
+    } 
+};
 
 // export const fetchAllUsers = async (): Promise<User[]> => {
 //     try {

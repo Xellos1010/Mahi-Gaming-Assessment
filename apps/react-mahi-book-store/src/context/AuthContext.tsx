@@ -47,14 +47,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback(async (credentials: BaseLoginUserRequestDto): Promise<LoginResponse> => {
     try {
       const loginResponse: LoginResponse = await authService.login(credentials);
-
-      // Store user and token
-      console.log(`Login Response: ${loginResponse.data?.user}`);
-      setUser(loginResponse.data?.user || null);
-      setIsAuthenticated(true);
-      localStorage.setItem(TOKEN_KEY, loginResponse.data?.accessToken || 'null');
-      localStorage.setItem(USER_KEY, JSON.stringify(loginResponse.data?.user));
-
+      const { user, accessToken } = loginResponse;
+      if (user) {
+        setUser(user);
+        setIsAuthenticated(true);
+        //TODO: Setup Local Storage for session persistance
+        localStorage.setItem(TOKEN_KEY, accessToken);
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+      }
+      else{
+        console.log("user from login response was not able to be parsed", user);
+      }
       return loginResponse;
     } catch (error) {
       setIsAuthenticated(false);
@@ -66,12 +69,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const registerResponse = await authService.register(userData);
 
-      // Store user and token
-      setUser(registerResponse.data?.user as PrismaUserWithFavoriteBooks || null);
-      setIsAuthenticated(true);
-      localStorage.setItem(TOKEN_KEY, registerResponse.data?.accessToken || 'null');
-      localStorage.setItem(USER_KEY, JSON.stringify(registerResponse.data?.user));
-
+      const { user, accessToken } = registerResponse;
+      if (user) {
+        setUser(user as PrismaUserWithFavoriteBooks);
+        setIsAuthenticated(true);
+        //TODO: Setup Local Storage for session persistance
+        localStorage.setItem(TOKEN_KEY, accessToken);
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+      }
+      else{
+        console.log("user from register response was not able to be parsed", user);
+      }
       return registerResponse;
     } catch (error) {
       setIsAuthenticated(false);

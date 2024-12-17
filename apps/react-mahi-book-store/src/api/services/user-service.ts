@@ -1,7 +1,7 @@
-import { BaseUserDatabaseResponseDto, GetUserByIdRequestDto, UserWithFavoritesDatabaseResponseDto } from '@nestDtos/user.dto';
+import { BaseUserDatabaseResponseDto } from '@nestDtos/user.dto';
 import { BaseApiService } from './base-api-service';
 import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
-import { BaseCreateUserRequestDto, BaseUserUpdateDto, UsersListResponseDto } from '@prismaDist/dtos';
+import { BaseCreateUserRequestDto, BaseUserUpdateDto, SingleUserResponseWithFavoriteBooksDto, UsersListResponseDto } from '@prismaDist/dtos';
 import { LogAll } from '@shared-decorators';
 
 export class UserService extends BaseApiService {
@@ -9,8 +9,8 @@ export class UserService extends BaseApiService {
     super('/users');
   }
 
-  async fetchFavorites(id: number): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {
-    return this.handleRequest<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>>('get', `${id}/favorites`);
+  async fetchFavorites(id: number): Promise<SingleUserResponseWithFavoriteBooksDto> {
+    return this.handleRequest<SingleUserResponseWithFavoriteBooksDto>('get', `${id}/favorites`);
   }
 
   async fetchAll(): Promise<ApiResponseDto<UsersListResponseDto>> {

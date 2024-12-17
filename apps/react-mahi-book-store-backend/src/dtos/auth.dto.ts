@@ -36,10 +36,12 @@ export class LoginUserRequestDto extends BasePasswordDto implements BaseLoginUse
 }
 
 export class LoginUserDatabaseResponseDto extends BaseAccessTokenResponse implements BaseLoginUserDatabaseResponseDto {
+  @IsObject()
   user: PrismaUserWithFavoriteBooks;
 
   constructor(user: PrismaUserWithFavoriteBooks, accessToken: string) {
     super(accessToken); // Casting to access Token for the super constructor call
-    this.user = new UserWithFavoritesDatabaseResponseDto(user).user; // Set the user property in the subclass
+    // this.user = new UserWithFavoritesDatabaseResponseDto(user).user; // Set the user property in the subclass
+    this.user = user; // Set the user property in the subclass
   }
 }

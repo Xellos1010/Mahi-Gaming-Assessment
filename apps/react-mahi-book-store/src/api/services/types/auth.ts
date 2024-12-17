@@ -1,6 +1,5 @@
-import { ApiResponseDto } from '@nestDtos/base.api-response.dto';
-import { CreateUserDatabaseResponseDto, LoginUserDatabaseResponseDto } from '@nestDtos/auth.dto';
+import { BaseCreateUserDatabaseResponseDto, BaseLoginUserDatabaseResponseDto } from '@prismaDist/dtos/lib/auth.dto';
 
-export interface LoginResponse extends ApiResponseDto<LoginUserDatabaseResponseDto> {}
+export interface LoginResponse extends BaseLoginUserDatabaseResponseDto {}
 
-export interface RegisterResponse extends ApiResponseDto<CreateUserDatabaseResponseDto> {}
+export interface RegisterResponse extends BaseCreateUserDatabaseResponseDto {}

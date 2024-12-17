@@ -14,16 +14,16 @@ export class BookService extends BaseApiService {
   }
 
   @LogAll()
-  async fetchById(bookId: number): Promise<ApiResponseDto<SingleBookResponseDto>> {
-    return this.handleRequest<ApiResponseDto<SingleBookResponseDto>>('get', `${bookId}`);
+  async fetchById(bookId: number): Promise<SingleBookResponseDto> {
+    return this.handleRequest<SingleBookResponseDto>('get', `${bookId}`);
   }
 
-  async create(bookData: BaseCreateBookDto): Promise<ApiResponseDto<SingleBookResponseDto>> {
-    return this.handleRequest<ApiResponseDto<SingleBookResponseDto>>('post', '', bookData);
+  async create(bookData: BaseCreateBookDto): Promise<SingleBookResponseDto> {
+    return this.handleRequest<SingleBookResponseDto>('post', '', bookData);
   }
 
-  async update(bookId: BaseBookIdDto, bookData: BaseUpdateBookDto): Promise<ApiResponseDto<SingleBookResponseDto>> {
-    return this.handleRequest<ApiResponseDto<SingleBookResponseDto>>('patch', `${bookId}`, bookData);
+  async update(bookId: BaseBookIdDto, bookData: BaseUpdateBookDto): Promise<SingleBookResponseDto> {
+    return this.handleRequest<SingleBookResponseDto>('patch', `${bookId}`, bookData);
   }
 
   async remove(bookId: number): Promise<void> {
@@ -31,12 +31,12 @@ export class BookService extends BaseApiService {
   }
 
   @LogAll()
-  async addToFavorites(userId: number, bookId: number): Promise<ApiResponseDto<SingleBookResponseDto>> {
-    return this.handleRequest<ApiResponseDto<SingleBookResponseDto>>('post', `${bookId}/favorites`, { userId });
+  async addToFavorites(userId: number, bookId: number): Promise<SingleBookResponseDto> {
+    return this.handleRequest<SingleBookResponseDto>('post', `${bookId}/favorites`, { userId });
   }
 
   @LogAll()
-  async removeFromFavorites(userId: number, bookId: number): Promise<ApiResponseDto<SingleBookResponseDto>> {
-    return this.handleRequest<ApiResponseDto<SingleBookResponseDto>>('delete', `${bookId}/favorites`, { userId });
+  async removeFromFavorites(userId: number, bookId: number): Promise<SingleBookResponseDto> {
+    return this.handleRequest<SingleBookResponseDto>('delete', `${bookId}/favorites`, { userId });
   }
 }

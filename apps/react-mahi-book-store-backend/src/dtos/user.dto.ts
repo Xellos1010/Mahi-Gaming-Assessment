@@ -14,6 +14,7 @@ export class BaseDecoratedUserIdDto implements BaseUserIdDto{
 }
 
 export class BaseUserEmailDto implements BaseEmailDto{
+  @IsString()
   @IsEmail()
   email: string;
 

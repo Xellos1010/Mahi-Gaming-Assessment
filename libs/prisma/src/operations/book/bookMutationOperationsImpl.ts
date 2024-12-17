@@ -1,10 +1,11 @@
 import { prisma } from "../../client";
 import { IBookMutationOperations } from "../../interfaces/book/book.mutation.operations.interface";
-import { 
-  BaseCreateBookDto, 
-  BaseBookIdDto, 
-  BaseUserFavoriteBookRequestDto, 
-  SingleBookResponseDto 
+import {
+  BaseCreateBookDto,
+  BaseBookIdDto,
+  BaseUserFavoriteBookRequestDto,
+  SingleBookResponseDto,
+  SingleBookResponseWithNullDto
 } from "../../dtos/lib/book.dto";
 import { HandleDatabaseError } from "../../decorators/handle-database-error.decorator";
 import { convertDateTimeToDatabaseFormat } from "../../utilities/datetime.util";
@@ -24,8 +25,8 @@ export class PrismaBookMutationOperationsImpl implements IBookMutationOperations
 
   @HandleDatabaseError('Remove Book')
   async removeBookById(params: BaseBookIdDto): Promise<SingleBookResponseDto> {
-    const book = await prisma.book.delete({ 
-      where: { id: params.id } 
+    const book = await prisma.book.delete({
+      where: { id: params.id }
     });
     return { book };
   }
@@ -43,44 +44,48 @@ export class PrismaBookMutationOperationsImpl implements IBookMutationOperations
   }
 
   @HandleDatabaseError('Add Book to Favorites')
-  async addUserToFavoriteBook(params: BaseUserFavoriteBookRequestDto): Promise<SingleBookResponseDto> {
+  async addUserToFavoriteBook(params: BaseUserFavoriteBookRequestDto): Promise<SingleBookResponseWithNullDto> {
     // Validate book and user existence
     await this.validateBookAndUserExistence(params.userId, params.bookId);
-
-    await prisma.userFavorites.create({ 
-      data: { 
-        userId: params.userId, 
-        bookId: params.bookId 
-      } 
+    await prisma.user.update({
+      where: { id: params.userId, },
+      data: {
+        favoriteBooks: {
+          connect: { id: params.bookId }, // Connect the existing book to the user
+        },
+      },
     });
 
+    console.log(`Book ${params.bookId} has been added to User ${params.userId}'s favorites.`);
     // Return the book details
-    const book = await prisma.book.findUnique({ 
-      where: { id: params.bookId } 
+    const book = await prisma.book.findUnique({
+      where: { id: params.bookId }
     });
-    
+    console.log("Book added to favorites:", book);
+
     return { book };
   }
 
   @HandleDatabaseError('Remove Book from Favorites')
-  async removeBookFromFavorites(params: BaseUserFavoriteBookRequestDto): Promise<SingleBookResponseDto> {
+  async removeBookFromFavorites(params: BaseUserFavoriteBookRequestDto): Promise<SingleBookResponseWithNullDto> {
     // Validate book and user existence
     await this.validateBookAndUserExistence(params.userId, params.bookId);
 
-    await prisma.userFavorites.delete({
-      where: {
-        userId_bookId: { 
-          userId: params.userId, 
-          bookId: params.bookId 
-        }
-      }
+    await prisma.user.update({
+      where: { id: params.userId, },
+      data: {
+        favoriteBooks: {
+          disconnect: { id: params.bookId }, // Disconnect the existing book to the user
+        },
+      },
     });
 
     // Return the book details
-    const book = await prisma.book.findUnique({ 
-      where: { id: params.bookId } 
+    const book = await prisma.book.findUnique({
+      where: { id: params.bookId }
     });
-    
+
+    console.log("Book removed from favorites:", book);
     return { book };
   }
 

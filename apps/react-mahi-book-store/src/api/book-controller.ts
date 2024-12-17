@@ -58,7 +58,7 @@ export const fetchBooks = async (): Promise<ReactBooksListResponseDto> => {
 //     }
 // };
 
-export const addFavoriteBook = async (userId: number, bookId: number): Promise<ApiResponseDto<SingleBookResponseDto>> => {
+export const addFavoriteBook = async (userId: number, bookId: number): Promise<SingleBookResponseDto> => {
     try {
         // Log the parameters
         console.log(`Adding favorite book: userId = ${userId}, bookId = ${bookId}`);
@@ -69,7 +69,7 @@ export const addFavoriteBook = async (userId: number, bookId: number): Promise<A
     }
 };
 
-export const removeFavoriteBook = async (userId: number, bookId: number): Promise<ApiResponseDto<SingleBookResponseDto>> => {
+export const removeFavoriteBook = async (userId: number, bookId: number): Promise<SingleBookResponseDto> => {
     try {
         const response = await bookService.removeFromFavorites(userId, bookId);
         return response;
