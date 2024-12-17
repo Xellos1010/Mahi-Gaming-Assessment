@@ -293,3 +293,8 @@ Once in the Favorites Tab then i need a way to clear all favorite books of the u
 12/16/24 @ 7:50:
 So everything works except getting user favorite books with the user while logging in to optimize database calls. getting user favorites by ID works though. Everything also compiles to run with 1 docker compose command. 
 I have a little time left before midnight whereby michael from qstaff said the project had to be submitted. the plan is to spend from 8:30-9:30 creating the Readme's and instructions.
+
+
+@8:30
+The feature to add and remove is working! some UX design can be done on the favorite button and updating the remove list when the user removes from favorites.
+

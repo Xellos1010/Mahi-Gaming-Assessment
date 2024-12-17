@@ -3,6 +3,7 @@ import styles from './BookMoreInfo.module.scss';
 import { BookInfoProps } from "./BookInfoInterfaces";
 
 const BookMoreInfo: React.FC<BookInfoProps> = ({ book }) => {
+  
   return (
     <div className={styles.bookMoreInfoContainer}>
       {book.imageId ? (
