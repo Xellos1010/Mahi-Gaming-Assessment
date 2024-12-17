@@ -13,16 +13,28 @@ import { wrapResponseSuccess } from '../util/api-responses-formatter.util';
 import { BaseGetUserByEmailRequestDto, CreateUserRequestDto, UserWithFavoritesDatabaseResponseDto } from '@nestDtos/user.dto';
 import { loginSuccessMessage, registerSuccessMessage } from '../decorators/consts/auth.consts';
 import { HandleServiceError } from '../decorators/errorHandling/service.error.handler';
-import { PrismaOperationError } from 'libs/prisma/src/errors/prisma-errors';
 import { LogAll } from '@shared-decorators';
 
+/**
+ * @fileoverview
+ * This service handles user authentication, including registering new users, logging in users, and logging out users.
+ * It interacts with the UserService to retrieve user data and the JwtService to manage JWT tokens.
+ */
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService
-  ) { }
+  ) {}
 
+  /**
+   * Registers a new user in the system by checking if the email already exists.
+   * If the email is already in use, an error will be thrown.
+   * Passwords are hashed before being stored.
+   * @param {CreateUserRequestDto} createUserDto - The data required to create a new user.
+   * @returns {Promise<ApiResponseDto<CreateUserDatabaseResponseDto>>} - A promise that resolves to a response with the user data and access token.
+   * @throws {BadRequestException} - If the email is already in use or if there is a database error.
+   */
   @HandleServiceError()
   @LogAll()
   async register(createUserDto: CreateUserRequestDto): Promise<ApiResponseDto<CreateUserDatabaseResponseDto>> {
@@ -43,41 +55,64 @@ export class AuthService {
       }
     }
     
-    // const existingUserResponse = await this.userService.getUserByEmailIncludeFavoriteBooks(getUserParams) as ApiResponseDto<UserWithFavoritesDatabaseResponseDto>;
-    // if (existingUserResponse.data.user) {
-    //   throw new BadRequestException('Email is already in use');
-    // }
-
+    // Hash the password before saving the user
     const hashedPassword = await hashPassword(createUserDto.password);
+
+    // Create the user in the database
     const createUserResponse = await this.userService.addUser({
       ...createUserDto,
       password: hashedPassword
     });
     const { user } = createUserResponse.data;
+
+    // Generate a JWT access token for the user
     const accessToken = this.jwtService.sign({ user });
+
+    // Return the response with the user data and access token
     return wrapResponseSuccess<CreateUserDatabaseResponseDto>(new CreateUserDatabaseResponseDto(user, accessToken), registerSuccessMessage);
   }
 
+  /**
+   * Logs in a user by validating the provided credentials (email and password).
+   * If the credentials are invalid, an UnauthorizedException is thrown.
+   * If successful, an access token is generated and returned.
+   * @param {LoginUserRequestDto} loginUserDto - The user's login credentials.
+   * @returns {Promise<ApiResponseDto<LoginUserDatabaseResponseDto>>} - A promise that resolves to a response with the user data and access token.
+   * @throws {UnauthorizedException} - If the email or password is invalid.
+   */
   @HandleServiceError()
   @LogAll()
   async login(loginUserDto: LoginUserRequestDto): Promise<ApiResponseDto<LoginUserDatabaseResponseDto>> {
     console.log("Login request data:", loginUserDto);
+
+    // Retrieve the user by email
     const { user } = (await this.userService.getUserByEmailIncludeFavoriteBooks({ email: loginUserDto.email })).data;
+    
+    // Check if the user exists
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    // Can Add further decoupling and enforce SRP by having a separate Database and Security Path invoked here, in an effort to save time combining them and planning to refactor later wime permitting
+    // Check if the provided password matches the stored hashed password
     const isMatch = await comparePasswords(loginUserDto.password, user.password);
     if (!isMatch) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    // Generate a JWT access token
     const accessToken = this.jwtService.sign({ id: user.id });
+
+    // Update the user's last login time
     await this.userService.setLastLoggedInNow({ id: user.id });
+
+    // Return the response with the user data and access token
     return wrapResponseSuccess<LoginUserDatabaseResponseDto>(new LoginUserDatabaseResponseDto(user, accessToken), loginSuccessMessage);
   }
 
+  /**
+   * Logs out the current user by invalidating the session or token on the client-side.
+   * @returns {Promise<ApiResponseDto<string>>} - A promise that resolves to a success message indicating logout completion.
+   */
   @HandleServiceError()
   @LogAll()
   async logout(): Promise<ApiResponseDto<string>> {

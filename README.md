@@ -1,82 +1,159 @@
-# ReactMonorepo
+# Online Bookstore Application
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+## Project Overview
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+This is a full-stack Online Bookstore Application developed using Nx monorepo, featuring a NestJS backend and React frontend.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 🗂️ Project Structure
 
-## Finish your CI setup
-
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/bIChSeElMU)
-
-
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve react-mahi-book-store
+```
+react-monorepo/
+│
+├── apps/
+│   ├── react-mahi-book-store/         # React Frontend
+│   └── react-mahi-book-store-backend/ # NestJS Backend
+│
+├── libs/
+│   ├── shared-decorators/              # Shared decorators
+│   └── prisma/                         # Prisma ORM configuration
+│
+├── scripts/
+│   └── startup.sh                      # Post-deployment script
+│
+├── docker-compose.yml
+└── package.json
 ```
 
-To create a production bundle:
+## 🚀 Features
 
-```sh
-npx nx build react-mahi-book-store
+- Nx Monorepo architecture
+- NestJS Backend
+- React Frontend
+- Prisma ORM
+- Docker containerization
+- User authentication
+- Book browsing and favorites management
+
+## 📋 Prerequisites
+
+- Node.js (v18+)
+- npm (v9+)
+- Docker Desktop
+- Nx CLI
+
+## 🛠️ Environment Setup
+
+### Installation
+
+```
+# Clone the repository
+git clone https://github.com/Xellos1010/Mahi-BookStore-Assessment
+
+# Navigate to project directory
+cd react-monorepo
+
+# Install dependencies
+npm install
+
+# Install Nx CLI globally
+npm install -g nx
 ```
 
-To see all available targets to run for a project, run:
+## 🔧 Docker & Deployment Commands
 
-```sh
-npx nx show project react-mahi-book-store
+### Comprehensive Deployment
+
+```
+# Full deployment (generates Prisma, builds projects, starts containers, adds books to database)
+npm run deploy
+
+# Start frontend, backend, and database - (after you build)
+npm run docker:up
+
+# Stop and remove containers
+npm run docker:down
+
+# Add books to production environment
+npm run add-books-prod
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Manual Docker Commands
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```
+# Build specific services
+nx run react-mahi-book-store:docker-compose-up-front-back-database
 
-## Add new projects
+# Generate Prisma client
+nx run prisma:generate
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/react:app demo
+# Build specific applications
+nx build react-mahi-book-store-backend
+nx build react-mahi-book-store
 ```
 
-To generate a new library, use:
+## 🧪 Testing
 
-```sh
-npx nx g @nx/react:lib mylib
+```
+# Run all tests
+nx run-many -t test
+
+# Test specific application
+nx test react-mahi-book-store-backend
+nx test react-mahi-book-store
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🔒 Environment Variables
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Create a `.env` file in the project root with:
 
+```
+DATABASE_URL=postgresql://username:password@localhost:5432/bookstore
+```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📦 Key Dependencies
 
-## Install Nx Console
+- Backend: NestJS, Prisma, TypeScript
+- Frontend: React, Tanstack Query
+- Authentication: JWT, Bcrypt
+- Validation: Zod, Class Validator
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+## 🚧 Development Workflow
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+1. Generate Prisma Client
+```
+nx run prisma:generate
+```
 
-## Useful links
+2. Start Development Servers
+```
+nx run react-mahi-book-store-backend:serve
+nx run react-mahi-book-store:serve
+```
 
-Learn more:
+## 📝 Deployment Considerations
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Ensure all environment variables are correctly configured
+- Run database migrations before deployment
+- Use the provided `deploy` script for complete setup
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🔍 Troubleshooting
+
+- Prisma Generate: If you encounter issues, manually run `npx prisma generate`
+- Docker: Ensure Docker Desktop is running
+- Dependencies: Run `npm install` if any package issues occur
+
+## 👥 Contact
+
+```
+Evan McCall
+e.mccallvr@gmail.com
+786-357-6923
+```
+
+## 🌟 Additional Notes
+
+```
+- Supports Nx Monorepo best practices
+- Modular architecture
+- Scalable design
+```

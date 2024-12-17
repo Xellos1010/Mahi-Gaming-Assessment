@@ -21,12 +21,29 @@ import { LogAll } from '@shared-decorators';
 @Injectable()
 export class UserService implements IUserServiceInterface {
 
+  /**
+   * @fileoverview
+   * This service provides methods to interact with the user data stored in the database.
+   * It includes methods for fetching, adding, removing, and updating user information,
+   * as well as managing user passwords and favorite books.
+   */
+  
+  /**
+   * Retrieves all users from the database.
+   * @returns {Promise<ApiResponseDto<BaseUsersDatabaseResponseDto>>} - A promise that resolves to an API response containing all users' data.
+   */
   @HandleServiceError()
   @LogAll()
   async getAllUsers(): Promise<ApiResponseDto<BaseUsersDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUsersDatabaseResponseDto>(await prismaOperations.userQuery.getAllUsers() as BaseUsersDatabaseResponseDto);
   }
 
+  /**
+   * Retrieves a user by their ID from the database.
+   * @param {GetUserByIdRequestDto} params - The request DTO containing the user ID to search for.
+   * @returns {Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>} - A promise that resolves to an API response containing the user's data.
+   * @throws {NotFoundException} - If no user is found with the given ID.
+   */
   @HandleServiceError()
   @LogAll()
   async getUserById({ id }: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
@@ -37,6 +54,12 @@ export class UserService implements IUserServiceInterface {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(user as BaseUserDatabaseResponseDto);
   }
 
+  /**
+   * Retrieves a user by their email, including their favorite books.
+   * @param {BaseUserEmailDto} params - The request DTO containing the user's email to search for.
+   * @returns {Promise<ApiResponseDto<SingleUserResponseWithFavoriteBooksDto>>} - A promise that resolves to an API response containing the user's data along with their favorite books.
+   * @throws {NotFoundException} - If no user is found with the given email.
+   */
   @HandleServiceError()
   @LogAll()
   async getUserByEmailIncludeFavoriteBooks(params: BaseUserEmailDto): Promise<ApiResponseDto<SingleUserResponseWithFavoriteBooksDto>> {
@@ -47,12 +70,23 @@ export class UserService implements IUserServiceInterface {
     return wrapResponseSuccess<UserWithFavoritesDatabaseResponseDto>(user as SingleUserResponseWithFavoriteBooksDto);
   }
 
+  /**
+   * Adds a new user to the database.
+   * @param {CreateUserRequestDto} data - The data required to create a new user.
+   * @returns {Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>} - A promise that resolves to an API response containing the newly created user's data.
+   */
   @HandleServiceError()
   @LogAll()
   async addUser(data: CreateUserRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(await prismaOperations.userMutation.addUser(data as CreateUserRequestDto) as BaseUserDatabaseResponseDto);
   }
 
+  /**
+   * Removes a user from the database by their ID.
+   * @param {GetUserByIdRequestDto} params - The request DTO containing the user ID to delete.
+   * @returns {Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>} - A promise that resolves to an API response containing the deleted user's data.
+   * @throws {NotFoundException} - If no user is found with the given ID.
+   */
   @HandleServiceError()
   @LogAll()
   async removeUserById({ id }: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
@@ -63,6 +97,11 @@ export class UserService implements IUserServiceInterface {
     return wrapResponseSuccess<BaseUserDatabaseResponseDto>(user as BaseUserDatabaseResponseDto);
   }
 
+  /**
+   * Updates the password for a user in the database.
+   * @param {SetUserPasswordRequestDto} params - The request DTO containing the user ID and the new password.
+   * @returns {Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>} - A promise that resolves to an API response containing the updated user's data.
+   */
   @HandleServiceError()
   @LogAll()
   async setUserPassword({ id, password }: SetUserPasswordRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
@@ -75,6 +114,11 @@ export class UserService implements IUserServiceInterface {
     );
   }
 
+  /**
+   * Updates the last logged-in time for a user in the database.
+   * @param {GetUserByIdRequestDto} params - The request DTO containing the user ID to update.
+   * @returns {Promise<ApiResponseDto<BaseUserDatabaseResponseDto>>} - A promise that resolves to an API response containing the updated user's data.
+   */
   @HandleServiceError()
   @LogAll()
   async setLastLoggedInNow(params: GetUserByIdRequestDto): Promise<ApiResponseDto<BaseUserDatabaseResponseDto>> {
@@ -83,10 +127,12 @@ export class UserService implements IUserServiceInterface {
     );
   }
 
-  async setLastLoggedIn(id: number, data: { lastLoggedIn: Date; }) {
-    throw new Error('Method not implemented.');
-  }
-
+  /**
+   * Fetches the favorite books of a user by their ID.
+   * @param {GetUserByIdRequestDto} params - The request DTO containing the user ID to search for.
+   * @returns {Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>>} - A promise that resolves to an API response containing the user's favorite books.
+   * @throws {NotFoundException} - If no favorite books are found for the user.
+   */
   @HandleServiceError()
   @LogAll()
   async getUserFavoriteBooks(params: GetUserByIdRequestDto): Promise<ApiResponseDto<UserWithFavoritesDatabaseResponseDto>> {
