@@ -104,22 +104,21 @@ export const UserProvider: React.FC<UserProviderProps> = ({
 
   const removeFromFavorites = async (bookId: number) => {
     const userId = getCurrentUserId();
-
+  
     if (!userId) {
-      // Call optional onUnauthorized callback
+      // Handle unauthorized user
       onUnauthorized?.();
-
       addToast("Must be logged in to remove favorites", "error");
       return;
     }
-
+  
     try {
       const updatedFavorites = await removeFavoriteBook(userId, bookId);
-      if (updatedFavorites.book) {
-        // Filter out the book to be removed from the favorites
-        const newFavoriteBooks = favoriteBooks.filter(book => book.id !== bookId);
+      if (updatedFavorites && updatedFavorites.book) {
+        // Update the `favoriteBooks` state by filtering out the removed book
+        setFavoriteBooks((prevFavorites) => prevFavorites.filter((book) => book.id !== bookId));
       } else {
-        throw new Error("Unable to add book to favorite");
+        throw new Error("Unable to remove book from favorites");
       }
     } catch (error) {
       addToast("Failed to remove book from favorites", "error");
