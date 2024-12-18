@@ -1,0 +1,407 @@
+86a110f - feat(auth, book): add detailed inline comments to controllers and services
+Enhanced documentation within various backend modules by adding inline comments clarifying method purposes and parameters across the authentication and book services. Updated code includes annotations for controller endpoints, services, DTOs, formatting utilities, and crypto utilities. These modifications aim to improve code readability and maintainability by providing developers with clear insights into the logic and expected data throughout the backend application.
+
+Added comprehensive ReadMe.md
+
+Date: Mon Dec 16 21:59:50 2024 -0500
+baacb66 - refactor(all): clean up code and improve readability
+This commit introduces extensive refactoring across the project to enhance code readability and maintainability. Several files have been updated with detailed comments and improved structuring, including decorators, DTOs, interfaces, and service implementations. Code consistency has been maintained by following best practices for TypeScript and Prisma.
+
+Key changes:
+- Added docstring comments to clarify the purpose and usage of types, interfaces, and functions.
+- Enhanced error handling by using a custom decorator `HandleDatabaseError`.
+- Refined database operation functions to ensure proper validation and logging.
+- Improved consistency in query and mutation methods, along with their interfaces.
+- Adjusted script paths and execution flow for Docker-related tasks.
+
+These improvements aim to facilitate better understanding and easier future modifications while maintaining existing functionality.
+
+Date: Mon Dec 16 21:29:13 2024 -0500
+3b1d530 - fix(user-context): correct error message and update favorites handling
+Corrected the error message when a book fails to be removed from favorites. Improved how favorite books are updated in state by using a functional state update to ensure consistency with React's state management best practices.
+
+Date: Mon Dec 16 20:40:15 2024 -0500
+240030a - feat(book-store): introduce book detail toggle functionality
+Added a new feature allowing users to toggle additional information for each book in the catalog. This involved updating the BookRowData component to include an onToggleReveal prop and modifying the FilterableScrollableBooksDisplay component to manage state for revealing book details. Also improved the UX for adding/removing favorite books by ensuring the favorite button does not trigger the reveal toggle. This enhancement provides a more interactive and informative browsing experience.
+
+Date: Mon Dec 16 20:36:22 2024 -0500
+6d9e2c8 - feat(logging): add global logging to controllers and services
+Added `@LogAll` decorator to all major controller and service methods across the auth, book, and user modules. This change provides consistent logging for debugging purposes and improves traceability of method calls.
+
+Detailed annotations were applied in order to capture inputs and output data during important operations like user authentication, books handling, and favorites management. This helps ensure thorough monitoring and aids in detecting any potential issues quickly. Additionally, minor modifications to return types were made to enhance response clarity and consistency.
+
+Finalized the add and remove from favorites
+
+Date: Mon Dec 16 20:29:18 2024 -0500
+b6339e4 - refactor(apps/containers): restructure Docker setup and improve error handling
+Revised the docker-compose configuration files to separate development and production settings, making it easier to manage environment-specific configurations. Updated ports and network names to prevent conflicts between environments. Enhanced error handling in the authentication service by properly catching and logging errors related to user registration. Replaced static API URLs with dynamic configurations for better flexibility. Additionally, removed excessive console logging for cleaner output during application execution. This restructuring aims to improve maintainability and ease of deployment across different stages and environments.
+
+Fixed a dto in backend.
+
+added nginx proxy config to only have to reference /api in frontend
+
+Date: Mon Dec 16 16:54:34 2024 -0500
+4803e4a - refactor(all): introduce shared-decorators library and improve logging
+This commit refactors the project by introducing a new shared library, `shared-decorators`, consolidating logging and sanitization logic. The `LogAll` decorator has been moved to this library and is now used across services for consistent logging behavior. Additionally, sensitive fields are sanitized before logging, enhancing security and privacy.
+
+The changes also include updating TypeScript configurations to support the new library paths and ensuring proper integration with existing modules. Extensive logging has been added in services to facilitate better debugging and monitoring of data flow within the application.
+
+This refactor aims to improve code maintainability by promoting reuse and centralizing common functionalities, reducing redundancy, and aligning with principles like DRY and SRP.
+
+Date: Mon Dec 16 12:28:05 2024 -0500
+7b1246d - refactor(app): restructure API and DTO imports, enhance logging
+Refactored API service structure for `react-mahi-book-store` app. Moved to centralized services with clear file naming conventions. Improved DTO import paths for better module clarity by changing `@dto/*` to `@nestDtos/*`. Added comprehensive log decorators (`log-decorators.ts`) to track method calls and errors, which will help in debugging and provide operation insights.
+
+- Updated DTO imports locations across various files from `@dto` to `@nestDtos`.
+- Consolidated API logic into separate service classes and controllers for `auth`, `book`, and `user`.
+- Removed console statements cluttering the code base, especially in sensitive areas like authentication.
+- Fixed a minor bug in user favorite books handling logic that incorrectly accessed array length property.
+
+Login wasn't workign until i removed composition from nextjs DTO objects. I need to implement proper validation on a per object basis
+
+Date: Mon Dec 16 05:08:32 2024 -0500
+917918a - refactor(backend): remove unnecessary DTO copies and test files
+Removed redundant DTO copy operations in the Dockerfile. Refactored module imports to use local paths for `BookModule` and `UserModule` to improve maintainability. Deleted obsolete `.spec.ts` files related to controllers and services that were testing removed or refactored functionalities. Updated DTO references and interfaces to streamline type management across user, book, and auth modules.
+
+This consolidation helps reduce duplicated code and align project structure with updated design patterns, focusing on using centralized DTOs and reducing unnecessary file bloat.
+
+Docker compose file runs
+
+Date: Mon Dec 16 03:55:46 2024 -0500
+3fe9225 - refactor(prisma): streamline dependency management and enhance error handling - Tested
+Removed unnecessary dependencies from package.json to reduce the package footprint. Implemented default timestamps for 'createdAt' fields in the Book and User models to ensure consistent data entry upon creation. Introduced a new decorator, HandleDatabaseError, to manage database errors more efficiently across operations, promoting cleaner and more maintainable code.
+Additionally, replaced outdated types with new DTOs and type definitions, improving clarity and reducing redundancy. Tests have been refactored and executed successfully, confirming the integrity of the changes. These updates aim to optimize the project structure and prepare it for future enhancements without significantly impacting existing functionalities.
+
+Date: Mon Dec 16 02:02:07 2024 -0500
+a920360 - refactor(dtos): update DTOs to enhance code structure and consistency
+This commit refactors several Data Transfer Objects (DTOs) across the application for better maintainability and alignment with DRY principles. Changes include:
+
+- Streamlining imports and leveraging common base classes from shared libraries to reduce redundancy.
+- Implementing type interfaces consistently to improve code readability and enforce structure.
+- Modifying DTO classes for user, book, and authentication modules to extend appropriate base classes.
+- Renaming files to more accurately reflect their contents and responsibilities.
+- Simplifying constructors by integrating helper DTOs for common properties like user ID and email, reducing repetitive validation logic.
+
+These changes enhance modularity and prepare the system for future scalability.
+
+Date: Sun Dec 15 22:31:33 2024 -0500
+c1a8305 - feat(dtos): initialize DTOs library for NX project
+This commit introduces a new Data Transfer Objects (DTOs) library designed to standardize data interchange within the NX project. It covers key areas such as authentication, user management, and book operations, aiding both frontend and backend communication. The library is initially coupled with Prisma for rapid development but plans exist for future decoupling to support various ORMs. Additionally, configuration files for ESLint, Jest, and TypeScript ensure proper tooling support.
+
+Date: Sun Dec 15 21:13:23 2024 -0500
+1c62b57 - feat(backend): integrate startup script for initializing books
+Introduced a new `startup.js` script in the backend to automatically add a predefined list of books to the database at startup. This change involves copying and executing the script using Webpack's CopyWebpackPlugin, ensuring the required data is initialized when the server begins. Additionally, Docker configurations have been adjusted to better align with production deployment practices by installing production dependencies only.
+
+This update aims to streamline the development setup and testing process by automating data seeding. Commented out health checks and previous script commands in `docker-compose.yml` reflect the new approach for handling startup tasks.
+
+Date: Sun Dec 15 21:11:16 2024 -0500
+07747fd - feat(backend): integrate startup scripts and docker setup
+Added scripts to automate backend initialization, including book data population using a newly created startup script. This update also includes the addition of Dockerfiles for both backend and frontend services and a docker-compose file for orchestrating multi-container applications comprising PostgreSQL, backend, frontend, and pgAdmin. These changes streamline deployment and local development by facilitating a consistent environment across different stages.
+
+Significant adjustments include:
+- The introduction of `startup.sh` and `add-books.sh` scripts that manage service dependencies and initialize book data.
+- A new React Mahi Book Store Dockerfile for serving the React app via NGINX.
+- Updated project configuration with build outputs and post-build steps for copying scripts to designated output directories.
+- Enhanced mock data with timestamps in the frontend.
+- A comprehensive `docker-compose.yml` file enabling easy orchestration of services in a local environment.
+- Package file updates for additional Prisma dependencies and refined Nx task support.
+
+Date: Sun Dec 15 02:45:09 2024 -0500
+a463437 - refactor(backend): unify API response structure across auth, user, and book services
+Revised the response structure of Auth, User, and Book services to consistently utilize BaseApiResponseDto for both success and failure messages. This change improves error handling and centralizes response formatting across the backend. Adjusted corresponding test cases and interfaces to align with the new response pattern.
+
+TODO: implement decorators for error handling
+
+Date: Sat Dec 14 23:33:11 2024 -0500
+958ce34 - feat(auth, books, users): implement enhanced DTOs and error handling
+Updated DTOs to better encapsulate request/response structures. Replaced `CreateUserDto` and `LoginUserDto` with `CreateUserRequestDto` and `LoginUserRequestDto`, ensuring better validation through class-validator. Introduced comprehensive error handling decorators for both controllers and services to ensure consistent response formatting and centralized logging.
+
+In the auth module, refactored to async service calls with new DTOs. Extended Prisma operations interfaces to clarify method expectations and responses. Modified user and book services to use enhanced DTOs, improving clarity on method inputs/outputs. Adjusted tests to align with these changes.
+
+Implement decorators for error handling and response wrapping
+Created HandleError and WrapApiResponse decorators to adhere to Single Responsibility Principle (SRP) and Don't Repeat Yourself (DRY) principles in Controllers and Services.
+Refactored all controller amnd service methods to use the new decorators, enhancing code clarity and promoting reusable response handling and error management logic.
+
+These updates enhance code maintainability and consistency across the backend, particularly useful for larger-scale integrations and future extensions.
+
+Date: Sat Dec 14 03:27:32 2024 -0500
+3cad6cf - feat(prisma): add setLastLoggedInNow operation to user mutations
+Introduced the setLastLoggedInNow method in the user mutation operations interface and its implementation. This method sets a user's last logged-in time to the current timestamp. Updated types and test cases to support this feature. This enhancement facilitates tracking user activity more accurately by automatically timestamping logins.
+
+Date: Fri Dec 13 20:46:29 2024 -0500
+61ca6b8 - feat(prisma): enhance book and user operations with timestamps and error handling
+This commit introduces several improvements to the Prisma schema and operations:
+
+1. **Schema Changes**:
+   - Added `createdAt` and `updatedAt` fields to both `Book` and `User` models for better tracking of record changes.
+
+2. **Error Handling**:
+   - Implemented custom error classes (`PrismaOperationError`, `UserNotFoundError`, `DatabaseConnectionError`) for better granularity in error management.
+   - Enhanced error logging using `logPrismaError` utility function.
+
+3. **Operational Enhancements**:
+   - Modified mutation and query interfaces to include detailed response types for `Book` and `User` operations.
+   - Improved data type handling with new parameter interfaces for more efficient interaction with Prisma client methods.
+
+4. **Testing Improvements**:
+   - Expanded test coverage for both mutation and query operations to cover successful scenarios as well as various error cases, ensuring robustness against database constraints and connectivity issues.
+
+These updates strengthen the integrity and maintainability of database interactions within the application, providing clearer insights during debugging and error resolution processes.
+
+Date: Fri Dec 13 20:33:37 2024 -0500
+fcf0ac3 - feat(auth): enhance registration and login with access tokens
+This commit updates the authentication process by returning access tokens upon successful user registration and login. The `AuthService` now includes token generation using JWTs, and client-side code has been adjusted to store and manage these tokens. Additionally, the API base URL paths were corrected, and favorite book management was integrated more seamlessly into the user context. This setup provides a more standardized approach for session management and improved user experience in handling stateful operations. Changes also involve minor refactoring of component structures for better dependency management and state handling.
+
+Date: Fri Dec 13 00:05:10 2024 -0500
+24f61f4 - feat(bookstore): add book management scripts and improve UI structure
+- Introduced scripts for adding and clearing books to the React Mahi Book Store backend, enhancing data management capabilities. These scripts streamline the process of populating and resetting the book database via shell scripts.
+- Improved UI styles by adjusting layout properties such as `flex-grow` and `height` in several components to ensure better responsive behavior and consistency across different views and devices.
+- Updated UI components to use `FavoritesView` directly, simplifying the component structure and aligning it with current design practices.
+
+Date: Thu Dec 12 21:59:39 2024 -0500
+f3c4b5f - refactor(layout): centralize toast notifications and update layout
+Reorganized components to improve layout structure and centralize toast notifications. The Header and Footer components were relocated into a dedicated Layout directory for better organization. Toast notifications are now consistently managed in the Header to ensure they persist across different views without duplication. Introduced a common-styles module for shared layout styles, reducing redundancy. Adjusted SCSS files to enhance maintainability by combining @extend statements, ensuring easier updates and cleaner code.
+
+Tested layout on mobile screen size and everything works well. TODO is add space between the toast text and button to close
+
+Date: Thu Dec 12 21:22:01 2024 -0500
+0d32ee9 - refactor(styles): modularize and optimize SCSS in React Mahi Book Store
+This commit refactors the SCSS files across various components of the React Mahi Book Store app. It introduces several changes for better organization, maintainability, and responsiveness:
+
+1. **Modularization**: Common styles have been extracted into shared SCSS files within each component section such as `book-common-styles.scss`, `catalog-common-styles.scss`, and `toast-common-styles.scss`. These contain reusable style rules to reduce redundancy.
+
+2. **Component Organization**: Components have been reorganized with improved imports and file paths, including moving `ToastContainer` under a dedicated `Toast` directory and renaming paths for catalog and favorite views.
+
+3. **Responsive Enhancements**: Responsive mixins (`mobile`, `tablet`, `desktop`) have replaced older responsive styles, enabling more scalable design adjustments across different device sizes.
+
+4. **Flexibility Improvements**: Styles such as `flex-center` and `card-shadow` were introduced to abstract common patterns used across components.
+
+5. **Command Addition**: Added a new command configuration under `docker-compose-up` in `project.json` for easier Docker setup of the backend, allowing the docker-compose service to start with build options from the project root.
+
+These changes aim to enhance code readability, promote DRY principles, and facilitate easier updates to styling logic.
+
+Date: Thu Dec 12 18:21:49 2024 -0500
+ccb021d - feat(app): enhance user experience with toasts and improved auth
+This commit introduces several enhancements to the React Mahi Book Store app, focusing on both user interface improvements and backend reliability:
+
+1. **UI Enhancements**:
+   - Added `ToastContainer` component to provide user feedback via toast notifications.
+   - Implemented SCSS styles for consistent UI design, including sticky headers and footers.
+
+2. **Authorization Improvements**:
+   - Refined `AuthContext` to include user registration functionality using names, which now requires a name during registration.
+   - Updated login and registration schemas to enhance form validation and error handling, ensuring data integrity.
+
+3. **Error Handling**:
+   - Introduced centralized error handling in API calls across auth, book, and user services to manage API errors gracefully.
+
+4. **Code Reorganization**:
+   - Removed obsolete `AppWrapper` component, consolidating application layout management into `AppLayout`.
+   - Additional logging added for debugging purposes, such as logging parameter values during registration.
+
+Overall, these changes aim to improve the user interaction flow and system robustness by providing informative feedback and maintaining consistent error management strategies.
+
+User Registration and Logging in tested and working
+
+Date: Thu Dec 12 02:18:19 2024 -0500
+bdf0837 - feat(app-layout): refactor layout with modular structure and styles
+This commit introduces significant changes to the application layout by modularizing code and applying scoped styles using CSS modules. The following components have been updated:
+
+1. **AppLayout**: Refactored to use `Header` and `Footer` components, eliminating inline styling in favor of module-based SCSS files.
+
+2. **Styles**: New SCSS modules were created for major components like `Header`, `Footer`, `FavoritesView`, and catalog-related components—ensuring a consistent and maintainable design approach.
+
+3. **Catalog and Favorites**: Improved the layout and user interaction within `FilterableBooksCatalog` and `Favorites` sections, adding editing capabilities and handling of empty states.
+
+4. **User Context**: Extended with a method to clear all favorite books locally, preparing for future backend integration.
+
+This refactoring enhances code readability, separation of concerns, and makes style customization more manageable while preparing the codebase for further feature enhancements.
+
+Date: Thu Dec 12 01:06:34 2024 -0500
+cd0e852 - test(e2e): add comprehensive E2E tests for auth, book, and user controllers
+This commit introduces new end-to-end (E2E) tests covering the authentication, book, and user functionalities. Specifically:
+
+- **AuthController**: Added tests for registration, login, invalid login attempts, and logout functionality.
+
+- **BookController**: Enhanced existing tests for book creation and retrieval, added tests for user-book interactions like adding/removing favorites, and improved error handling tests.
+
+- **UserController**: Implemented tests for user creation, retrieval, updates, deletion, and interactions with favorite books, including robust error handling for non-existent users and invalid data scenarios.
+
+These tests aim to improve code reliability by ensuring critical backend features are functioning correctly, identifying potential issues, and validating behavior under various conditions.
+
+Date: Thu Dec 12 00:10:37 2024 -0500
+cb08b60 - feat(auth): integrate authentication module and refactor auth styles
+Added AuthModule to the backend, enhancing security by managing user authentication. Introduced a shared `common-auth-styles.module.scss` file to unify styling across login and registration components in the frontend. Simplified component styles by using SCSS extend features, ensuring consistency and reducing redundancy. Adjusted test mocks in `AuthService` to ensure correct service interactions post-authentication module integration. Updated API base URL for authentication endpoints to improve routing clarity. These changes standardize authentication processes and enhance maintainability of the codebase.
+
+Finalized Mock Unit Tests for auth endpoint.
+
+Date: Wed Dec 11 23:30:52 2024 -0500
+aeea320 - feat(auth, ui): implement authentication and enhance frontend structure
+This commit introduces new authentication features using JWT and bcrypt on the backend, alongside extensive refactoring and enhancements to the frontend UI.
+
+Backend:
+- Added an `AuthService` with JWT-based login and registration functionality.
+- Implemented unit tests for `AuthController` and `AuthService`.
+- Added error handling in controllers for user and book management.
+
+Frontend:
+- Created components for `Login` and `Register` with form validation using `zod`.
+- Introduced context providers for authentication and toast notifications.
+- Reorganized frontend components into a more modular structure, streamlining book and catalog UIs.
+- Updated styles, including SCSS support and configuration through `.stylelintrc`.
+
+Dependencies:
+- Installed necessary dependencies like `bcrypt`, `react-hook-form`, `axios`, etc., for both frontend and backend functionalities.
+
+Date: Wed Dec 11 22:14:02 2024 -0500
+46b121c - feat(book-store): integrate basic auth, CORS, and real API integration
+This update introduces a basic authentication wrapper and enables CORS configuration for local development in the backend. The frontend now includes authentication and book fetching using React contexts and axios, replacing mock data with real API calls. Additionally, the app setup is modified to use custom query provider for enhanced state management. The `@tanstack/react-query` library is added to manage server state effectively. These improvements set the foundation for more secure and interactive user experiences.
+
+Date: Wed Dec 11 02:19:15 2024 -0500
+36762b5 - feat(Books Hook) Added Books hook and tested timeout
+
+Date: Wed Dec 11 01:45:28 2024 -0500
+92a5024 - feat(books): implement filterable book catalog prototype
+Added components for a static mock prototype of a filterable books catalog. This includes `BookMoreInfo`, `BookRowData`, `FilterableBooksCatalog`, `FilterableScrollableBooksDisplay`, and `SearchFilterableBooksCatalogInput`. These components allow filtering of books by title and author, with results updating on each keystroke. Additionally, clicking on a book row reveals more information, simulating an interactive UI experience.
+
+Introduced a temporary `mockBooks` dataset for prototyping purposes, alongside a custom hook `useMockBooks` to simulate data fetching. Disabled the previous greeting test temporarily to avoid impacting the integration of new features. The static data will be reorganized after further development of interactivity stages.
+
+Date: Wed Dec 11 01:43:33 2024 -0500
+418de1f - feat(backend): add e2e tests and enhance backend setup
+Introduced end-to-end tests for the BookController in the NestJS backend. These tests cover CRUD operations, including creation, retrieval, update, and deletion of books, and handle 404 errors for non-existing entries. Added nodemon for hot-reloading during test development to streamline testing processes.
+
+Updated the Dockerfile to install OpenSSL to prevent Prisma warnings related to missing libssl versions, ensuring database operations are not hindered by environmental issues. Moved docker-compose.yml to align with project structure changes and added a corresponding npm script to ease backend startup.
+
+Refined getHealthStatus test with improved response validation by checking the included timestamp format and its recency. Adjusted Docker and Prisma configurations for better development workflow. Removed deprecated docker-build command from project configuration.
+
+Additionally, modified tsconfig.base.json to include DTOs for easier integration into tests, preventing future modification errors due to schema changes. Removed unused user interfaces that were cluttering the codebase.
+
+Date: Wed Dec 11 00:26:41 2024 -0500
+f8aa6cb - (house-keeping) - removed un-used files so that build task and execute successfully. commit the user.interface.ts for prisma lib
+
+Date: Tue Dec 10 21:50:55 2024 -0500
+968da70 - refactor(backend): update book and user DTOs, fix type handling
+This commit refactors the backend of the React Mahi Book Store application by updating the data transfer objects (DTOs) for books and users. The changes involve replacing old parameter interfaces with new DTOs that provide stricter typing and validation. The controller and service methods have been updated to accommodate these DTO changes, ensuring better type safety and simplifying method signatures.
+
+Key Changes:
+- Replaced individual parameter interfaces with `BookCreateDto`, `BookUpdateDto`, `UserCreateDto`, and specific update DTOs.
+- Updated controller methods to use `ParseIntPipe` for ID parsing and new DTOs for input validation.
+- Refactored service methods to accept DTOs and adjusted the underlying Prisma queries accordingly.
+- Adjusted test cases to align with changes in function signatures and mock data structures.
+
+These improvements enhance data handling consistency, reduce boilerplate code, and prepare the codebase for future requirements related to data format validation.
+
+Date: Tue Dec 10 21:47:57 2024 -0500
+d1bd8d7 - refactor(prisma): integrate Prisma types and refactor DTOs
+This commit updates the backend integration to use generated Prisma types directly, removing custom interface layers. The following changes were made:
+
+1. Added new DTO files for `Book` and `User`, utilizing dynamic mapping via a utility to support both input creation and update operations.
+2. Deleted unnecessary interfaces and parameter files in favor of using directly mapped types from Prisma client for simplicity and maintainability.
+3. Updated mutation and query operation implementations to leverage Prisma-generated types, including adjusting mock tests accordingly.
+4. Consolidated type definitions into a centralized location for easier management and modification.
+
+These updates streamline the codebase by leveraging Prisma’s type safety and reducing manual maintenance of redundant types.
+
+Date: Tue Dec 10 18:56:50 2024 -0500
+88f5eb4 - feat(book): integrate DTOs and refactor code for future-proofing
+This commit enhances the `react-mahi-book-store-backend` by integrating Data Transfer Objects (DTOs) for better validation and separation of concerns, aligning with NestJS best practices. It introduces custom pipes for parameter validation and updates service methods to utilize parameter objects rather than primitive types. This change aims to decouple interfaces driving Prisma operations from those used in NestJS, enhancing maintainability and scalability. New shared types are introduced for consistent type management across modules. Additionally, dependencies for `class-transformer` and `class-validator` are added to support these enhancements.
+
+Date: Tue Dec 10 03:16:30 2024 -0500
+e80155f - feat(prisma): refactor interfaces and implement new operations
+Refactored Prisma interfaces to improve modularity and maintainability. Replaced generic operations with specific interfaces for book and user entities, differentiating between query and mutation operations. Added new TypeScript files to define these interfaces along with their parameter types and return structures. Updated mock tests to align with changes. This enhances the codebase's scalability by allowing more precise control over database interactions and prepares for further expansion with additional features.
+
+Date: Mon Dec 9 17:50:25 2024 -0500
+a8c234b - refactor(backend): restructure project for improved modularity and database integration
+This commit includes significant updates to the React Mahi Book Store backend. It refactors Dockerfile setup to streamline Prisma operations with added commands for generating the Prisma client and deploying migrations. The docker-compose file now incorporates a visual admin interface for PostgreSQL using pgAdmin, facilitating easier database management.
+
+The Prisma-related code has been centralized into a library, reducing redundancy across the application. Module imports in `app.module.ts` have been adjusted to reflect new paths, enhancing module resolution. Additionally, naming conventions were updated for path mappings in TypeScript configurations to improve clarity and maintainability.
+
+Date: Mon Dec 9 03:59:30 2024 -0500
+14ffc2a - feat(backend): set up NestJS backend with Prisma and Postgres
+This commit introduces a new backend service using the NestJS framework, integrating Prisma ORM connected to a Postgres database. The following changes have been made:
+
+- Created a `.env` file for configuring the `DATABASE_URL` for Postgres.
+- Initialized a NestJS application structure under `react-mahi-book-store-backend`.
+- Added modules for handling books and users, including controllers and services.
+- Implemented basic CRUD operations and handling of user favorite books.
+- Configured `Dockerfile` and `docker-compose.yml` to support containerization.
+- Set up Jest for testing, with initial test cases for controllers and services.
+- Updated project dependencies to include NestJS-related packages and updated Nx tools.
+- Enabled integration with an e2e test setup for the backend.
+
+> nx run react-mahi-book-store-backend:test
+
+> jest
+
+ PASS   react-mahi-book-store-backend  src/app/app.service.spec.ts
+ PASS   react-mahi-book-store-backend  src/app/app.controller.spec.ts
+ PASS   react-mahi-book-store-backend  src/user/user.service.spec.ts
+ PASS   react-mahi-book-store-backend  src/book/book.service.spec.ts
+ PASS   react-mahi-book-store-backend  src/user/user.controller.spec.ts
+ PASS   react-mahi-book-store-backend  src/book/book.controller.spec.ts
+
+Test Suites: 6 passed, 6 total
+Tests:       29 passed, 29 total
+Snapshots:   0 total
+Time:        4.57 s
+Ran all test suites.
+
+These changes provide the foundational setup for extending the application with additional functionality and services.
+
+Some of the test cases need to be reviewed for conformity to the database Schema
+
+Date: Sat Dec 7 05:06:21 2024 -0500
+43523e3 - refactor(prisma): reorganize operations into structured interfaces
+This commit restructures the operations in the Prisma library to leverage modular interfaces for better organization and clarity. The book and user operations have been separated into distinct query and mutation interfaces, each with its implementation class.
+
+Removed direct usage of mutations and queries files, replacing them with interface-based implementations, enhancing maintainability by allowing for easier updates and potential testing improvements. This change also includes moving existing unit tests to align with the new structure, retaining test coverage while improving readability and separation of concerns.
+
+ RUN  v1.6.0 /Users/evanmccall/React-Projects/Mahi-Assessment/react-monorepo/libs/prisma
+
+ ✓ src/lib/prisma.spec.ts (1)
+ ✓ src/operations/prismaBookQueryOperationsImpl.spec.ts (2)
+ ✓ src/operations/prismaUserMutationOperationsImpl.spec.ts (4)
+ ✓ src/operations/prismaUserQueryOperationsImpl.spec.ts (4)
+ ✓ src/operations/prismaBookMutationOperationsImpl.spec.ts (3)
+
+ Test Files  5 passed (5)
+      Tests  14 passed (14)
+   Start at  03:08:43
+   Duration  487ms (transform 287ms, setup 0ms, collect 374ms, tests 30ms, environment 1ms, prepare 665ms)
+
+Date: Sat Dec 7 03:10:06 2024 -0500
+4ce0cf0 - test(prisma): add unit tests for mutations and queries
+This commit introduces unit tests for the Prisma client operations. It includes tests for both mutations and queries in the `mutations.spec.ts` and `queries.spec.ts` files, respectively.
+The tests cover various functionalities such as adding, updating, and removing books and users, as well as retrieving books and users from the database.
+These tests utilize mocking to simulate database interactions, ensuring the correctness of logic without needing a real database connection. This enhancement improves code reliability and facilitates future changes by providing a clear test suite to validate behavior.
+
+ RUN  v1.6.0 /Users/evanmccall/React-Projects/Mahi-Assessment/react-monorepo/libs/prisma
+
+ ✓ src/lib/prisma.spec.ts (1)
+ ✓ src/operations/queries.spec.ts (6)
+ ✓ src/operations/mutations.spec.ts (9)
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  02:51:13
+   Duration  497ms (transform 181ms, setup 0ms, collect 232ms, tests 25ms, environment 1ms, prepare 378ms)
+
+Date: Sat Dec 7 02:52:48 2024 -0500
+6cee572 - feat(prisma): integrate Prisma ORM and set up initial project structure
+Added a new shared Prisma library to manage CRUD database operations, enhancing the structure for a React monorepo.
+This update includes initial setup files such as `docker-compose.yml` to configure PostgreSQL, configuration scripts for building and testing, and basic data models for books and users. Dependencies on `prisma` and `@prisma/client` have been added to both `package.json` and `package-lock.json`, ensuring consistent development environments and simplifying database interactions across different frontend applications.
+
+Date: Sat Dec 7 02:04:05 2024 -0500
+fbfb110 - Added Thought Document, assessment criteria. Added Tasks to frontend project.json
+
+Date: Sat Dec 7 00:40:42 2024 -0500
+facadfd - Initial commit
+To connect your workspace to Nx Cloud, push your repository
+to your git hosting provider and go to the following URL:
+
+https://cloud.nx.app/connect/43WecABpUc
+
+Date: Fri Dec 6 23:55:44 2024 -0500
+b91b0cc - Initial commit
+
+Date: Sat Dec 7 00:15:09 2024 -0500

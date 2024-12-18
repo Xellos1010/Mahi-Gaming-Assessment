@@ -52,7 +52,7 @@ git clone https://github.com/Xellos1010/Mahi-BookStore-Assessment
 # Navigate to project directory
 cd react-monorepo
 
-# Install dependencies
+# Install dependencies - (Don't need to perform this step as project was sent with node modules)
 npm install
 
 # Install Nx CLI globally
@@ -66,6 +66,14 @@ npm install -g nx
 ```
 # Full deployment (generates Prisma, builds projects, starts containers, adds books to database)
 npm run deploy
+^--- If the daemon hasn't started wait and try again
+The application will be built, online and books added to the database. 
+navigate to http://localhost
+http://localhost:3000/api is the backend health check
+Sometimes after the add books to database script executes the front-end takes a minute to register the books have been added.
+If you register before books are added to the database simple refresh the website 
+If no books appear on first time pass thru because of quickly starting the application and registering then please refresh the environment.
+------
 
 # Start frontend, backend, and database - (after you build)
 npm run docker:up
