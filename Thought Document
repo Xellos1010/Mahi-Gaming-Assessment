@@ -141,7 +141,7 @@ The first phase is with a coupled database so that I can integrate and test feat
 The second phase would be to develop middleware funcitons that I can use to pre-process requests and the coressponding response objects when I want to add security
 The final phase if time permits would be to integrate a DatabaseDynamicModule so that I can support multiple databases in the future.
 
-Finalized the deployment configuration for the docker compose and docker file. Included visual admin interface for postgres so that we can add data easily.
+Finalized the deployment configuration for the docker compose and docker file. Included visual admin interface for postgres so that we can add data easily. (did not work out as planned - I didnt understand the visual interface for postgres and had no time to research)
 
 12/06/24 @ 1:00pm
 I need to deploy a basic front-end with my docker-compose file to test the end to end service.
@@ -218,7 +218,7 @@ export class UserDto implements PrismaDto<Prisma.UserCreateInput> {
 There is a utility that automatically generates NestJS DTO Objects: https://www.npmjs.com/package/@vegardit/prisma-generator-nestjs-dto
 
 12/10/2024 @ 5:26pm
-After some more research regarding where the architectural decision on where to house DTO's and any shared types for the sake of convience and ease of developing this application we will implement the PrismaClient directly into the backend for the following reasons:
+After some more research regarding the architectural decision on where to house DTO's and any shared types for the sake of convience and ease of developing this application we will implement the PrismaClient directly into the backend for the following reasons:
 no need to shared types or DTOs across multiple applications.
 The backend is the sole consumer of the database layer, and I don't expect other apps to need these types or DTOs.
 
@@ -227,7 +227,7 @@ To ensure everything updates with the PrismaClient I will implement interfaces i
 I am also consolidating all types to a main file to be able to more easily traverse the hierarchy
 
 @6:51
-Finalized Prisma lib implementing the types fromt he generated client and finalizing the unit tests. Now I can move onto DTO generation and writing unit tests for the backend nestJS, then I will run a manual test invoking the endpoint with various curl commands for expediency and finally working with the mock static prorotype first, then interaction then real-time data integration.
+Finalized Prisma lib implementing the types from the generated client and finalizing the unit tests. Now I can move onto DTO generation and writing unit tests for the backend nestJS, then I will run a manual test invoking the endpoint with various curl commands for expediency and finally working with the mock static prorotype first, then interaction then real-time data integration.
 First phase will be basic filterable books table with search field and static data.
 Then will be integration of tan-stack query so that I can cache data locally on re-get requests.
 Then it will be version 1 completed and I can move onto user login and registration.
@@ -266,7 +266,7 @@ Since I have the basic components finished and tested:
 I am going to start working on the next part integrating the Zod Form Validation for sign-up and login.
 Afterwards I will put in a tab manager that will allow a user to toggle between searching and favorites management
 
-I will need a LoginComponent, a RegisterComponent, Utilize zod for form validation, add UserContext wrapper to manage user favorites. Add a TabViewManager Component that allows us to toggle between the Catalog View and Favorites view. The FavoritesViewComponent should have a FilterableCatalog as wel that has the same features as the regular view but with the addition of Removing Favorite Book button on the right side of the RowData. The  BookDataRow component should display an Add To Favorites Button on the right side when not in Catalog View
+I will need a LoginComponent, a RegisterComponent, Utilize zod for form validation, add UserContext wrapper to manage user favorites. Add a TabViewManager Component that allows us to toggle between the Catalog View and Favorites view. The FavoritesViewComponent should have a FilterableCatalog as well that has the same features as the regular view but with the addition of Removing Favorite Book button on the right side of the RowData. The BookDataRow component should display an Add To Favorites Button on the right side when not in Catalog View
 
 @7:30pm
 Since developing the Auth components and view components I switched back to the backend so that I can create an auth controller and add error handling to my backend.

@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { PrismaUserWithFavoriteBooks } from '@prismaDist/dtos/lib/types/user.types';
-import { BaseCreateUserRequestDto, BaseEmailDto, BaseSetUserPasswordRequestDto, BaseUserIdDto, BaseUserLastLoggedInDto, BaseUserPasswordDto, PrismaUserWithFavoriteBooksResponse, SingleUserResponseDto, SingleUserResponseWithFavoriteBooksDto, UsersListResponseDto } from '@prismaDist/dtos/lib/user.dto';
+import { BaseCreateUserRequestDto, BaseEmailDto, BaseSetUserPasswordRequestDto, BaseUserIdDto, BaseUserLastLoggedInDto, BaseUserPasswordDto, SingleUserResponseDto, SingleUserResponseWithFavoriteBooksDto, UsersListResponseDto } from '@prismaDist/dtos/lib/user.dto';
 import { IsString, IsDate, IsNumber, IsArray, IsEmail, IsObject, MinLength } from 'class-validator';
 
 /**
